@@ -1,0 +1,8 @@
+*.ncb
+*.aps
+*.suo
+bin/
+obj/
+*.csproj*.user
+*.vcproj*.user
+doc/

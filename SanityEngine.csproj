@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7CD5A275-7031-45C3-AE21-73E83889F407}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AIEngine</RootNamespace>
+    <AssemblyName>AIEngine</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>doc\doc.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>doc\doc.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Actors\Actor.cs" />
+    <Compile Include="Actors\AIPointActor.cs" />
+    <Compile Include="Actors\VelocityWrapperActor.cs" />
+    <Compile Include="DecisionMaking\FSM\FiniteStateMachine.cs" />
+    <Compile Include="DecisionMaking\FSM\State.cs" />
+    <Compile Include="DecisionMaking\FSM\Transition.cs" />
+    <Compile Include="Movement\PathFollowing\CoherentPathFollower.cs" />
+    <Compile Include="Movement\SteeringBehaviors\Arrive.cs" />
+    <Compile Include="Movement\SteeringBehaviors\Flocking\Avoid.cs" />
+    <Compile Include="Movement\SteeringBehaviors\Flocking\Flock.cs" />
+    <Compile Include="Movement\SteeringBehaviors\LookWhereYouAreGoing.cs" />
+    <Compile Include="Movement\SteeringBehaviors\LookAt.cs" />
+    <Compile Include="Movement\SteeringBehaviors\Evade.cs" />
+    <Compile Include="Movement\SteeringBehaviors\Flocking\Cohesion.cs" />
+    <Compile Include="Movement\SteeringBehaviors\Flocking\Alignment.cs" />
+    <Compile Include="Movement\SteeringBehaviors\Flocking\Separation.cs" />
+    <Compile Include="Movement\SteeringBehaviors\Flocking\FlockingBehavior.cs" />
+    <Compile Include="Movement\SteeringBehaviors\Pursue.cs" />
+    <Compile Include="Movement\SteeringBehaviors\Flee.cs" />
+    <Compile Include="Movement\SteeringBehaviors\Kinematics.cs" />
+    <Compile Include="Movement\SteeringBehaviors\Seek.cs" />
+    <Compile Include="Movement\SteeringBehaviors\SteeringBehavior.cs" />
+    <Compile Include="Movement\SteeringBehaviors\SteeringManager.cs" />
+    <Compile Include="Movement\SteeringBehaviors\Wander.cs" />
+    <Compile Include="PathRepresentation\GenericGraph\GenericEdge.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PathRepresentation\GenericGraph\GenericGraph.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PathRepresentation\GenericGraph\GenericNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PathRepresentation\Grid\GridEdge.cs" />
+    <Compile Include="PathRepresentation\Grid\GridGraph.cs" />
+    <Compile Include="PathRepresentation\Grid\GridNode.cs" />
+    <Compile Include="PathRepresentation\Grid\GridSampler.cs" />
+    <Compile Include="PathRepresentation\Grid\HeightmapGridSampler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Search\PathFinding\Algorithms\LPAStarSearch.cs" />
+    <Compile Include="Search\PathFinding\Algorithms\ASearch.cs" />
+    <Compile Include="Search\PathFinding\Algorithms\BestFirstSearch.cs" />
+    <Compile Include="Search\PathFinding\PathFinder.cs" />
+    <Compile Include="Structure\Graph\Edge.cs" />
+    <Compile Include="Structure\Graph\FiniteGraph.cs" />
+    <Compile Include="Structure\Graph\Graph.cs" />
+    <Compile Include="Structure\Graph\GraphChangeHelper.cs" />
+    <Compile Include="Structure\Graph\Node.cs" />
+    <Compile Include="Structure\Path\Path.cs" />
+    <Compile Include="Utility\Containers\PriorityQueue.cs" />
+    <Compile Include="Utility\Math\AIRandom.cs" />
+    <Compile Include="Utility\Math\AIVector3.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sensors\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
