@@ -1,7 +1,7 @@
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using AIEngine.Actors;
-using AIEngine.Utility.Math;
 
 namespace AIEngine.Movement.SteeringBehaviors.Flocking
 {
@@ -11,7 +11,7 @@ namespace AIEngine.Movement.SteeringBehaviors.Flocking
     /// </summary>
     public class Avoid : FlockingBehavior
     {
-        AIPointActor target;
+        PointActor target;
         Flee flee = new Flee();
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace AIEngine.Movement.SteeringBehaviors.Flocking
         public Avoid(Flock flock)
             : base(flock)
         {
-            target = new AIPointActor(AIVector3.zero);
+            target = new PointActor(Vector3.zero);
             flee.Target = target;
         }
 
@@ -35,7 +35,7 @@ namespace AIEngine.Movement.SteeringBehaviors.Flocking
         public override Kinematics Update(Actor actor, float dt)
         {
             float smallestHitTime = float.PositiveInfinity;
-            AIVector3 tgt = AIVector3.zero;
+            Vector3 tgt = Vector3.zero;
             bool hit = false;
 
             foreach (Actor other in Flock.Members)
@@ -45,11 +45,11 @@ namespace AIEngine.Movement.SteeringBehaviors.Flocking
                     continue;
                 }
 
-                AIVector3 a = actor.Position - other.Position;
-                AIVector3 b = actor.Velocity - other.Velocity;
+                Vector3 a = actor.Position - other.Position;
+                Vector3 b = actor.Velocity - other.Velocity;
 
                 // Calculate future hit time
-                float hTime = -(AIVector3.Dot(a, b)) / b.SqrMagnitude;
+                float hTime = -(Vector3.Dot(a, b)) / b.sqrMagnitude;
 
                 // We want the smallest hit time but it must be greater
                 // than zero. Zero and smaller means no collision

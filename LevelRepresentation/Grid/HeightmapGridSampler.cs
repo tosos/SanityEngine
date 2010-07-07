@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AIEngine.PathRepresentation.Grid
+namespace AIEngine.LevelRepresentation.Grid
 {
     /// <summary>
     /// Simple heightmap grid builder. Gives all nodes a cost of 1, and gives

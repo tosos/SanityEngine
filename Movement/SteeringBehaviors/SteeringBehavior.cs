@@ -1,8 +1,8 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using AIEngine.Actors;
-using AIEngine.Utility.Math;
 
 namespace AIEngine.Movement.SteeringBehaviors
 {
@@ -39,16 +39,16 @@ namespace AIEngine.Movement.SteeringBehaviors
         /// <param name="target">The target point.</param>
         /// <param name="dt">The delta time since the last call.</param>
         /// <returns></returns>
-        protected AIVector3 SteerToward(Actor actor, AIVector3 target, float dt)
+        protected Vector3 SteerToward(Actor actor, Vector3 target, float dt)
         {
-            AIVector3 desired = target - actor.Position;
-            float dist = desired.Magnitude;
+            Vector3 desired = target - actor.Position;
+            float dist = desired.magnitude;
             if (dist > 0.0f)
             {
                 desired *= actor.MaxSpeed / dist;
                 return desired - actor.Velocity;
             }
-            return AIVector3.zero;
+            return Vector3.zero;
         }
 
         /// <summary>
@@ -58,16 +58,16 @@ namespace AIEngine.Movement.SteeringBehaviors
         /// <param name="target">The target point.</param>
         /// <param name="dt">The delta time since the last call.</param>
         /// <returns></returns>
-        protected AIVector3 SteerAway(Actor actor, AIVector3 target, float dt)
+        protected Vector3 SteerAway(Actor actor, Vector3 target, float dt)
         {
-            AIVector3 desired = actor.Position - target;
-            float dist = desired.Magnitude;
+            Vector3 desired = actor.Position - target;
+            float dist = desired.magnitude;
             if (dist > 0.0f)
             {
                 desired *= actor.MaxSpeed / dist;
                 return desired - actor.Velocity;
             }
-            return AIVector3.zero;
+            return Vector3.zero;
         }
     }
 }

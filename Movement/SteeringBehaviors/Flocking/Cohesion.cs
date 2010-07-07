@@ -1,8 +1,8 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using AIEngine.Actors;
-using AIEngine.Utility.Math;
 
 namespace AIEngine.Movement.SteeringBehaviors.Flocking
 {
@@ -11,7 +11,7 @@ namespace AIEngine.Movement.SteeringBehaviors.Flocking
     /// </summary>
     public class Cohesion : FlockingBehavior
     {
-        AIPointActor target;
+        PointActor target;
         Seek seeker = new Seek();
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace AIEngine.Movement.SteeringBehaviors.Flocking
         public Cohesion(Flock flock)
             : base(flock)
         {
-            target = new AIPointActor(AIVector3.zero);
+            target = new PointActor(Vector3.zero);
             seeker.Target = target;
         }
 
@@ -35,7 +35,7 @@ namespace AIEngine.Movement.SteeringBehaviors.Flocking
         public override Kinematics Update(Actor actor, float dt)
         {
             int count = 0;
-            AIVector3 avg = AIVector3.zero;
+            Vector3 avg = Vector3.zero;
             foreach (Actor f in Flock.Members)
             {
                 if (base.IsAffecting(actor, f))

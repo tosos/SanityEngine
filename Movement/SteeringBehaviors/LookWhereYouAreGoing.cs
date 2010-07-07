@@ -1,8 +1,8 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using AIEngine.Actors;
-using AIEngine.Utility.Math;
 
 namespace AIEngine.Movement.SteeringBehaviors
 {
@@ -20,16 +20,16 @@ namespace AIEngine.Movement.SteeringBehaviors
         /// <returns>The kinematics object.</returns>
         public override Kinematics Update(Actor actor, float dt)
         {
-            AIVector3 face = actor.Velocity;
-            AIVector3 axis = AIVector3.Cross(face, actor.Facing);
-			float mag = axis.Magnitude;
+            Vector3 face = actor.Velocity;
+            Vector3 axis = Vector3.Cross(face, actor.Facing);
+			float mag = axis.magnitude;
 			if(mag < float.Epsilon) {
 				face.y += float.Epsilon;
-				axis = AIVector3.Cross(face, actor.Facing);
+				axis = Vector3.Cross(face, actor.Facing);
 			}
             axis.Normalize();
-            axis *= AIVector3.Angle(face, actor.Facing);
-            return new Kinematics(AIVector3.zero, axis * actor.MaxAngSpeed);
+            axis *= Vector3.Angle(face, actor.Facing);
+            return new Kinematics(Vector3.zero, axis * actor.MaxAngSpeed);
         }
     }
 }

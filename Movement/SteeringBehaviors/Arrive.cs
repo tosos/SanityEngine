@@ -1,8 +1,7 @@
-﻿using System;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
 using AIEngine.Actors;
-using AIEngine.Utility.Math;
 
 namespace AIEngine.Movement.SteeringBehaviors
 {
@@ -58,17 +57,17 @@ namespace AIEngine.Movement.SteeringBehaviors
                 return Kinematics.zero;
             }
 
-            AIVector3 delta = Target.Position - actor.Position;
-            float dist = delta.Magnitude;
+            Vector3 delta = Target.Position - actor.Position;
+            float dist = delta.magnitude;
             if (dist > 0.0f)
             {
                 delta /= timeToTarget;
-                float m = delta.Magnitude;
+                float m = delta.magnitude;
                 if (m > actor.MaxSpeed)
                 {
                     delta *= actor.MaxSpeed / m;
                 }
-                return new Kinematics(delta - actor.Velocity, AIVector3.zero);
+                return new Kinematics(delta - actor.Velocity, Vector3.zero);
             }
 
             return Kinematics.zero;

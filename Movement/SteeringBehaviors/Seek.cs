@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using UnityEngine;
 using AIEngine.Actors;
-using AIEngine.Utility.Math;
 
 namespace AIEngine.Movement.SteeringBehaviors
 {
@@ -36,7 +33,7 @@ namespace AIEngine.Movement.SteeringBehaviors
                 return Kinematics.zero;
             }
 
-            return new Kinematics(SteerToward(actor, target.Position, dt), AIVector3.zero);
+            return new Kinematics(SteerToward(actor, target.Position, dt), Vector3.zero);
         }
     }
 }

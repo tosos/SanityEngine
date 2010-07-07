@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using UnityEngine;
 using AIEngine.Actors;
-using AIEngine.Utility.Math;
 
 namespace AIEngine.Movement.SteeringBehaviors.Flocking
 {
@@ -31,18 +28,18 @@ namespace AIEngine.Movement.SteeringBehaviors.Flocking
         {
             float threshold = base.MaxDistance;
 
-            AIVector3 accum = AIVector3.zero;
+            Vector3 accum = Vector3.zero;
             foreach (Actor f in Flock.Members)
             {
                 if (base.IsAffecting(actor, f))
                 {
-                    AIVector3 v = actor.Position - f.Position;
-                    float d = v.Magnitude;
-                    float str = Math.Max(0.0f, (threshold - d) / threshold) * actor.MaxSpeed;
+                    Vector3 v = actor.Position - f.Position;
+                    float d = v.magnitude;
+                    float str = Mathf.Max(0.0f, (threshold - d) / threshold) * actor.MaxSpeed;
                     accum += (v / d) * str;
                 }
             }
-            return new Kinematics(accum, AIVector3.zero);
+            return new Kinematics(accum, Vector3.zero);
         }
     }
 }

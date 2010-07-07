@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using AIEngine.Structure.Graph;
 
-namespace AIEngine.PathRepresentation.Grid
+namespace AIEngine.LevelRepresentation.Grid
 {
     public class GridNode : Node<GridNode, GridEdge>
     {

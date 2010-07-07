@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AIEngine.PathRepresentation.Grid
+namespace AIEngine.LevelRepresentation.Grid
 {
     /// <summary>
     /// Interface got getting information about a grid.

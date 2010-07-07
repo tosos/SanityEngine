@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using UnityEngine;
 using AIEngine.Actors;
-using AIEngine.Utility.Math;
 
 namespace AIEngine.Movement.SteeringBehaviors.Flocking
 {
@@ -60,16 +57,16 @@ namespace AIEngine.Movement.SteeringBehaviors.Flocking
         /// </returns>
         protected bool IsAffecting(Actor actor, Actor other)
         {
-            AIVector3 f = actor.Facing;
-            AIVector3 v = other.Position - actor.Position;
-            float dist = v.Magnitude;
+            Vector3 f = actor.Facing;
+            Vector3 v = other.Position - actor.Position;
+            float dist = v.magnitude;
             if (dist > maxDistance)
             {
                 return false;
             }
             f.Normalize();
             v /= dist;
-            float angle = (float)Math.Acos(AIVector3.Dot(f, v));
+            float angle = Mathf.Acos(Vector3.Dot(f, v));
             return (angle < maxAngle);
         }
     }

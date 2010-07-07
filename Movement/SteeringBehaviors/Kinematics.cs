@@ -1,7 +1,7 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using AIEngine.Utility.Math;
 
 namespace AIEngine.Movement.SteeringBehaviors
 {
@@ -13,24 +13,24 @@ namespace AIEngine.Movement.SteeringBehaviors
         /// <summary>
         /// Zero velocity kinematics object.
         /// </summary>
-        public static Kinematics zero = new Kinematics(AIVector3.zero, AIVector3.zero);
+        public static Kinematics zero = new Kinematics(Vector3.zero, Vector3.zero);
 
         /// <summary>
         /// The desired force vector.
         /// </summary>
-        public readonly AIVector3 Force;
+        public readonly Vector3 Force;
         
         /// <summary>
         /// The desired torque vector.
         /// </summary>
-        public readonly AIVector3 Torque;
+        public readonly Vector3 Torque;
 
         /// <summary>
         /// Create a kinematics object.
         /// </summary>
         /// <param name="force">The desired force vector.</param>
         /// <param name="torque">The desired torque vector.</param>
-        public Kinematics(AIVector3 force, AIVector3 torque)
+        public Kinematics(Vector3 force, Vector3 torque)
         {
             this.Force = force;
             this.Torque = torque;

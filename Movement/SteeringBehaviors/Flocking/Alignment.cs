@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using UnityEngine;
 using AIEngine.Actors;
-using AIEngine.Utility.Math;
 
 namespace AIEngine.Movement.SteeringBehaviors.Flocking
 {
@@ -29,20 +26,20 @@ namespace AIEngine.Movement.SteeringBehaviors.Flocking
         /// <returns>The kinematics object.</returns>
         public override Kinematics Update(Actor actor, float dt)
         {
-            AIVector3 accum = AIVector3.zero;
+            Vector3 accum = Vector3.zero;
             int count = 0;
             foreach (Actor f in Flock.Members)
             {
                 if (base.IsAffecting(actor, f))
                 {
-                    AIVector3 vel = f.Velocity;
+                    Vector3 vel = f.Velocity;
                     vel.Normalize();
                     accum += vel;
                     count++;
                 }
             }
             accum /= count > 0 ? count : 1.0f;
-            return new Kinematics(SteerToward(actor, actor.Position + accum, dt), AIVector3.zero);
+            return new Kinematics(SteerToward(actor, actor.Position + accum, dt), Vector3.zero);
         }
     }
 }

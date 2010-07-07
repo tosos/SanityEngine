@@ -1,27 +1,27 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using AIEngine.Utility.Math;
 
 namespace AIEngine.Actors
 {
-    class AIPointActor : Actor
+    class PointActor : Actor
     {
-        AIVector3 point;
+        Vector3 point;
 
-        public AIVector3 Velocity
+        public Vector3 Velocity
         {
-            get { return AIVector3.zero; }
+            get { return Vector3.zero; }
         }
 
-        public AIVector3 Position
+        public Vector3 Position
         {
             get { return point; }
         }
 
-        public AIVector3 Facing
+        public Vector3 Facing
         {
-            get { return AIVector3.zero; }
+            get { return Vector3.zero; }
         }
 
         public float MaxSpeed
@@ -34,13 +34,13 @@ namespace AIEngine.Actors
             get { return 0.0f; }
         }
 
-        public AIVector3 Point
+        public Vector3 Point
         {
             get { return point; }
             set { point = value; }
         }
 
-        public AIPointActor(AIVector3 point)
+        public PointActor(Vector3 point)
         {
             this.point = point;
         }

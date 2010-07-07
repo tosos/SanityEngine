@@ -1,5 +1,5 @@
 using System;
-using AIEngine.Utility.Math;
+using UnityEngine;
 
 namespace AIEngine.Actors
 {
@@ -12,7 +12,7 @@ namespace AIEngine.Actors
         /// <summary>
         /// This actor's velocity.
         /// </summary>
-        AIVector3 Velocity
+        Vector3 Velocity
         {
             get;
         }
@@ -20,7 +20,7 @@ namespace AIEngine.Actors
         /// <summary>
         /// The position of the actor.
         /// </summary>
-        AIVector3 Position
+        Vector3 Position
         {
             get;
         }
@@ -28,7 +28,7 @@ namespace AIEngine.Actors
         /// <summary>
         /// The vector pointing in the direction the actor is facing.
         /// </summary>
-        AIVector3 Facing
+        Vector3 Facing
         {
             get;
         }

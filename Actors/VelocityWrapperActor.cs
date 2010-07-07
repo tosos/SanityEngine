@@ -1,7 +1,7 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using AIEngine.Utility.Math;
 
 namespace AIEngine.Actors
 {
@@ -9,17 +9,17 @@ namespace AIEngine.Actors
     {
         Actor actor;
 
-        public AIVector3 Velocity
+        public Vector3 Velocity
         {
             get { return actor.Velocity; }
         }
 
-        public AIVector3 Position
+        public Vector3 Position
         {
             get { return actor.Position + actor.Velocity; }
         }
 
-        public AIVector3 Facing
+        public Vector3 Facing
         {
             get { return actor.Facing; }
         }

@@ -1,8 +1,6 @@
-﻿using System;
+﻿using UnityEngine;
 using System.Collections.Generic;
-using System.Text;
 using AIEngine.Actors;
-using AIEngine.Utility.Math;
 
 namespace AIEngine.Movement.SteeringBehaviors
 {
@@ -23,7 +21,7 @@ namespace AIEngine.Movement.SteeringBehaviors
         float maxCountdownTime = 2.0f;
         float maxDeviation = 0.2f;
         float wanderAngle = 0.0f;
-        AIPointActor target;
+		PointActor target;
 
         /// <summary>
         /// The minumum time until changing the wander target.
@@ -57,8 +55,8 @@ namespace AIEngine.Movement.SteeringBehaviors
         /// </summary>
         public Wander()
         {
-            wanderAngle = AIRandom.Uniform() * 360.0f;
-            target = new AIPointActor(AIVector3.zero);
+            wanderAngle = Random.Range(0f, 360f);
+            target = new PointActor(Vector3.zero);
             base.Target = target;
         }
 
@@ -71,13 +69,13 @@ namespace AIEngine.Movement.SteeringBehaviors
         /// <returns>The kinematics object.</returns>
         public override Kinematics Update(Actor actor, float dt)
         {
-            float angle = AIRandom.Uniform(-maxDeviation, maxDeviation);
+            float angle = Random.Range(-maxDeviation, maxDeviation);
             wanderAngle += angle;
             int radius = 200;
-            AIVector3 currPos = actor.Position;
-            float x = currPos.x + radius * (float)Math.Cos(wanderAngle);
-            float z = currPos.z + radius * (float)Math.Sin(wanderAngle);
-            target.Point = new AIVector3(x, currPos.y, z);
+            Vector3 currPos = actor.Position;
+            float x = currPos.x + radius * Mathf.Cos(wanderAngle);
+            float z = currPos.z + radius * Mathf.Sin(wanderAngle);
+            target.Point = new Vector3(x, currPos.y, z);
             return base.Update(actor, dt);
         }
     }

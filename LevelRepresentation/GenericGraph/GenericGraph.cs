@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using AIEngine.Structure.Graph;
 
-namespace AIEngine.PathRepresentation.GenericGraph
+namespace AIEngine.LevelRepresentation.GenericGraph
 {
     /// <summary>
     /// A generic graph with nodes containing references to arbitrary data.
