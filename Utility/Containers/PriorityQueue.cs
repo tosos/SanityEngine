@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AIEngine.Utility.Containers
+namespace SanityEngine.Utility.Containers
 {
     /// <summary>
     /// A simple heap based priority queue. Specially tailored for use

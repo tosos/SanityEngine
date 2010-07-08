@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AIEngine.Movement.SteeringBehaviors
+namespace SanityEngine.Movement.SteeringBehaviors
 {
     /// <summary>
     /// Kinematics for steering behaviors.

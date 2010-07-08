@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using AIEngine.Actors;
+using SanityEngine.Actors;
 
-namespace AIEngine.Movement.SteeringBehaviors
+namespace SanityEngine.Movement.SteeringBehaviors
 {
     /// <summary>
     /// Seek toward the given target.

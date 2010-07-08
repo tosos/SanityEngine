@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using AIEngine.Actors;
+using SanityEngine.Actors;
 
-namespace AIEngine.Movement.SteeringBehaviors.Flocking
+namespace SanityEngine.Movement.SteeringBehaviors.Flocking
 {
     /// <summary>
     /// Separation from flock members.

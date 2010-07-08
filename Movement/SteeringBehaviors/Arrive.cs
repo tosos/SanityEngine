@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
-using AIEngine.Actors;
+using SanityEngine.Actors;
 
-namespace AIEngine.Movement.SteeringBehaviors
+namespace SanityEngine.Movement.SteeringBehaviors
 {
     /// <summary>
     /// Seek to the target, slowing to a stop when you arrive.

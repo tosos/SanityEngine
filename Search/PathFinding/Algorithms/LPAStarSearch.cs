@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using AIEngine.Search.PathFinding;
-using AIEngine.Structure.Graph;
-using AIEngine.Structure.Path;
-using AIEngine.Utility.Containers;
+using SanityEngine.Search.PathFinding;
+using SanityEngine.Structure.Graph;
+using SanityEngine.Structure.Path;
+using SanityEngine.Utility.Containers;
 
-namespace AIEngine.Search.PathFinding.Algorithms
+namespace SanityEngine.Search.PathFinding.Algorithms
 {
     /// <summary>
     /// Implementation of the Lifelong Planning A* algorithm.

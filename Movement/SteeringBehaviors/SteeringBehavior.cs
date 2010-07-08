@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using AIEngine.Actors;
+using SanityEngine.Actors;
 
-namespace AIEngine.Movement.SteeringBehaviors
+namespace SanityEngine.Movement.SteeringBehaviors
 {
     /// <summary>
     /// Base class for steering behaviors.

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AIEngine.Structure.Graph
+namespace SanityEngine.Structure.Graph
 {
     /// <summary>
     /// An edge object.

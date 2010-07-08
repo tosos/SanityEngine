@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace AIEngine.Actors
+namespace SanityEngine.Actors
 {
     /// <summary>
     /// Interface for all entities in the world. These could be the

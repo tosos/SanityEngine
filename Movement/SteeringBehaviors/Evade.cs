@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using AIEngine.Actors;
+using SanityEngine.Actors;
 
-namespace AIEngine.Movement.SteeringBehaviors
+namespace SanityEngine.Movement.SteeringBehaviors
 {
     /// <summary>
     /// Evade an actor.

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using AIEngine.Structure.Graph;
+using SanityEngine.Structure.Graph;
 
-namespace AIEngine.LevelRepresentation.Grid
+namespace SanityEngine.LevelRepresentation.Grid
 {
     /// <summary>
     /// A specialization of graph representing a simple grid.

@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using AIEngine.Structure.Path;
-using AIEngine.Structure.Graph;
+using SanityEngine.Structure.Path;
+using SanityEngine.Structure.Graph;
 
-namespace AIEngine.Movement.PathFollowing
+namespace SanityEngine.Movement.PathFollowing
 {
     /// <summary>
     /// A coherent path follower. This path follower ensures that the actor

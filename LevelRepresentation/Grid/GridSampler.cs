@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AIEngine.LevelRepresentation.Grid
+namespace SanityEngine.LevelRepresentation.Grid
 {
     /// <summary>
     /// Interface got getting information about a grid.

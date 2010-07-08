@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using AIEngine.Structure.Graph;
+using SanityEngine.Structure.Graph;
 
-namespace AIEngine.LevelRepresentation.GenericGraph
+namespace SanityEngine.LevelRepresentation.GenericGraph
 {
     public class GenericNode<TData> : Node<GenericNode<TData>, GenericEdge<TData>>
     {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace AIEngine.Actors
+namespace SanityEngine.Actors
 {
     class PointActor : Actor
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using AIEngine.Search.PathFinding;
-using AIEngine.Structure.Graph;
+using SanityEngine.Search.PathFinding;
+using SanityEngine.Structure.Graph;
 
-namespace AIEngine.Structure.Path
+namespace SanityEngine.Structure.Path
 {
     /// <summary>
     /// A path through a graph.
