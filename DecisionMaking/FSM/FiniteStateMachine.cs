@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FSM
+namespace SanityEngine.DecisionMaking.FSM
 {
     /// <summary>
     /// A finite state machine.
@@ -54,9 +54,47 @@ namespace FSM
         /// <param name="source">The source state name.</param>
         /// <param name="target">The target state name.</param>
         /// <param name="eventName">The event name that triggers this transition.</param>
+		public void AddTransition(string source, string target, string eventName)
+		{
+			AddTransition(source, target, eventName, null, null);
+		}
+		
+        /// <summary>
+        /// Add a transition.
+        /// </summary>
+        /// <param name="source">The source state name.</param>
+        /// <param name="target">The target state name.</param>
+        /// <param name="eventName">The event name that triggers this transition.</param>
         /// <param name="predicate">The guard predicate for this transition.</param>
 		public void AddTransition(string source, string target, string eventName,
             Predicate<TData> predicate)
+		{
+			AddTransition(source, target, eventName, predicate, null);
+		}
+		
+        /// <summary>
+        /// Add a transition.
+        /// </summary>
+        /// <param name="source">The source state name.</param>
+        /// <param name="target">The target state name.</param>
+        /// <param name="eventName">The event name that triggers this transition.</param>
+        /// <param name="action">An action callback to be called if this transition is triggered.</param>
+		public void AddTransition(string source, string target, string eventName,
+            Action<TData> action)
+		{
+			AddTransition(source, target, eventName, null, action);
+		}
+		
+        /// <summary>
+        /// Add a transition.
+        /// </summary>
+        /// <param name="source">The source state name.</param>
+        /// <param name="target">The target state name.</param>
+        /// <param name="eventName">The event name that triggers this transition.</param>
+        /// <param name="predicate">The guard predicate for this transition.</param>
+        /// <param name="action">An action callback to be called if this transition is triggered.</param>
+		public void AddTransition(string source, string target, string eventName,
+            Predicate<TData> predicate, Action<TData> action)
 		{
 			if(!states.ContainsKey(source)) {
 				throw new ArgumentException("No such source state found");
@@ -66,7 +104,8 @@ namespace FSM
 				throw new ArgumentException("No such target state found");
 			}
 			
-			states[source].AddTransition(new Transition<TData>(eventName, states[target], predicate));
+			states[source].AddTransition(new Transition<TData>(eventName,
+				states[target], predicate, action));
 		}
 		
         /// <summary>

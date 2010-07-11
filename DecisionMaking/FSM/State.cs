@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FSM
+namespace SanityEngine.DecisionMaking.FSM
 {
     /// <summary>
     /// A state in a finite state machine.
@@ -46,6 +46,7 @@ namespace FSM
             foreach (Transition<TData> transition in transitions[eventName])
             {
 				if(transition.Check(data)) {
+					transition.FireAction(data);
 					return transition.Target;
 				}
 			}
