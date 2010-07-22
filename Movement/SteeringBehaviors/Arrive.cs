@@ -1,4 +1,12 @@
-﻿using UnityEngine;
+﻿//
+// Copyright (C) 2010 The Sanity Engine Development Team
+//
+// This source code is licensed under the terms of the
+// MIT License.
+//
+// For more information, see the file LICENSE
+
+using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
 using SanityEngine.Actors;
