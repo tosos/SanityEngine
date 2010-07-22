@@ -13,7 +13,7 @@ The Sanity Engine is an AI engine for the [Unity Game Editor][1]. The goal of th
 
 ### Getting Started
 
-To start using the project, you can simply clone the git repository into your project’s `Assets` folder. The next time you open your project, or once Unity notices the directory has changed, the project should be imported into your Assets folder or any sub-folder within. If not, you may need to force a refresh. (See the [Unity documentation][2] for more information)
+To start using the project, you can simply clone the git repository into your project's `Assets` folder. The next time you open your project, or once Unity notices the directory has changed, the project should be imported into your Assets folder or any sub-folder within. If not, you may need to force a refresh. (See the [Unity documentation][2] for more information)
 
 Once the SanityEngine folder is in your project, you can now use any of the components. For more information, see the [online resources][3].
 
