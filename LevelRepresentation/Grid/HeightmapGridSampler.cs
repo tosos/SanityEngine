@@ -1,4 +1,5 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -32,6 +33,14 @@ namespace SanityEngine.LevelRepresentation.Grid
             {
                 get;
             }
+			
+			/// <summary>
+			/// Get the tile's position in world space.
+			/// </summary>
+			/// <param name="x">The x coordinate</param>
+			/// <param name="y">The y coordinate</param>
+			/// <returns></returns>
+			Vector3 GetPosition(int x, int y);
 
             /// <summary>
             /// Get the height at the given point on the heightmap.
@@ -72,6 +81,17 @@ namespace SanityEngine.LevelRepresentation.Grid
             this.heightmap = heightmap;
             this.maxSlope = maxSlope;
         }
+		
+        /// <summary>
+        /// Get the node's position in space.
+        /// </summary>
+        /// <param name="x">The x coordinate</param>
+        /// <param name="y">The y coordinate</param>
+        /// <returns></returns>
+		public Vector3 GetNodePosition(int x, int y)
+		{
+			return heightmap.GetPosition(x, y);
+		}
 
         /// <summary>
         /// Get the cost of an edge from one tile to another. Note: Should

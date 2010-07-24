@@ -1,10 +1,12 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 using SanityEngine.Structure.Graph;
+using SanityEngine.Structure.Graph.Spatial;
 
 namespace SanityEngine.LevelRepresentation.Grid
 {
-    public class GridNode : Node<GridNode, GridEdge>
+    public class GridNode : SpatialNode<GridNode, GridEdge>
     {
         public int X
         {
@@ -40,14 +42,20 @@ namespace SanityEngine.LevelRepresentation.Grid
         {
             return inEdges[index];
         }
+		
+		public Vector3 Position
+		{
+			get { return position; }
+		}
 
+		Vector3 position;
         GridGraph graph;
         int x;
         int y;
         List<GridEdge> outEdges = new List<GridEdge>();
         List<GridEdge> inEdges = new List<GridEdge>();
 
-        public GridNode(GridGraph graph, int x, int y)
+        public GridNode(Vector3 position, GridGraph graph, int x, int y)
         {
             this.graph = graph;
             this.x = x;
