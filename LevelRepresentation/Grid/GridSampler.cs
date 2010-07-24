@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace SanityEngine.LevelRepresentation.Grid
 {
@@ -22,6 +23,14 @@ namespace SanityEngine.LevelRepresentation.Grid
         {
             get;
         }
+		
+        /// <summary>
+        /// Get the node's position in world space.
+        /// </summary>
+        /// <param name="x">The x coordinate</param>
+        /// <param name="y">The y coordinate</param>
+        /// <returns></returns>
+		Vector3 GetNodePosition(int x, int y);
 
         /// <summary>
         /// Get the cost of an edge from one tile to another. Note: Should
@@ -31,7 +40,7 @@ namespace SanityEngine.LevelRepresentation.Grid
         /// <param name="y1"></param>
         /// <param name="x2"></param>
         /// <param name="y2"></param>
-        /// <returns></returns>
+        /// <returns>The edge cost.</returns>
         float GetEdgeCost(int x1, int y1, int x2, int y2);
     }
 }

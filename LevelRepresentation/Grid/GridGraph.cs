@@ -32,7 +32,8 @@ namespace SanityEngine.LevelRepresentation.Grid
             {
                 for (int x = 0; x < w; x++)
                 {
-                    nodes[y, x] = new GridNode(this, x, y);
+                    nodes[y, x] = new GridNode(gridSampler.GetNodePosition(x, y), this,
+						x, y);
                 }
             }
             for (int y = 0; y < h; y++)
