@@ -58,11 +58,11 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The kinematics object.</returns>
-        public override Kinematics Update(Actor actor, float dt)
+        public override Vector3 Update(Actor actor, float dt)
         {
             if (Target == null)
             {
-                return Kinematics.zero;
+                return Vector3.zero;
             }
 
             Vector3 delta = Target.Position - actor.Position;
@@ -75,10 +75,10 @@ namespace SanityEngine.Movement.SteeringBehaviors
                 {
                     delta *= actor.MaxSpeed / m;
                 }
-                return new Kinematics(delta - actor.Velocity, Vector3.zero);
+                return delta - actor.Velocity;
             }
 
-            return Kinematics.zero;
+            return Vector3.zero;
         }
     }
 }

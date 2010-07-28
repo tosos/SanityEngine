@@ -34,14 +34,14 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The kinematics object.</returns>
-        public override Kinematics Update(Actor actor, float dt)
+        public override Vector3 Update(Actor actor, float dt)
         {
             if (target == null)
             {
-                return Kinematics.zero;
+                return Vector3.zero;
             }
 
-            return new Kinematics(SteerToward(actor, target.Position, dt), Vector3.zero);
+            return SteerToward(actor, target.Position, dt);
         }
     }
 }

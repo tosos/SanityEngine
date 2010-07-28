@@ -32,7 +32,7 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The kinematics object.</returns>
-        public override Kinematics Update(Actor actor, float dt)
+        public override Vector3 Update(Actor actor, float dt)
         {
             float threshold = base.MaxDistance;
 
@@ -47,7 +47,7 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
                     accum += (v / d) * str;
                 }
             }
-            return new Kinematics(accum, Vector3.zero);
+            return accum;
         }
     }
 }

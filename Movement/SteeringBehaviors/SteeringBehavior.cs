@@ -38,7 +38,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The kinematics object.</returns>
-        public abstract Kinematics Update(Actor actor, float dt);
+        public abstract Vector3 Update(Actor actor, float dt);
 
         /// <summary>
         /// Steer toward the given point.
