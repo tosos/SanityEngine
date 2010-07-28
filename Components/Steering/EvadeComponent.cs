@@ -15,6 +15,10 @@ public class EvadeComponent : SteeringBehaviorComponent {
 	
 	void Awake() {
 		evade = new Evade();
+	}
+	
+	void Update()
+	{
 		evade.Target = target;
 	}
 }

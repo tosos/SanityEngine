@@ -15,6 +15,9 @@ public class SeekComponent : SteeringBehaviorComponent {
 	
 	void Awake() {
 		seek = new Seek();
+	}
+	
+	void Update() {
 		seek.Target = target;
 	}
 }
