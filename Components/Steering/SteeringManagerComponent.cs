@@ -4,13 +4,13 @@ using SanityEngine.Movement.SteeringBehaviors;
 
 [AddComponentMenu("Sanity Engine/Steering/Steering Manager")]
 public class SteeringManagerComponent : MonoBehaviour {
-	public Kinematics Kinematics {
-		get { return kinematics; }
+	public Vector3 Force {
+		get { return force; }
 	}
 	
 	SteeringManager manager;
 	GameObjectActor actor;
-	Kinematics kinematics;
+	Vector3 force;
 	
 	void Awake () {
 		manager = new SteeringManager();
@@ -24,6 +24,6 @@ public class SteeringManagerComponent : MonoBehaviour {
 	}
 	
 	void Update () {
-		kinematics = manager.Update(actor, Time.deltaTime);
+		force = manager.Update(actor, Time.deltaTime);
 	}
 }

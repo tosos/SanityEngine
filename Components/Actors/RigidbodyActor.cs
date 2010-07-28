@@ -11,7 +11,7 @@ public class RigidbodyActor : GameObjectActor {
 	Rigidbody body;
 	Transform xform;
 	SteeringManagerComponent manager;
-	Kinematics lastKinematics;
+	Vector3 lastForce;
 	
 	void Awake ()
 	{
@@ -22,12 +22,12 @@ public class RigidbodyActor : GameObjectActor {
 	
 	void LateUpdate ()
 	{
-		lastKinematics = manager.Kinematics;
+		lastForce = manager.Force;
 	}
 	
 	void FixedUpdate ()
 	{
-		body.AddForce(lastKinematics.Force);
+		body.AddForce(lastForce);
 	}
 	
 	public override Vector3 Velocity

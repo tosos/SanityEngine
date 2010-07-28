@@ -32,7 +32,7 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The kinematics object.</returns>
-        public override Kinematics Update(Actor actor, float dt)
+        public override Vector3 Update(Actor actor, float dt)
         {
             Vector3 accum = Vector3.zero;
             int count = 0;
@@ -47,7 +47,7 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
                 }
             }
             accum /= count > 0 ? count : 1.0f;
-            return new Kinematics(SteerToward(actor, actor.Position + accum, dt), Vector3.zero);
+            return SteerToward(actor, actor.Position + accum, dt);
         }
     }
 }

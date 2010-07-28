@@ -6,9 +6,8 @@
 //
 // For more information, see the file LICENSE
 
-using System;
+using UnityEngine;
 using System.Collections.Generic;
-using System.Text;
 using SanityEngine.Actors;
 
 namespace SanityEngine.Movement.SteeringBehaviors
@@ -47,10 +46,10 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// <param name="actor">The actor to update on.</param>
         /// <param name="dt">The delta time since the last update
         /// (in seconds)</param>
-        /// <returns>The combined Kinematics object.</returns>
-        public virtual Kinematics Update(Actor actor, float dt)
+        /// <returns>The combined Vector3 object.</returns>
+        public virtual Vector3 Update(Actor actor, float dt)
         {
-            Kinematics result = Kinematics.zero;
+            Vector3 result = Vector3.zero;
             foreach (SteeringBehavior behavior in behaviors)
             {
                 result += behavior.Update(actor, dt) * behavior.Weight;
