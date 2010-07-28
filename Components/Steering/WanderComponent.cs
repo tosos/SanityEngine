@@ -16,6 +16,10 @@ public class WanderComponent : SteeringBehaviorComponent {
 	
 	void Awake() {
 		wander = new Wander();
+	}
+	
+	void Update()
+	{
 		wander.MinCountdownTime = minCountdownTime;
 		wander.MaxCountdownTime = maxCountdownTime;
 		wander.MaxDeviation = maxDeviation;

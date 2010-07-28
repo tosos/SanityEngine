@@ -8,7 +8,7 @@ public class ArriveComponent : SteeringBehaviorComponent {
 	public float arriveRadius = 5.0f;
     public float timeToTarget = 5.0f;
 	
-	Arrive arrive;	
+	Arrive arrive;
 	
 	public override SteeringBehavior Behavior
 	{
@@ -17,6 +17,10 @@ public class ArriveComponent : SteeringBehaviorComponent {
 	
 	void Awake() {
 		arrive = new Arrive();
+	}
+	
+	void Update()
+	{
 		arrive.Target = target;
 		arrive.ArriveRadius = arriveRadius;
 		arrive.TimeToTarget = timeToTarget;

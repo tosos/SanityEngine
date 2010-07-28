@@ -15,6 +15,10 @@ public class PursueComponent : SteeringBehaviorComponent {
 	
 	void Awake() {
 		pursue = new Pursue();
+	}
+	
+	void Update()
+	{
 		pursue.Target = target;
 	}
 }

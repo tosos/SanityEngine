@@ -15,6 +15,10 @@ public class FleeComponent : SteeringBehaviorComponent {
 	
 	void Awake() {
 		flee = new Flee();
+	}
+	
+	void Update()
+	{
 		flee.Target = target;
 	}
 }
