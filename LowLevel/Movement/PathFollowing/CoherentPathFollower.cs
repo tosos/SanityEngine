@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (C) 2010 The Sanity Engine Development Team
 //
 // This source code is licensed under the terms of the
@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Text;
 using SanityEngine.Structure.Path;
 using SanityEngine.Structure.Graph;
+using SanityEngine.Structure.Graph.Spatial;
 
 namespace SanityEngine.Movement.PathFollowing
 {
@@ -21,17 +22,9 @@ namespace SanityEngine.Movement.PathFollowing
     /// </summary>
     /// <typeparam name="TID">The node ID type.</typeparam>
     public class CoherentPathFollower<TNode, TEdge>
-        where TNode : Node<TNode, TEdge>
+        where TNode : SpatialNode<TNode, TEdge>
         where TEdge : Edge<TNode, TEdge>
     {
-        /// <summary>
-        /// Callback function to get the world position at the specified node.
-        /// </summary>
-        /// <param name="node">The node to get the position of.</param>
-        /// <returns>The node's world position.</returns>
-        public delegate Vector3 NodePosition(TNode node);
-
-        NodePosition GetNodePosition;
         Path<TNode, TEdge> path;
         float epsilon = 0.001f;
 		float totalLength = 0.0f;
@@ -54,13 +47,14 @@ namespace SanityEngine.Movement.PathFollowing
         {
             set
             {
+            	UnityEngine.Debug.Log(value.StepCount);
                 path = value;
                 previousParam = 0.0f;
 				totalLength = 0.0f;
 				for(int i = 1;i < path.StepCount; i ++) {
                     TEdge edge = path.GetStep(i);
-					Vector3 pos1 = GetNodePosition(edge.Source);
-                    Vector3 pos2 = GetNodePosition(edge.Target);
+					Vector3 pos1 = edge.Source.Position;
+                    Vector3 pos2 = edge.Target.Position;
                     totalLength += (pos2 - pos1).magnitude;
 				}
             }
@@ -77,10 +71,8 @@ namespace SanityEngine.Movement.PathFollowing
         /// <summary>
         /// Create a path follower.
         /// </summary>
-        /// <param name="getNodePosition">The node position callback.</param>
-        public CoherentPathFollower(NodePosition getNodePosition)
+        public CoherentPathFollower()
         {
-            this.GetNodePosition = getNodePosition;
         }
 
         /// <summary>
@@ -109,8 +101,8 @@ namespace SanityEngine.Movement.PathFollowing
             for (int i = 0; i < path.StepCount; i++)
             {
                 TEdge edge = path.GetStep(i);
-                Vector3 s = GetNodePosition(edge.Source);
-                Vector3 e = GetNodePosition(edge.Target);
+                Vector3 s = edge.Source.Position;
+                Vector3 e = edge.Target.Position;
                 Vector3 seg = e - s;
 				float mag = seg.magnitude;
                 Vector3 dir = pos - s;
@@ -147,18 +139,18 @@ namespace SanityEngine.Movement.PathFollowing
         public Vector3 GetPosition(float param)
         {
 			if(param <= 0.0f) {
-				return GetNodePosition(path.GetStep(0).Source);
+				return path.GetStep(0).Source.Position;
 			}
 			if(param >= totalLength) {
-				return GetNodePosition(path.GetStep(path.StepCount - 1).Target);
+				return path.GetStep(path.StepCount - 1).Target.Position;
 			}
 			
 			float totalDist = 0.0f;
             for (int i = 0; i < path.StepCount; i++)
             {
                 TEdge edge = path.GetStep(i);
-                Vector3 s = GetNodePosition(edge.Source);
-                Vector3 e = GetNodePosition(edge.Target);
+                Vector3 s = edge.Source.Position;
+                Vector3 e = edge.Target.Position;
                 Vector3 seg = e - s;
 				float mag = seg.magnitude;
 				if(param >= totalDist && param <= totalDist + mag) {

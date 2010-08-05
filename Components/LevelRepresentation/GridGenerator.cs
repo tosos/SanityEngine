@@ -1,12 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 using SanityEngine.Structure.Graph;
+using SanityEngine.Structure.Graph.Spatial;
 using SanityEngine.LevelRepresentation.Grid;
 
 [AddComponentMenu("Sanity/Level Representation/Grid Generator"),
 ExecuteInEditMode()]
-public class GridGenerator : MonoBehaviour,
-	FiniteGraph<GridCell, GridCell.Edge>, SpatialGraph<GridCell, GridCell.Edge>
+public class GridGenerator : UnityGraph
 {
 	private delegate bool Sample(Vector3 pos, Vector3 dir, out Vector3 result);
 	
@@ -39,11 +39,11 @@ public class GridGenerator : MonoBehaviour,
 	public GridType gridType;
 	
 	GridCell[] cells;
-	GraphChangeHelper<GridCell, GridCell.Edge> helper;
+	GraphChangeHelper<UnityNode, UnityEdge> helper;
 	
 	void Awake()
 	{
-		helper = new GraphChangeHelper<GridCell, GridCell.Edge>();
+		helper = new GraphChangeHelper<UnityNode, UnityEdge>();
 		cells = GetComponentsInChildren<GridCell>();
 	}
 	
@@ -116,7 +116,7 @@ public class GridGenerator : MonoBehaviour,
 		}
 		
 		// Edge creation pass
-		List<GridCell.Edge> edges = new List<GridCell.Edge>();
+		List<UnityEdge> edges = new List<UnityEdge>();
 		for(int y = 0; y < yRes ; y ++) {
 			for(int x = 0; x < xRes ; x ++) {
 				edges.Clear();
@@ -146,7 +146,7 @@ public class GridGenerator : MonoBehaviour,
 						Vector3 diff = dest.transform.position - src.transform.position;
 						float slope = Mathf.Abs(Vector3.Dot(diff, transform.up));
 						if(slope < maxSlope) {
-							edges.Add(new GridCell.Edge(dest,
+							edges.Add(new UnityEdge(dest,
 								CalculateEdgeCost(src, dest)));
 						}
 					}
@@ -321,27 +321,22 @@ public class GridGenerator : MonoBehaviour,
 		return 1.0f;
 	}
 	
-    public bool HasChanged
+    public override bool HasChanged
     {
         get { return helper.HasChanged; }
     }
 
-    public GridCell.Edge[] GetChangedEdges()
+    public override UnityEdge[] GetChangedEdges()
     {
     	return helper.GetChangedEdges();
     }
 
-    public void ResetChanges()
+    public override void ResetChanges()
     {
     	helper.Reset();
     }
-    
-    public int NodeCount
-    {
-        get { return cells.Length; }
-    }
-    
-   	public GridCell Localize(Vector3 pos)
+        
+   	public override UnityNode Quantize(Vector3 pos)
    	{
    		// FIXME this is slow
    		float minDist = float.PositiveInfinity;
