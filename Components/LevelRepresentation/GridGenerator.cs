@@ -111,6 +111,10 @@ public class GridGenerator : UnityGraph
 				cell.transform.rotation = transform.rotation;
 				cell.transform.parent = transform;
 				cell.transform.localScale = scale;
+				BoxCollider box = cell.AddComponent<BoxCollider>();
+				box.isTrigger = true;
+				Vector3 s = transform.localScale;
+				box.size = new Vector3(1.0f/s.x, 1.0f/s.y, 1.0f/s.z);
 				cells[y, x] = cell.AddComponent<GridCell>();
 			}
 		}

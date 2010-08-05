@@ -10,10 +10,11 @@ public class GridCell : UnityNode {
 	
 	void OnDrawGizmos()
 	{
-		Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one);
+		Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation,
+			Vector3.one);
 		Gizmos.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
 		Gizmos.DrawCube(Vector3.zero, transform.localScale);
-		Gizmos.color = Color.green;
+		Gizmos.color = new Color(0.75f, 0.75f, 0.75f, 0.5f);
 		Gizmos.DrawWireCube(Vector3.zero, transform.localScale);
 	}
 

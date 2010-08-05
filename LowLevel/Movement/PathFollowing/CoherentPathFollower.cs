@@ -47,7 +47,6 @@ namespace SanityEngine.Movement.PathFollowing
         {
             set
             {
-            	UnityEngine.Debug.Log(value.StepCount);
                 path = value;
                 previousParam = 0.0f;
 				totalLength = 0.0f;
