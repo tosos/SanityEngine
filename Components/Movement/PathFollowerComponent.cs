@@ -37,6 +37,7 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 	void Update () {
 		UnityNode goal = decisionMaker.GetMovementTarget();
 		if(goal == null) {
+			arrive.Weight = 0f;
 			return;
 		}
 		if(!follower.Valid || goal != lastGoal) {
