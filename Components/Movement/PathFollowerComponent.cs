@@ -17,6 +17,7 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 	PointActor target;
 	Arrive arrive;
 	ASearch<UnityNode, UnityEdge> finder;
+	Path<UnityNode, UnityEdge> path;
 	CoherentPathFollower<UnityNode, UnityEdge> follower;
 
 	void Awake () {
@@ -34,13 +35,32 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 	// Update is called once per frame
 	void Update () {
 		if(!follower.Valid) {
-			follower.Path = finder.Search(
+			path = finder.Search(
 				graph.Quantize(transform.position), targetNode);
+			follower.Path = path;
 			return;
 		}
 		
 		float param = follower.GetNextParameter(transform.position);
 		target.Point = follower.GetPosition(param + 2.0f) + Vector3.up;
+	}
+	
+	void OnDrawGizmosSelected()
+	{
+		if(path == null) {
+			return;
+		}
+
+		Gizmos.color = Color.yellow;
+		
+		Gizmos.DrawSphere(target.Point, 0.2f);
+		
+		Gizmos.color = Color.white;
+		for(int i=0;i<path.StepCount;i++) {
+			UnityEdge edge = path.GetStep(i);
+			Gizmos.DrawSphere(edge.Target.Position, 0.1f);
+			Gizmos.DrawLine(edge.Source.Position, edge.Target.Position);
+		}
 	}
 	
 	public override SteeringBehavior Behavior
