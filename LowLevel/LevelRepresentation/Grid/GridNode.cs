@@ -65,6 +65,7 @@ namespace SanityEngine.LevelRepresentation.Grid
 
         public GridNode(Vector3 position, GridGraph graph, int x, int y)
         {
+        	this.position = position;
             this.graph = graph;
             this.x = x;
             this.y = y;
