@@ -111,6 +111,7 @@ public class GridGenerator : MonoBehaviour,
 				cell.transform.rotation = transform.rotation;
 				cell.transform.parent = transform;
 				cell.transform.localScale = scale;
+				cell.gameObject.layer = gameObject.layer;
 				cells[y, x] = cell.AddComponent<GridCell>();
 			}
 		}
