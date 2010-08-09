@@ -50,7 +50,7 @@ namespace SanityEngine.Movement.PathFollowing
                 path = value;
                 previousParam = 0.0f;
 				totalLength = 0.0f;
-				for(int i = 1;i < path.StepCount; i ++) {
+				for(int i = 1;path != null && i < path.StepCount; i ++) {
                     TEdge edge = path.GetStep(i);
 					Vector3 pos1 = edge.Source.Position;
                     Vector3 pos2 = edge.Target.Position;

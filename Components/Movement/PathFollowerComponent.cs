@@ -12,13 +12,14 @@ using SanityEngine.Utility.Heuristics;
 [AddComponentMenu("Sanity Engine/Movement/Path Follower")]
 public class PathFollowerComponent : SteeringBehaviorComponent {
 	public UnityGraph graph;
-	public UnityNode targetNode;
+	public DecisionMaker decisionMaker;
 
 	PointActor target;
 	Arrive arrive;
 	ASearch<UnityNode, UnityEdge> finder;
 	Path<UnityNode, UnityEdge> path;
 	CoherentPathFollower<UnityNode, UnityEdge> follower;
+	UnityNode lastGoal;
 
 	void Awake () {
 		Heuristic heuristic = new EuclideanHeuristic();
@@ -34,13 +35,19 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 	
 	// Update is called once per frame
 	void Update () {
-		if(!follower.Valid) {
-			path = finder.Search(
-				graph.Quantize(transform.position), targetNode);
+		UnityNode goal = decisionMaker.GetMovementTarget();
+		if(goal == null) {
+			return;
+		}
+		if(!follower.Valid || goal != lastGoal) {
+			arrive.Weight = 0f;
+			path = finder.Search(graph.Quantize(transform.position), goal);
 			follower.Path = path;
+			lastGoal = goal;
 			return;
 		}
 		
+		arrive.Weight = 1f;
 		float param = follower.GetNextParameter(transform.position);
 		target.Point = follower.GetPosition(param + 2.0f) + Vector3.up;
 	}
