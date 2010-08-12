@@ -4,7 +4,7 @@ using SanityEngine.Structure.Graph;
 using SanityEngine.Structure.Graph.Spatial;
 using SanityEngine.LevelRepresentation.Grid;
 
-[AddComponentMenu("Sanity/Level Representation/Grid Generator"),
+[AddComponentMenu("Sanity Engine/Level Representation/Grid Generator"),
 ExecuteInEditMode()]
 public class GridGenerator : UnityGraph
 {
