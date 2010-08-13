@@ -28,7 +28,7 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 		follower = new CoherentPathFollower<UnityNode, UnityEdge>();
 		arrive = new Arrive();
 		arrive.TimeToTarget = 3;
-		arrive.ArriveRadius = 1.0f;
+		arrive.ArriveRadius = 5.0f;
 		target = new PointActor(Vector3.zero);
 		arrive.Target = target;
 	}
