@@ -71,9 +71,9 @@ namespace SanityEngine.Movement.SteeringBehaviors
             {
                 delta /= timeToTarget;
                 float m = delta.magnitude;
-                if (m > actor.MaxSpeed)
+                if (m > actor.MaxForce)
                 {
-                    delta *= actor.MaxSpeed / m;
+                    delta *= actor.MaxForce / m;
                 }
                 return delta - actor.Velocity;
             }

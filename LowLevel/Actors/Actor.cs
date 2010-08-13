@@ -42,17 +42,9 @@ namespace SanityEngine.Actors
         }
 
         /// <summary>
-        /// The actor's maximum speed.
+        /// The actor's maximum steering force.
         /// </summary>
-        float MaxSpeed
-        {
-            get;
-        }
-
-        /// <summary>
-        /// The actor's maximum angular speed.
-        /// </summary>
-        float MaxAngSpeed
+        float MaxForce
         {
             get;
         }

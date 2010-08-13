@@ -32,14 +32,9 @@ namespace SanityEngine.Actors
             get { return actor.Facing; }
         }
 
-        public float MaxSpeed
+        public float MaxForce
         {
-            get { return actor.MaxSpeed; }
-        }
-
-        public float MaxAngSpeed
-        {
-            get { return actor.MaxAngSpeed; }
+            get { return actor.MaxForce; }
         }
 
         public VelocityWrapperActor(Actor actor)

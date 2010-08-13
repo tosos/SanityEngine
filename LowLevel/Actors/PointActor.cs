@@ -32,7 +32,7 @@ namespace SanityEngine.Actors
             get { return Vector3.zero; }
         }
 
-        public float MaxSpeed
+        public float MaxForce
         {
             get { return 0.0f; }
         }

@@ -18,12 +18,7 @@ public abstract class GameObjectActor : MonoBehaviour, Actor {
         get;
     }
 
-    public abstract float MaxSpeed
-    {
-        get;
-    }
-
-    public abstract float MaxAngSpeed
+    public abstract float MaxForce
     {
         get;
     }

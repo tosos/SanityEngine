@@ -5,8 +5,7 @@ using SanityEngine.Movement.SteeringBehaviors;
 [AddComponentMenu("Sanity Engine/Actors/Rigid Body Actor")]
 [RequireComponent(typeof(Rigidbody), typeof(SteeringManagerComponent))]
 public class RigidbodyActor : GameObjectActor {
-	public float maxSpeed = 1.0f;
-	public float maxAngularSpeed = 1.0f;
+	public float maxForce = 1.0f;
 	public float maxAccel = 2.0f;
 	Rigidbody body;
 	Transform xform;
@@ -45,13 +44,8 @@ public class RigidbodyActor : GameObjectActor {
         get { return xform.forward; }
     }
 
-	public override float MaxSpeed
+	public override float MaxForce
 	{
-        get { return maxSpeed; }
-    }
-
-	public override float MaxAngSpeed
-	{
-        get { return maxAngularSpeed; }
+        get { return maxForce; }
     }
 }

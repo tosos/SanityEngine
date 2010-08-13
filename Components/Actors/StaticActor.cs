@@ -24,12 +24,7 @@ public class StaticActor : GameObjectActor {
         get { return xform.forward; }
     }
 
-	public override float MaxSpeed
-	{
-        get { return 0.0f; }
-    }
-
-	public override float MaxAngSpeed
+	public override float MaxForce
 	{
         get { return 0.0f; }
     }

@@ -43,7 +43,7 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
                 {
                     Vector3 v = actor.Position - f.Position;
                     float d = v.magnitude;
-                    float str = Mathf.Max(0.0f, (threshold - d) / threshold) * actor.MaxSpeed;
+                    float str = Mathf.Max(0.0f, (threshold - d) / threshold) * actor.MaxForce;
                     accum += (v / d) * str;
                 }
             }
