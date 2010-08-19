@@ -33,10 +33,13 @@ public class GridGenerator : UnityGraph
 	public int xRes = 10;
 	public int yRes = 10;
 	public bool noHitNoCell = true;
+	public bool removeOrphans = true;
 	public float maxSlope = float.PositiveInfinity;
+	public float maxHeight = float.PositiveInfinity;
 	public bool edgeRaycast = false;
 	public EdgeCostAlgorithm edgeCostAlgorithm;
 	public GridType gridType;
+	public bool drawGrid = true;
 	
 	GridCell[] cells;
 	GraphChangeHelper<UnityNode, UnityEdge> helper;
@@ -59,6 +62,20 @@ public class GridGenerator : UnityGraph
 	
 	void OnDrawGizmos()
 	{
+		if(drawGrid) {
+			DrawGizmos();
+		}
+	}
+
+	void OnDrawGizmosSelected()
+	{
+		if(!drawGrid) {
+			DrawGizmos();
+		}
+    }
+
+    void DrawGizmos()
+    {
 		Vector3 pos = transform.position;
 		Gizmos.matrix = Matrix4x4.TRS(pos, transform.rotation, Vector3.one);
 		Gizmos.color = Color.blue;
@@ -66,7 +83,7 @@ public class GridGenerator : UnityGraph
 		Gizmos.color = Color.white;
 		Gizmos.DrawWireCube(Vector3.zero, transform.localScale);
 	}
-
+	
 	public void FindCells()
 	{
 		List<GameObject> del = new List<GameObject>();
@@ -96,6 +113,7 @@ public class GridGenerator : UnityGraph
 		Vector3 scale = new Vector3(xSize, thickness, ySize);
 		Vector3 start = new Vector3(-xOff * xRes + xOff, 0.0f, -yOff * yRes + yOff);
 		
+		float localMaxHeight = maxHeight / transform.localScale.y;
 		GridCell[,] cells = new GridCell[yRes, xRes];
 		// Node creation pass
 		for(int y = 0; y < yRes ; y ++) {
@@ -104,6 +122,10 @@ public class GridGenerator : UnityGraph
 					(new Vector3(xSize * x, 0f, ySize * y) + start + top);
 				Vector3 pos = Vector3.zero;
 				if(!sampler(rayPos, down, out pos) && noHitNoCell) {
+					continue;
+				}
+				Vector3 localPos = transform.InverseTransformPoint(pos);
+				if(localPos.y + 0.5f > localMaxHeight) {
 					continue;
 				}
 				GameObject cell = new GameObject("Cell (" + x + "," + y + ")");
@@ -157,6 +179,18 @@ public class GridGenerator : UnityGraph
 					}
 				}
 				src.edges = edges.ToArray();
+			}
+		}
+		if(removeOrphans) {
+			for(int y = 0; y < yRes ; y ++) {
+				for(int x = 0; x < xRes ; x ++) {
+					if(cells[y, x] == null) {
+						continue;
+					}
+					if(cells[y, x].edges.Length == 0) {
+						DestroyImmediate(cells[y, x]);
+					}
+				}
 			}
 		}
 	}

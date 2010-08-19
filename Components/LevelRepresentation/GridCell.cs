@@ -10,12 +10,17 @@ public class GridCell : UnityNode {
 	
 	void OnDrawGizmos()
 	{
-		Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation,
-			Vector3.one);
-		Gizmos.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-		Gizmos.DrawCube(Vector3.zero, transform.localScale);
-		Gizmos.color = new Color(0.75f, 0.75f, 0.75f, 0.5f);
-		Gizmos.DrawWireCube(Vector3.zero, transform.localScale);
+		bool error = true;
+		if(transform.parent) {
+			GridGenerator grid = transform.parent.GetComponent<GridGenerator>();			if(grid != null) {
+				error = false;
+				if(!grid.drawGrid) {
+					return;
+				}
+			}
+		}
+		
+		DrawCell(error);
 	}
 
 	void OnDrawGizmosSelected()
@@ -28,5 +33,16 @@ public class GridCell : UnityNode {
 		foreach(UnityEdge edge in edges) {
 			Gizmos.DrawLine(transform.position, edge.target.transform.position);
 		}
+	}
+	
+	void DrawCell(bool error)
+	{
+		Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation,
+			Vector3.one);
+		Gizmos.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+		Gizmos.DrawCube(Vector3.zero, transform.localScale);
+		Gizmos.color = new Color(0.75f, 0.75f, 0.75f, 0.5f);
+		Gizmos.DrawWireCube(Vector3.zero, transform.localScale);
+		Gizmos.matrix = Matrix4x4.identity;
 	}
 }
