@@ -21,6 +21,7 @@ public class ArriveComponent : SteeringBehaviorComponent {
 	
 	void Update()
 	{
+		Behavior.Weight = weight;
 		arrive.Target = target;
 		arrive.ArriveRadius = arriveRadius;
 		arrive.TimeToTarget = timeToTarget;

@@ -13,6 +13,8 @@ using SanityEngine.Utility.Heuristics;
 public class PathFollowerComponent : SteeringBehaviorComponent {
 	public UnityGraph graph;
 	public DecisionMaker decisionMaker;
+	public float lookAhead = 2.0f;
+	public Vector3 targetOffset = Vector3.zero;
 
 	PointActor target;
 	Arrive arrive;
@@ -31,6 +33,10 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 		arrive.ArriveRadius = 5.0f;
 		target = new PointActor(Vector3.zero);
 		arrive.Target = target;
+		
+		if(decisionMaker == null) {
+			decisionMaker = GetComponent<DecisionMaker>();
+		}
 	}
 	
 	// Update is called once per frame
@@ -40,6 +46,7 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 			arrive.Weight = 0f;
 			return;
 		}
+		follower.LookAhead = lookAhead;
 		if(!follower.Valid || goal != lastGoal) {
 			arrive.Weight = 0f;
 			path = finder.Search(graph.Quantize(transform.position), goal);
@@ -50,7 +57,7 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 		
 		arrive.Weight = 1f;
 		float param = follower.GetNextParameter(transform.position);
-		target.Point = follower.GetPosition(param + 2.0f) + Vector3.up;
+		target.Point = follower.GetPosition(param + lookAhead) + targetOffset;
 	}
 	
 	void OnDrawGizmosSelected()

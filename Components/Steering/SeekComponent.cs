@@ -18,6 +18,7 @@ public class SeekComponent : SteeringBehaviorComponent {
 	}
 	
 	void Update() {
+		Behavior.Weight = weight;
 		seek.Target = target;
 	}
 }

@@ -19,6 +19,7 @@ public class FleeComponent : SteeringBehaviorComponent {
 	
 	void Update()
 	{
+		Behavior.Weight = weight;
 		flee.Target = target;
 	}
 }

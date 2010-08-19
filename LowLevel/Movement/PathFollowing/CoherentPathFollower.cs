@@ -137,6 +137,9 @@ namespace SanityEngine.Movement.PathFollowing
         /// <seealso cref="GetNextParameter"/>
         public Vector3 GetPosition(float param)
         {
+        	if(path == null || path.StepCount <= 0) {
+        		return Vector3.zero;
+        	}
 			if(param <= 0.0f) {
 				return path.GetStep(0).Source.Position;
 			}

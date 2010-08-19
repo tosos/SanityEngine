@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (C) 2010 The Sanity Engine Development Team
 //
 // This source code is licensed under the terms of the
@@ -65,6 +65,10 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
         /// </returns>
         protected bool IsAffecting(Actor actor, Actor other)
         {
+        	if(!other.Alive) {
+        		return false;
+        	}
+        	
             Vector3 f = actor.Facing;
             Vector3 v = other.Position - actor.Position;
             float dist = v.magnitude;

@@ -11,19 +11,26 @@ public class SteeringManagerComponent : MonoBehaviour {
 	SteeringManager manager;
 	GameObjectActor actor;
 	Vector3 force;
+	bool initialized;
 	
 	void Awake () {
 		manager = new SteeringManager();
 		actor = GetComponent<GameObjectActor>();
-		
-		SteeringBehaviorComponent[] behaviors =
-			GetComponents<SteeringBehaviorComponent>();
-		foreach(SteeringBehaviorComponent behavior in behaviors) {
-			manager.AddBehavior(behavior.Behavior);
-		}
+	}
+	
+	void Start () {
+		initialized = false;
 	}
 	
 	void Update () {
+		if(!initialized) {
+			SteeringBehaviorComponent[] behaviors =
+				GetComponents<SteeringBehaviorComponent>();
+			foreach(SteeringBehaviorComponent behavior in behaviors) {
+				manager.AddBehavior(behavior.Behavior);
+			}
+			initialized = true;
+		}
 		force = manager.Update(actor, Time.deltaTime);
 	}
 }

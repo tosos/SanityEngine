@@ -19,6 +19,7 @@ public class EvadeComponent : SteeringBehaviorComponent {
 	
 	void Update()
 	{
+		Behavior.Weight = weight;
 		evade.Target = target;
 	}
 }

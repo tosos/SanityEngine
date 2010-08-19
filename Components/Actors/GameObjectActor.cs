@@ -3,6 +3,11 @@ using System.Collections.Generic ;
 using SanityEngine.Actors;
 
 public abstract class GameObjectActor : MonoBehaviour, Actor {
+	public bool Alive
+	{
+		get { return this; }
+	}
+	
     public abstract Vector3 Velocity
     {
         get;

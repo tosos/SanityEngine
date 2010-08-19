@@ -18,6 +18,14 @@ namespace SanityEngine.Actors
     public interface Actor
     {
         /// <summary>
+        /// Is this actor alive?
+        /// </summary>
+    	bool Alive
+    	{
+    		get;
+    	}
+    	
+        /// <summary>
         /// This actor's velocity.
         /// </summary>
         Vector3 Velocity

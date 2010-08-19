@@ -20,6 +20,7 @@ public class WanderComponent : SteeringBehaviorComponent {
 	
 	void Update()
 	{
+		Behavior.Weight = weight;
 		wander.MinCountdownTime = minCountdownTime;
 		wander.MaxCountdownTime = maxCountdownTime;
 		wander.MaxDeviation = maxDeviation;

@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using SanityEngine.Movement.SteeringBehaviors.Flocking;
 
+[AddComponentMenu("Sanity Engine/Steering/Behaviors/Flocking/Flock")]
 public class FlockComponent : MonoBehaviour {
 	Flock flock;
 	

@@ -19,6 +19,7 @@ public class PursueComponent : SteeringBehaviorComponent {
 	
 	void Update()
 	{
+		Behavior.Weight = weight;
 		pursue.Target = target;
 	}
 }

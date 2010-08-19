@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (C) 2010 The Sanity Engine Development Team
 //
 // This source code is licensed under the terms of the
@@ -16,6 +16,14 @@ namespace SanityEngine.Actors
     class PointActor : Actor
     {
         Vector3 point;
+        
+        public bool Alive
+        {
+        	get
+        	{
+        		return true;
+        	}
+        }
 
         public Vector3 Velocity
         {
