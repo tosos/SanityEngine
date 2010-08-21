@@ -61,10 +61,9 @@ namespace SanityEngine.Movement.SteeringBehaviors
 				float force = actor.MaxForce * (dist / arriveRadius);
 				force = Mathf.Min(force, actor.MaxForce);
                 delta *= force / dist;
-                return delta - actor.Velocity;
             }
 
-            return Vector3.zero;
+            return delta - actor.Velocity;
         }
     }
 }
