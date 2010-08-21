@@ -29,8 +29,7 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 		finder = new ASearch<UnityNode, UnityEdge>(heuristic.Heuristic);
 		follower = new CoherentPathFollower<UnityNode, UnityEdge>();
 		arrive = new Arrive();
-		arrive.TimeToTarget = 3;
-		arrive.ArriveRadius = 5.0f;
+		arrive.ArriveRadius = lookAhead * 0.75f;
 		target = new PointActor(Vector3.zero);
 		arrive.Target = target;
 		
