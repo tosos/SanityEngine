@@ -17,6 +17,7 @@ public class SimpleForceActor : GameObjectActor {
 	public bool twoDimensionalFacing = true;
 	Transform xform;
 	SteeringManagerComponent manager;
+	CharacterController controller;
 	Vector3 velocity;
 	Vector3 angularVelocity;
 	Vector3 desiredFacing;
@@ -27,6 +28,7 @@ public class SimpleForceActor : GameObjectActor {
 		angularVelocity = Vector3.zero;
 		xform = transform;
 		manager = GetComponent<SteeringManagerComponent>();
+		controller = GetComponent<CharacterController>();
 	}
 	
 	void LateUpdate ()
@@ -38,7 +40,12 @@ public class SimpleForceActor : GameObjectActor {
 			desired *= maxForce / force;
 		}
 		Vector3 accel = desired / mass;
-		xform.Translate(velocity * t + 0.5f * accel * t * t, Space.World);
+		
+		if(controller == null) {
+			xform.Translate(velocity * t + 0.5f * accel * t * t, Space.World);
+		} else {
+			controller.Move(velocity * t);// + 0.5f * accel * t * t);
+		}
 		velocity += accel * t;
 		velocity -= velocity * linearDamp;
 		float speed = velocity.magnitude;
@@ -67,8 +74,9 @@ public class SimpleForceActor : GameObjectActor {
 		if(torque2 > maxTorque) {
 			angAccel *= maxTorque / torque2;
 		}
-		
+
 		xform.Rotate(angularVelocity * t + angAccel * t * t, Space.World);
+
 		angularVelocity += angAccel * t;
 		angularVelocity -= angularVelocity * angularDamp;
 		float angSpeed = angularVelocity.magnitude;
