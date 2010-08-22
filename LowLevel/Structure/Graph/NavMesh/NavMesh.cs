@@ -1,13 +1,13 @@
 using UnityEngine;
 
-namespace SanityEngine.Structure.Graph.Spatial
+namespace SanityEngine.Structure.Graph.NavMesh
 {
     /// <summary>
     /// Specialized version of the graph interface for graphs with nodes
     /// representing points in space.
     /// </summary>
-    public interface SpatialGraph<TNode, TEdge> : Graph<TNode, TEdge>
-        where TNode : SpatialNode<TNode, TEdge>
+    public interface NavMesh<TNode, TEdge> : Graph<TNode, TEdge>
+        where TNode : NavMeshNode<TNode, TEdge>
         where TEdge : Edge<TNode, TEdge>
     {
     	/// <summary>
