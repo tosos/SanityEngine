@@ -11,8 +11,6 @@ using SanityEngine.Utility.Heuristics;
 
 [AddComponentMenu("Sanity Engine/Movement/Path Follower")]
 public class PathFollowerComponent : SteeringBehaviorComponent {
-	public UnityGraph graph;
-	public DecisionMaker decisionMaker;
 	public float lookAhead = 2.0f;
 	public Vector3 targetOffset = Vector3.zero;
 
@@ -21,7 +19,6 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 	ASearch<UnityNode, UnityEdge> finder;
 	Path<UnityNode, UnityEdge> path;
 	CoherentPathFollower<UnityNode, UnityEdge> follower;
-	UnityNode lastGoal;
 
 	void Awake () {
 		Heuristic heuristic = new EuclideanHeuristic();
@@ -30,33 +27,40 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 		follower = new CoherentPathFollower<UnityNode, UnityEdge>();
 		arrive = new Arrive();
 		arrive.ArriveRadius = lookAhead * 0.75f;
+		arrive.Weight = 0f;
 		target = new PointActor(Vector3.zero);
 		arrive.Target = target;
-		
-		if(decisionMaker == null) {
-			decisionMaker = GetComponent<DecisionMaker>();
-		}
 	}
 	
-	// Update is called once per frame
 	void Update () {
-		UnityNode goal = decisionMaker.GetMovementTarget();
-		if(goal == null) {
-			arrive.Weight = 0f;
-			return;
-		}
-		follower.LookAhead = lookAhead;
-		if(!follower.Valid || goal != lastGoal) {
-			arrive.Weight = 0f;
-			path = finder.Search(graph.Quantize(transform.position), goal);
-			follower.Path = path;
-			lastGoal = goal;
+		if(!follower.Valid) {
 			return;
 		}
 		
-		arrive.Weight = 1f;
+		follower.LookAhead = lookAhead;
 		float param = follower.GetNextParameter(transform.position);
 		target.Point = follower.GetPosition(param + lookAhead) + targetOffset;
+	}
+	
+	void SetGoalNode(UnityNode goal)
+	{
+		if(goal == null || goal.NavMesh == null) {
+			ClearGoalNode();
+			return;
+		}
+		
+		arrive.Weight = 0f;
+		
+		path = finder.Search(goal.NavMesh.Quantize(transform.position), goal);
+		follower.Path = path;
+		
+		arrive.Weight = 1f;
+	}
+	
+	void ClearGoalNode()
+	{
+		follower.Path = null;
+		arrive.Weight = 0f;
 	}
 	
 	void OnDrawGizmosSelected()

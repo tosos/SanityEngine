@@ -8,6 +8,11 @@ public abstract class UnityNode : MonoBehaviour,
 {
 	public UnityEdge[] edges;
 	
+	public UnityGraph NavMesh
+	{
+		get { return graph; }
+	}
+	
 	UnityGraph graph;
 
 	void Awake () {
