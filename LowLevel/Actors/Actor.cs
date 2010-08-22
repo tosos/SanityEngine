@@ -50,14 +50,6 @@ namespace SanityEngine.Actors
         }
 
         /// <summary>
-        /// The actor's maximum steering force.
-        /// </summary>
-        float MaxForce
-        {
-            get;
-        }
-
-        /// <summary>
         /// Set a property on the given actor.
         /// </summary>
         /// <param name="name">The name of the property.</param>

@@ -40,11 +40,6 @@ namespace SanityEngine.Actors
             get { return actor.Facing; }
         }
 
-        public float MaxForce
-        {
-            get { return actor.MaxForce; }
-        }
-
         public VelocityWrapperActor(Actor actor)
         {
             this.actor = actor;

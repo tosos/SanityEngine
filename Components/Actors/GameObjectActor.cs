@@ -24,11 +24,6 @@ public abstract class GameObjectActor : MonoBehaviour, Actor {
         get;
     }
 
-    public abstract float MaxForce
-    {
-        get;
-    }
-
 	Dictionary<string, string> props = new Dictionary<string, string>();
 		
     public void SetProperty(string name, string value)

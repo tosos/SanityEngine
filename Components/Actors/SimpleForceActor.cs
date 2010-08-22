@@ -28,6 +28,11 @@ public class SimpleForceActor : SteeringManagerComponent {
 		controller = GetComponent<CharacterController>();
 	}
 	
+	protected override float MaxForce
+	{
+		get { return maxSpeed; }
+	}
+	
 	void LateUpdate ()
 	{
 		float t = Time.deltaTime;
@@ -95,10 +100,5 @@ public class SimpleForceActor : SteeringManagerComponent {
     public override Vector3 Facing
     {
         get { return xform.forward; }
-    }
-
-	public override float MaxForce
-	{
-        get { return maxSpeed; }
     }
 }

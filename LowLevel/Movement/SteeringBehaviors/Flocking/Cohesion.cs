@@ -34,13 +34,15 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
         }
 
         /// <summary>
-        /// Update the cohesion behavior.
+        /// Update the behavior.
         /// </summary>
+        /// <param name="manager">The steering manager.</param>
         /// <param name="actor">The actor being updated.</param>
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The kinematics object.</returns>
-        public override Vector3 Update(Actor actor, float dt)
+        public override Vector3 Update(SteeringManager manager, Actor actor,
+			float dt)
         {
             int count = 0;
             Vector3 avg = Vector3.zero;
@@ -53,7 +55,7 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
                 }
             }
             target.Point = count > 0 ? avg / count : avg;
-            return seeker.Update(actor, dt);
+            return seeker.Update(manager, actor, dt);
         }
     }
 }

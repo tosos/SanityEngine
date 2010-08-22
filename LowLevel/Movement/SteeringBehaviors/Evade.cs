@@ -29,13 +29,15 @@ namespace SanityEngine.Movement.SteeringBehaviors
         }
 
         /// <summary>
-        /// Update the pursue behavior.
+        /// Update the behavior.
         /// </summary>
+        /// <param name="manager">The steering manager.</param>
         /// <param name="actor">The actor being updated.</param>
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The kinematics object.</returns>
-        public override Vector3 Update(Actor actor, float dt)
+        public override Vector3 Update(SteeringManager manager, Actor actor,
+			float dt)
         {
             if (target == null)
             {
@@ -51,13 +53,13 @@ namespace SanityEngine.Movement.SteeringBehaviors
             Vector3 targetPos = target.Position;
             if (Vector3.Dot(deltaPos, uVel) < 0 || dv > -0.93)
             {
-                Vector3 vel = uVel * actor.MaxForce;
+                Vector3 vel = uVel * manager.MaxForce;
                 float combinedSpeed = (vel + target.Velocity).magnitude;
                 float predictionTime = deltaPos.magnitude / combinedSpeed;
                 targetPos += target.Velocity * predictionTime;
             }
 
-            return SteerAway(actor, targetPos, dt);
+            return SteerAway(manager, actor, targetPos, dt);
         }
     }
 }

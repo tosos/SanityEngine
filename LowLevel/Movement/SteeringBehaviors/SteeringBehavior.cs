@@ -38,7 +38,8 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The kinematics object.</returns>
-        public abstract Vector3 Update(Actor actor, float dt);
+        public abstract Vector3 Update(SteeringManager manager, Actor actor,
+			float dt);
 
         /// <summary>
         /// Steer toward the given point.
@@ -47,13 +48,14 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// <param name="target">The target point.</param>
         /// <param name="dt">The delta time since the last call.</param>
         /// <returns></returns>
-        protected Vector3 SteerToward(Actor actor, Vector3 target, float dt)
+        protected Vector3 SteerToward(SteeringManager manager, Actor actor,
+			Vector3 target, float dt)
         {
             Vector3 desired = target - actor.Position;
             float dist = desired.magnitude;
             if (dist > 0.0f)
             {
-                desired *= actor.MaxForce / dist;
+                desired *= manager.MaxForce / dist;
                 return desired - actor.Velocity;
             }
             return Vector3.zero;
@@ -66,13 +68,14 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// <param name="target">The target point.</param>
         /// <param name="dt">The delta time since the last call.</param>
         /// <returns></returns>
-        protected Vector3 SteerAway(Actor actor, Vector3 target, float dt)
+        protected Vector3 SteerAway(SteeringManager manager, Actor actor,
+			Vector3 target, float dt)
         {
             Vector3 desired = actor.Position - target;
             float dist = desired.magnitude;
             if (dist > 0.0f)
             {
-                desired *= actor.MaxForce / dist;
+                desired *= manager.MaxForce / dist;
                 return desired - actor.Velocity;
             }
             return Vector3.zero;

@@ -43,11 +43,13 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// <summary>
         /// Update the behavior.
         /// </summary>
+        /// <param name="manager">The steering manager.</param>
         /// <param name="actor">The actor being updated.</param>
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The kinematics object.</returns>
-        public override Vector3 Update(Actor actor, float dt)
+        public override Vector3 Update(SteeringManager manager, Actor actor,
+			float dt)
         {
             if (Target == null)
             {
@@ -58,8 +60,8 @@ namespace SanityEngine.Movement.SteeringBehaviors
             float dist = delta.magnitude;
             if (dist > 0.0f)
             {
-				float force = actor.MaxForce * (dist / arriveRadius);
-				force = Mathf.Min(force, actor.MaxForce);
+				float force = manager.MaxForce * (dist / arriveRadius);
+				force = Mathf.Min(force, manager.MaxForce);
                 delta *= force / dist;
             }
 
