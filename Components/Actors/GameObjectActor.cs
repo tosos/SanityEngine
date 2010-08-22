@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic ;
 using SanityEngine.Actors;
 
+[AddComponentMenu("")]
 public abstract class GameObjectActor : MonoBehaviour, Actor {
 	public bool Alive
 	{

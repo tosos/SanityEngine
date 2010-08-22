@@ -2,8 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using SanityEngine.Movement.SteeringBehaviors;
 
-[AddComponentMenu("Sanity Engine/Steering/Steering Manager")]
-public class SteeringManagerComponent : MonoBehaviour {
+[AddComponentMenu("")]
+public abstract class SteeringManagerComponent : GameObjectActor {
 	public Vector3 Force {
 		get { return force; }
 	}
@@ -13,17 +13,14 @@ public class SteeringManagerComponent : MonoBehaviour {
 	Vector3 force;
 	bool initialized;
 	
-	void Awake () {
-		manager = new SteeringManager();
-		actor = GetComponent<GameObjectActor>();
-	}
-	
 	void Start () {
 		initialized = false;
 	}
 	
 	void Update () {
 		if(!initialized) {
+			actor = GetComponent<GameObjectActor>();
+			manager = new SteeringManager();
 			SteeringBehaviorComponent[] behaviors =
 				GetComponents<SteeringBehaviorComponent>();
 			foreach(SteeringBehaviorComponent behavior in behaviors) {

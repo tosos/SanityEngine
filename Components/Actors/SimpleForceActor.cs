@@ -3,8 +3,7 @@ using System.Collections;
 using SanityEngine.Movement.SteeringBehaviors;
 
 [AddComponentMenu("Sanity Engine/Actors/Simple Force Actor")]
-[RequireComponent(typeof(SteeringManagerComponent))]
-public class SimpleForceActor : GameObjectActor {
+public class SimpleForceActor : SteeringManagerComponent {
 	public float mass = 1.0f;
 	public float maxForce = 2.5f;
 	public float maxSpeed = 5.0f;
@@ -16,7 +15,6 @@ public class SimpleForceActor : GameObjectActor {
 	public float angularDamp = 0.05f;
 	public bool twoDimensionalFacing = true;
 	Transform xform;
-	SteeringManagerComponent manager;
 	CharacterController controller;
 	Vector3 velocity;
 	Vector3 angularVelocity;
@@ -27,14 +25,13 @@ public class SimpleForceActor : GameObjectActor {
 		velocity = Vector3.zero;
 		angularVelocity = Vector3.zero;
 		xform = transform;
-		manager = GetComponent<SteeringManagerComponent>();
 		controller = GetComponent<CharacterController>();
 	}
 	
 	void LateUpdate ()
 	{
 		float t = Time.deltaTime;
-		Vector3 desired = (manager.Force - velocity) / t;
+		Vector3 desired = (base.Force - velocity) / t;
 		float force = desired.magnitude;
 		if(force > maxForce) {
 			desired *= maxForce / force;
