@@ -52,7 +52,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
             Vector3 targetPos = target.Position;
             if (Vector3.Dot(deltaPos, uVel) < 0 || dv > -0.93)
             {
-                Vector3 vel = uVel * manager.MaxForce;
+                Vector3 vel = uVel * manager.MaxSpeed;
                 float combinedSpeed = (vel + target.Velocity).magnitude;
                 float predictionTime = deltaPos.magnitude / combinedSpeed;
                 targetPos += target.Velocity * predictionTime;

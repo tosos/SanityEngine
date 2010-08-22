@@ -8,7 +8,7 @@ public abstract class SteeringManagerComponent : GameObjectActor {
 		get { return force; }
 	}
 	
-	protected abstract float MaxForce
+	protected abstract float MaxSpeed
 	{
 		get;
 	}
@@ -33,7 +33,7 @@ public abstract class SteeringManagerComponent : GameObjectActor {
 			}
 			initialized = true;
 		}
-		manager.MaxForce = MaxForce;
+		manager.MaxSpeed = MaxSpeed;
 		force = manager.Update(actor, Time.deltaTime);
 	}
 }

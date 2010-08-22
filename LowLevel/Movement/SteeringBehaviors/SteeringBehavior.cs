@@ -55,7 +55,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
             float dist = desired.magnitude;
             if (dist > 0.0f)
             {
-                desired *= manager.MaxForce / dist;
+                desired *= manager.MaxSpeed / dist;
                 return desired - actor.Velocity;
             }
             return Vector3.zero;
@@ -75,7 +75,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
             float dist = desired.magnitude;
             if (dist > 0.0f)
             {
-                desired *= manager.MaxForce / dist;
+                desired *= manager.MaxSpeed / dist;
                 return desired - actor.Velocity;
             }
             return Vector3.zero;

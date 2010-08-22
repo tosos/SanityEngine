@@ -20,10 +20,10 @@ namespace SanityEngine.Movement.SteeringBehaviors
 		/// <summary>
 		/// The max force to be applied in the steering behaviors.
 		/// </summary>
-		public float MaxForce
+		public float MaxSpeed
 		{
-			get { return maxForce; }
-			set { maxForce = value; }
+			get { return maxSpeed; }
+			set { maxSpeed = value; }
 		}
 		
         /// <summary>
@@ -31,7 +31,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// </summary>
         protected List<SteeringBehavior> behaviors = new List<SteeringBehavior>();
 		
-		float maxForce = 1.0f;
+		float maxSpeed = 1.0f;
 
         /// <summary>
         /// Add a steering behavior to be updated by this manager.

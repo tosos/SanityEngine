@@ -5,16 +5,14 @@ using SanityEngine.Movement.SteeringBehaviors;
 [AddComponentMenu("Sanity Engine/Actors/Rigid Body Actor")]
 [RequireComponent(typeof(Rigidbody))]
 public class RigidbodyActor : SteeringManagerComponent {
-	// TODO change to "max speed"
-	public float maxForce = 1.0f;
-	public float maxAccel = 2.0f;
+	public float maxSpeed = 1.0f;
 	Rigidbody body;
 	Transform xform;
 	Vector3 lastForce;
 	
-	protected override float MaxForce
+	protected override float MaxSpeed
 	{
-		get { return maxForce; }
+		get { return maxSpeed; }
 	}
 	
 	void Awake ()

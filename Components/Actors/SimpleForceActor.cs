@@ -28,7 +28,7 @@ public class SimpleForceActor : SteeringManagerComponent {
 		controller = GetComponent<CharacterController>();
 	}
 	
-	protected override float MaxForce
+	protected override float MaxSpeed
 	{
 		get { return maxSpeed; }
 	}
