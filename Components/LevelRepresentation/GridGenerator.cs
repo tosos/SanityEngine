@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using SanityEngine.Structure.Graph;
-using SanityEngine.Structure.Graph.Spatial;
+using SanityEngine.Structure.Graph.NavMesh;
 using SanityEngine.LevelRepresentation.Grid;
 
 [AddComponentMenu("Sanity Engine/Level Representation/Grid Generator"),

@@ -26,13 +26,15 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
         }
 
         /// <summary>
-        /// Update the separation behavior.
+        /// Update the behavior.
         /// </summary>
+        /// <param name="manager">The steering manager.</param>
         /// <param name="actor">The actor being updated.</param>
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The kinematics object.</returns>
-        public override Vector3 Update(Actor actor, float dt)
+        public override Vector3 Update(SteeringManager manager, Actor actor,
+			float dt)
         {
             float threshold = base.MaxDistance;
 
@@ -43,7 +45,8 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
                 {
                     Vector3 v = actor.Position - f.Position;
                     float d = v.magnitude;
-                    float str = Mathf.Max(0.0f, (threshold - d) / threshold) * actor.MaxForce;
+                    float str = Mathf.Max(0.0f, (threshold - d) / threshold)
+						* manager.MaxSpeed;
                     accum += (v / d) * str;
                 }
             }

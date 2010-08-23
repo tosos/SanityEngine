@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 [AddComponentMenu("Sanity Engine/User Interaction/Mouse Interactor")]
-public class MouseInteractor : DecisionMaker {
+public class MouseInteractor : MonoBehaviour {
 	public enum MouseButton {
 		LEFT = 0,
 		RIGHT = 1,
@@ -11,7 +11,6 @@ public class MouseInteractor : DecisionMaker {
 	
 	public LayerMask clickLayerMask = -1;
 	public MouseButton moveButton = MouseButton.RIGHT;
-	UnityNode moveTarget;
 	
 	void OnGUI()
 	{
@@ -31,15 +30,11 @@ public class MouseInteractor : DecisionMaker {
 		foreach(RaycastHit hit in hits)	{
 			UnityNode node = hit.transform.GetComponent<UnityNode>();
 			if(node != null) {
-				moveTarget = node;
+				SendMessage("SetGoalNode", node);
+				break;
 			}
 		}
 		
 		Event.current.Use();
 	}	
-	
-	public override UnityNode GetMovementTarget()
-	{
-		return moveTarget;
-	}
 }

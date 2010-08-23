@@ -17,10 +17,21 @@ namespace SanityEngine.Movement.SteeringBehaviors
     /// </summary>
     public class SteeringManager
     {
+		/// <summary>
+		/// The max force to be applied in the steering behaviors.
+		/// </summary>
+		public float MaxSpeed
+		{
+			get { return maxSpeed; }
+			set { maxSpeed = value; }
+		}
+		
         /// <summary>
         /// The currently registered behaviors.
         /// </summary>
         protected List<SteeringBehavior> behaviors = new List<SteeringBehavior>();
+		
+		float maxSpeed = 1.0f;
 
         /// <summary>
         /// Add a steering behavior to be updated by this manager.
@@ -52,7 +63,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
             Vector3 result = Vector3.zero;
             foreach (SteeringBehavior behavior in behaviors)
             {
-                result += behavior.Update(actor, dt) * behavior.Weight;
+                result += behavior.Update(this, actor, dt) * behavior.Weight;
             }
             
             result /= behaviors.Count;

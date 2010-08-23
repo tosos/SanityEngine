@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic ;
 using SanityEngine.Actors;
 
+[AddComponentMenu("")]
 public abstract class GameObjectActor : MonoBehaviour, Actor {
 	public bool Alive
 	{
@@ -19,11 +20,6 @@ public abstract class GameObjectActor : MonoBehaviour, Actor {
     }
 
     public abstract Vector3 Facing
-    {
-        get;
-    }
-
-    public abstract float MaxForce
     {
         get;
     }

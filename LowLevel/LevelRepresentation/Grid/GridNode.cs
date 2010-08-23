@@ -10,11 +10,11 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using SanityEngine.Structure.Graph;
-using SanityEngine.Structure.Graph.Spatial;
+using SanityEngine.Structure.Graph.NavMesh;
 
 namespace SanityEngine.LevelRepresentation.Grid
 {
-    public class GridNode : SpatialNode<GridNode, GridEdge>
+    public class GridNode : NavMeshNode<GridNode, GridEdge>
     {
         public int X
         {

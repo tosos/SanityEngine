@@ -6,7 +6,6 @@ using SanityEngine.Movement.SteeringBehaviors;
 public class ArriveComponent : SteeringBehaviorComponent {
 	public GameObjectActor target;
 	public float arriveRadius = 5.0f;
-    public float timeToTarget = 5.0f;
 	
 	Arrive arrive;
 	
@@ -24,6 +23,5 @@ public class ArriveComponent : SteeringBehaviorComponent {
 		Behavior.Weight = weight;
 		arrive.Target = target;
 		arrive.ArriveRadius = arriveRadius;
-		arrive.TimeToTarget = timeToTarget;
 	}
 }

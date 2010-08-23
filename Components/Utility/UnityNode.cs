@@ -1,12 +1,17 @@
 using UnityEngine;
 using System.Collections;
 using SanityEngine.Structure.Graph;
-using SanityEngine.Structure.Graph.Spatial;
+using SanityEngine.Structure.Graph.NavMesh;
 
 public abstract class UnityNode : MonoBehaviour,
-	SpatialNode<UnityNode, UnityEdge>
+	NavMeshNode<UnityNode, UnityEdge>
 {
 	public UnityEdge[] edges;
+	
+	public UnityGraph NavMesh
+	{
+		get { return graph; }
+	}
 	
 	UnityGraph graph;
 

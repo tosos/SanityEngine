@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Text;
 using SanityEngine.Structure.Path;
 using SanityEngine.Structure.Graph;
-using SanityEngine.Structure.Graph.Spatial;
+using SanityEngine.Structure.Graph.NavMesh;
 
 namespace SanityEngine.Movement.PathFollowing
 {
@@ -22,7 +22,7 @@ namespace SanityEngine.Movement.PathFollowing
     /// </summary>
     /// <typeparam name="TID">The node ID type.</typeparam>
     public class CoherentPathFollower<TNode, TEdge>
-        where TNode : SpatialNode<TNode, TEdge>
+        where TNode : NavMeshNode<TNode, TEdge>
         where TEdge : Edge<TNode, TEdge>
     {
         Path<TNode, TEdge> path;

@@ -69,13 +69,15 @@ namespace SanityEngine.Movement.SteeringBehaviors
         }
 
         /// <summary>
-        /// Update the wander behavior.
+        /// Update the behavior.
         /// </summary>
+        /// <param name="manager">The steering manager.</param>
         /// <param name="actor">The actor being updated.</param>
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The kinematics object.</returns>
-        public override Vector3 Update(Actor actor, float dt)
+        public override Vector3 Update(SteeringManager manager, Actor actor,
+			float dt)
         {
             float angle = Random.Range(-maxDeviation, maxDeviation);
             wanderAngle += angle;
@@ -84,7 +86,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
             float x = currPos.x + radius * Mathf.Cos(wanderAngle);
             float z = currPos.z + radius * Mathf.Sin(wanderAngle);
             target.Point = new Vector3(x, currPos.y, z);
-            return base.Update(actor, dt);
+            return base.Update(manager, actor, dt);
         }
     }
 }

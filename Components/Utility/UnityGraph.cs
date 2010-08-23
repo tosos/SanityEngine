@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using SanityEngine.Structure.Graph;
-using SanityEngine.Structure.Graph.Spatial;
+using SanityEngine.Structure.Graph.NavMesh;
 
 public abstract class UnityGraph : MonoBehaviour,
-	SpatialGraph<UnityNode, UnityEdge>
+	NavMesh<UnityNode, UnityEdge>
 {
 
 	// Use this for initialization

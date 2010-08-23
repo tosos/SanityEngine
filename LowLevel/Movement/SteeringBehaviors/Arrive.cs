@@ -30,7 +30,6 @@ namespace SanityEngine.Movement.SteeringBehaviors
         }
 
         float arriveRadius = 5.0f;
-        float timeToTarget = 5.0f;
 
         /// <summary>
         /// The maximum distance to start the arrive behavior.
@@ -42,23 +41,15 @@ namespace SanityEngine.Movement.SteeringBehaviors
         }
 
         /// <summary>
-        /// The "time to target" parameter. This controls the rate of
-        /// slowdown as the agent arrives at its target.
-        /// </summary>
-        public float TimeToTarget
-        {
-            get { return timeToTarget; }
-            set { timeToTarget = value; }
-        }
-
-        /// <summary>
         /// Update the behavior.
         /// </summary>
+        /// <param name="manager">The steering manager.</param>
         /// <param name="actor">The actor being updated.</param>
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The kinematics object.</returns>
-        public override Vector3 Update(Actor actor, float dt)
+        public override Vector3 Update(SteeringManager manager, Actor actor,
+			float dt)
         {
             if (Target == null)
             {
@@ -69,16 +60,12 @@ namespace SanityEngine.Movement.SteeringBehaviors
             float dist = delta.magnitude;
             if (dist > 0.0f)
             {
-                delta /= timeToTarget;
-                float m = delta.magnitude;
-                if (m > actor.MaxForce)
-                {
-                    delta *= actor.MaxForce / m;
-                }
-                return delta - actor.Velocity;
+				float force = manager.MaxSpeed * (dist / arriveRadius);
+				force = Mathf.Min(force, manager.MaxSpeed);
+                delta *= force / dist;
             }
 
-            return Vector3.zero;
+            return delta - actor.Velocity;
         }
     }
 }
