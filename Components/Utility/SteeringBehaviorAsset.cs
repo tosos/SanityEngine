@@ -83,8 +83,17 @@ public class SteeringBehaviorAsset : ScriptableObject {
 	public void RemoveProperty(int idx)
 	{
 		List<SteeringProperty> props = new List<SteeringProperty>(properties);
+		string name = props[idx].name;
 		props.RemoveAt(idx);
 		properties = props.ToArray();
+		
+		foreach(BehaviorDef def in behaviors) {
+			foreach(LinkedProperty prop in def.properties) {
+				if(name.Equals(prop.link)) {
+					prop.link = "";
+				}
+			}
+		}
 	}
 	
 	public void RemoveUnused()
