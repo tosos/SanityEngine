@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (C) 2010 The Sanity Engine Development Team
 //
 // This source code is licensed under the terms of the
@@ -20,6 +20,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
     public abstract class SteeringBehavior
     {
         float weight = 1.0f;
+        bool enabled = true;
 
         /// <summary>
         /// The weight for this behavior. This is used in the weighted
@@ -29,6 +30,12 @@ namespace SanityEngine.Movement.SteeringBehaviors
         {
             get { return weight; }
             set { weight = value; }
+        }
+        
+        public bool Enabled
+        {
+        	get { return enabled; }
+        	set { enabled = value; }
         }
 
         /// <summary>
