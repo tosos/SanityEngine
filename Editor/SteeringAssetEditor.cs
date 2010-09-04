@@ -24,9 +24,17 @@ public class SteeringAssetEditor : Editor {
 				in sab.properties)
 			{
 				EditorGUILayout.BeginVertical("Box");
-				EditorGUILayout.LabelField("Name", prop.name);
+				string newName = EditorGUILayout.TextField("Name", prop.name);
+				if(!newName.Equals(prop.name)) {
+					sab.RenameProperty(prop.name,
+						GetUniqueLinkedPropName(sab, newName));
+				}
 				EditorGUILayout.BeginHorizontal();
 				GUILayout.FlexibleSpace();
+				int count = sab.CountUsed(prop.name);
+				GUILayout.Label(count + " Link" + (count == 1 ? "" : "s"),
+					EditorStyles.miniLabel);
+				EditorGUILayout.Space();
 				if(GUILayout.Button("Delete", EditorStyles.miniButton)) {
 					sab.RemoveProperty(idx);
 				}
@@ -60,6 +68,7 @@ public class SteeringAssetEditor : Editor {
 					prop.defaultValue = DefaultField(
 						prop.defaultValue, prop.type);
 					List<string> existingProps = new List<string>();
+					existingProps.Add("(None)");
 					foreach(SteeringBehaviorAsset.SteeringProperty p2
 						in sab.properties)
 					{
@@ -70,11 +79,16 @@ public class SteeringAssetEditor : Editor {
 					existingProps.Add("-- Add New --");
 					string[] linkNames = existingProps.ToArray();
 					int link = existingProps.IndexOf(prop.link);
+					if(link < 0) {
+						link = 0;
+					}
 					link = EditorGUILayout.Popup("Linked To", link, linkNames);
-					if(link >= 0 && link < linkNames.Length - 1) {
+					if(link >= 1 && link < linkNames.Length - 1) {
 						prop.link = linkNames[link];
 					} else if(link == linkNames.Length - 1) {
 						prop.link = NewLinkProperty(sab, prop);
+					} else {
+						prop.link = "";
 					}
 					EditorGUILayout.EndVertical();
 					EditorGUILayout.Separator();
@@ -84,6 +98,7 @@ public class SteeringAssetEditor : Editor {
 				GUILayout.FlexibleSpace();
 				if(GUILayout.Button("Delete", EditorStyles.miniButton)) {
 					sab.RemoveBehavior(idx);
+					sab.RemoveUnused();
 				}
 				EditorGUILayout.EndHorizontal();
 				EditorGUILayout.EndVertical();

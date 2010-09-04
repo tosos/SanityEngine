@@ -102,20 +102,42 @@ public class SteeringBehaviorAsset : ScriptableObject {
 		for(int i = 0; i < properties.Length; i ++)
 		{
 			string name = properties[i].name;
-			int count = 0;
-			foreach(BehaviorDef def in behaviors) {
-				foreach(LinkedProperty prop in def.properties) {
-					if(prop.link.Equals(name)) {
-						count ++;
-					}
-				}
-			}
-			if(count <= 0) {
+			if(CountUsed(name) <= 0) {
 				remove.Add(name);
 			}
 		}
 		foreach(string name in remove) {
 			RemoveProperty(name);
 		}
+	}
+	
+	public void RenameProperty(string oldName, string newName)
+	{
+		for(int i = 0; i < properties.Length; i ++)
+		{
+			if(oldName.Equals(properties[i].name)) {
+				properties[i].name = newName;
+			}
+		}		
+		foreach(BehaviorDef def in behaviors) {
+			foreach(LinkedProperty prop in def.properties) {
+				if(prop.link.Equals(oldName)) {
+					prop.link = newName;
+				}
+			}
+		}
+	}
+	
+	public int CountUsed(string name)
+	{
+		int count = 0;
+		foreach(BehaviorDef def in behaviors) {
+			foreach(LinkedProperty prop in def.properties) {
+				if(prop.link != null && prop.link.Equals(name)) {
+					count ++;
+				}
+			}
+		}
+		return count;
 	}
 }
