@@ -20,6 +20,7 @@ public class SteeringBehaviorProxy
 	}
 	public readonly SteeringBehavior[] behaviors;
 	
+	float[] baseWeights;
 	Dictionary<string, List<PropProxy>> properties =
 		new Dictionary<string, List<PropProxy>>();
 	
@@ -31,6 +32,8 @@ public class SteeringBehaviorProxy
 			System.Type type = assm.GetType(def.type);
     	    SteeringBehavior behavior = (SteeringBehavior)
     	    	System.Activator.CreateInstance(type);
+    	    behavior.Weight = def.weight;
+    	    behavior.Enabled = def.enabled;
     	    behaviors.Add(behavior);
 	        foreach(SteeringBehaviorAsset.SteeringProperty prop
 	        	in asset.properties)
@@ -47,6 +50,35 @@ public class SteeringBehaviorProxy
         	}
 		}
 		this.behaviors = behaviors.ToArray();
+		this.baseWeights = new float[this.behaviors.Length];
+		for(int i = 0; i < baseWeights.Length; i ++) {
+			baseWeights[i] = this.behaviors[i].Weight;
+		}
+	}
+	
+	public void SetEnabled(bool enabled)
+	{
+		foreach(SteeringBehavior behavior in behaviors)
+		{
+			behavior.Enabled = enabled;
+		}
+	}
+
+	public void SetEnabled(int idx, bool enabled)
+	{
+		behaviors[idx].Enabled = enabled;
+	}
+
+	public void SetWeightScale(float weightScale)
+	{
+		for(int i = 0; i < behaviors.Length; i ++) {
+			behaviors[i].Weight = baseWeights[i] * weightScale;
+		}
+	}
+
+	public void SetWeight(int idx, float weight)
+	{
+		behaviors[idx].Weight = baseWeights[idx] = weight;
 	}
 	
 	public void SetBool(string name, bool val)
