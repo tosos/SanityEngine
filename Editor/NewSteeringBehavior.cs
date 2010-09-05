@@ -64,6 +64,7 @@ public class NewSteeringBehavior : EditorWindow {
 		SteeringBehaviorAsset.BehaviorDef behavior =
 			new SteeringBehaviorAsset.BehaviorDef();
 		behavior.type = type.FullName;	
+		behavior.name = type.Name;
 		behavior.weight = weight;
 		behavior.enabled = enabled;	 
         

@@ -53,7 +53,7 @@ public class SteeringAssetEditor : Editor {
 			int idx = 0;
 			foreach(SteeringBehaviorAsset.BehaviorDef def in sab.behaviors) {
 				EditorGUILayout.BeginVertical("Box");
-				EditorGUILayout.LabelField("Type", def.type);
+				EditorGUILayout.LabelField("Type", def.name);
 				def.weight = EditorGUILayout.FloatField("Weight", def.weight);
 				def.enabled = EditorGUILayout.Toggle("Enabled", def.enabled);
 				EditorGUI.indentLevel++;

@@ -33,6 +33,7 @@ public class SteeringBehaviorAsset : ScriptableObject {
 	public class BehaviorDef
 	{
 		public string type;
+		public string name;
 		public float weight = 1.0f;
 		public bool enabled = true;
 		public LinkedProperty[] properties;
