@@ -67,5 +67,11 @@ namespace SanityEngine.Movement.SteeringBehaviors
 
             return delta - actor.Velocity;
         }
+        
+        public override string GetDescription()
+        {
+        	return "Move toward a target, slowing to a stop near it once"
+        		+ " you are inside the arrive radius";
+        }
     }
 }

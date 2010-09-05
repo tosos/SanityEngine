@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (C) 2010 The Sanity Engine Development Team
 //
 // This source code is licensed under the terms of the
@@ -50,6 +50,12 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
             }
             accum /= count > 0 ? count : 1.0f;
             return SteerToward(manager, actor, actor.Position + accum, dt);
+        }
+
+        public override string GetDescription()
+        {
+        	return "Steer toward the average direction of the visible"
+        		+ " flock members";
         }
     }
 }

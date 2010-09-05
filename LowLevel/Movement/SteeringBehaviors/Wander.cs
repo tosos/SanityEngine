@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (C) 2010 The Sanity Engine Development Team
 //
 // This source code is licensed under the terms of the
@@ -87,6 +87,11 @@ namespace SanityEngine.Movement.SteeringBehaviors
             float z = currPos.z + radius * Mathf.Sin(wanderAngle);
             target.Point = new Vector3(x, currPos.y, z);
             return base.Update(manager, actor, dt);
+        }
+
+        public override string GetDescription()
+        {
+        	return "Wander around in a realistic fashion";
         }
     }
 }

@@ -40,6 +40,15 @@ public class NewSteeringBehavior : EditorWindow {
 	void OnGUI()
 	{
 		chosenType = EditorGUILayout.Popup("Type", chosenType, names.ToArray());
+		if(chosenType >= 0) {
+			object temp = System.Activator.CreateInstance(classes[chosenType]);
+			string description = (string)classes[chosenType].GetMethod(
+				"GetDescription").Invoke(temp, null);
+			EditorGUILayout.BeginHorizontal();
+			EditorGUILayout.PrefixLabel("Description");
+			GUILayout.Label(description, EditorStyles.wordWrappedLabel);
+			EditorGUILayout.EndHorizontal();
+		}
 		weight = EditorGUILayout.FloatField("Weight", weight);
 		enabled = EditorGUILayout.Toggle("Initially Enabled", enabled);
 		EditorGUILayout.Space();

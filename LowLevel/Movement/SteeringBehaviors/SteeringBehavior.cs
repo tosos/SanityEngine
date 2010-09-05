@@ -87,5 +87,10 @@ namespace SanityEngine.Movement.SteeringBehaviors
             }
             return Vector3.zero;
         }
+        
+        /// <summary>
+        /// Get the description of the steering behavior.
+        /// </summary>
+        public abstract string GetDescription();
     }
 }
