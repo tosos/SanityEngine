@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (C) 2010 The Sanity Engine Development Team
 //
 // This source code is licensed under the terms of the
@@ -61,5 +61,11 @@ namespace SanityEngine.Movement.SteeringBehaviors
 
             return SteerAway(manager, actor, targetPos, dt);
         }
+        
+        public override string GetDescription()
+        {
+        	return "Flee a target using the predicted future location";
+        }
+        
     }
 }

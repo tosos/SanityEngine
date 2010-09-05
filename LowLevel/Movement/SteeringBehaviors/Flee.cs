@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (C) 2010 The Sanity Engine Development Team
 //
 // This source code is licensed under the terms of the
@@ -44,6 +44,11 @@ namespace SanityEngine.Movement.SteeringBehaviors
             }
 
             return SteerAway(manager, actor, target.Position, dt);
+        }
+
+        public override string GetDescription()
+        {
+        	return "Flee from a target at maximum speed";
         }
     }
 }

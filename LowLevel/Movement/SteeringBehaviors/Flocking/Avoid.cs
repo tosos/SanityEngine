@@ -81,5 +81,10 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
 
             return Vector3.zero;
         }
+
+        public override string GetDescription()
+        {
+        	return "Avoid future collisions with other flock members";
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (C) 2010 The Sanity Engine Development Team
 //
 // This source code is licensed under the terms of the
@@ -56,6 +56,11 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
             }
             target.Point = count > 0 ? avg / count : avg;
             return seeker.Update(manager, actor, dt);
+        }
+
+        public override string GetDescription()
+        {
+        	return "Seek toward the average position of visible flock members";
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright (C) 2010 The Sanity Engine Development Team
 //
 // This source code is licensed under the terms of the
@@ -59,6 +59,11 @@ namespace SanityEngine.Movement.SteeringBehaviors
             }
 
             return SteerToward(manager, actor, targetPos, dt);
+        }
+
+        public override string GetDescription()
+        {
+        	return "Pursue a target using the predicted future location";
         }
     }
 }

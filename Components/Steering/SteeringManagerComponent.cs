@@ -13,27 +13,40 @@ public abstract class SteeringManagerComponent : GameObjectActor {
 		get;
 	}
 	
+	public SteeringBehaviorAsset[] steeringAssets;
+	
+	Dictionary<string, SteeringBehaviorProxy> behaviors;
 	SteeringManager manager;
 	GameObjectActor actor;
 	Vector3 force;
-	bool initialized;
 	
 	void Start () {
-		initialized = false;
+		actor = GetComponent<GameObjectActor>();
+		manager = new SteeringManager();
+			
+		behaviors = new Dictionary<string, SteeringBehaviorProxy>();
+		foreach(SteeringBehaviorAsset asset in steeringAssets) {
+			SteeringBehaviorProxy proxy = new SteeringBehaviorProxy(asset);
+			behaviors[asset.name] = proxy;
+			foreach(SteeringBehavior behavior in proxy.behaviors) {
+				manager.AddBehavior(behavior);
+			}
+		}
 	}
 	
 	void Update () {
-		if(!initialized) {
-			actor = GetComponent<GameObjectActor>();
-			manager = new SteeringManager();
-			SteeringBehaviorComponent[] behaviors =
-				GetComponents<SteeringBehaviorComponent>();
-			foreach(SteeringBehaviorComponent behavior in behaviors) {
-				manager.AddBehavior(behavior.Behavior);
-			}
-			initialized = true;
-		}
 		manager.MaxSpeed = MaxSpeed;
 		force = manager.Update(actor, Time.deltaTime);
+	}
+	
+	/// <summary>
+	/// Access a steering behavior definition group by name.
+	/// <summary>
+	public SteeringBehaviorProxy this[string name]
+	{
+		get
+		{
+			return behaviors[name];
+		}
 	}
 }
