@@ -36,7 +36,9 @@ public class SimpleForceActor : SteeringManagerComponent {
 	void LateUpdate ()
 	{
 		float t = Time.deltaTime;
-		Vector3 desired = (base.Force - velocity) / t;
+		Steering steering = base.Steering;
+		
+		Vector3 desired = (steering.Force - velocity) / t;
 		float force = desired.magnitude;
 		if(force > maxForce) {
 			desired *= maxForce / force;

@@ -18,12 +18,21 @@ namespace SanityEngine.Movement.SteeringBehaviors
     public class SteeringManager
     {
 		/// <summary>
-		/// The max force to be applied in the steering behaviors.
+		/// The max speed to be applied in the steering behaviors.
 		/// </summary>
 		public float MaxSpeed
 		{
 			get { return maxSpeed; }
 			set { maxSpeed = value; }
+		}
+
+		/// <summary>
+		/// The max angular speed to be applied in the steering behaviors.
+		/// </summary>
+		public float MaxAngularSpeed
+		{
+			get { return maxAngularSpeed; }
+			set { maxAngularSpeed = value; }
 		}
 		
         /// <summary>
@@ -32,6 +41,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
         protected List<SteeringBehavior> behaviors = new List<SteeringBehavior>();
 		
 		float maxSpeed = 1.0f;
+		float maxAngularSpeed = 1.0f;
 
         /// <summary>
         /// Add a steering behavior to be updated by this manager.
@@ -57,17 +67,17 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// <param name="actor">The actor to update on.</param>
         /// <param name="dt">The delta time since the last update
         /// (in seconds)</param>
-        /// <returns>The combined Vector3 object.</returns>
-        public virtual Vector3 Update(Actor actor, float dt)
+        /// <returns>The combined Steering object.</returns>
+        public virtual Steering Update(Actor actor, float dt)
         {
-            Vector3 result = Vector3.zero;
+            Steering result = Steering.zero;
             foreach (SteeringBehavior behavior in behaviors)
             {
                 result += behavior.Update(this, actor, dt) * behavior.Weight;
             }
             
             result /= behaviors.Count;
-
+			
             return result;
         }
     }

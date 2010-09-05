@@ -8,7 +8,7 @@ public class RigidbodyActor : SteeringManagerComponent {
 	public float maxSpeed = 1.0f;
 	Rigidbody body;
 	Transform xform;
-	Vector3 lastForce;
+	Steering lastSteering;
 	
 	protected override float MaxSpeed
 	{
@@ -23,12 +23,12 @@ public class RigidbodyActor : SteeringManagerComponent {
 	
 	void LateUpdate ()
 	{
-		lastForce = base.Force;
+		lastSteering = base.Steering;
 	}
 	
 	void FixedUpdate ()
 	{
-		body.AddForce(lastForce);
+		body.AddForce(lastSteering.Force);
 	}
 	
 	public override Vector3 Velocity

@@ -44,8 +44,8 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// <param name="actor">The actor being updated.</param>
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
-        /// <returns>The kinematics object.</returns>
-        public abstract Vector3 Update(SteeringManager manager, Actor actor,
+        /// <returns>The steering object.</returns>
+        public abstract Steering Update(SteeringManager manager, Actor actor,
 			float dt);
 
         /// <summary>
