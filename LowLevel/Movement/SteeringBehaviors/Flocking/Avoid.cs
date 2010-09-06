@@ -40,8 +40,8 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
         /// <param name="actor">The actor being updated.</param>
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
-        /// <returns>The kinematics object.</returns>
-        public override Vector3 Update(SteeringManager manager, Actor actor,
+        /// <returns>The steering object.</returns>
+        public override Steering Update(SteeringManager manager, Actor actor,
 			float dt)
         {
             float smallestHitTime = float.PositiveInfinity;
@@ -79,7 +79,7 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
                 return flee.Update(manager, actor, dt);
             }
 
-            return Vector3.zero;
+            return Steering.zero;
         }
 
         public override string GetDescription()

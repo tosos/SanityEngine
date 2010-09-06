@@ -14,6 +14,11 @@ public abstract class GameObjectActor : MonoBehaviour, Actor {
         get;
     }
 
+    public abstract Vector3 AngularVelocity
+    {
+        get;
+    }
+	
     public abstract Vector3 Position
     {
         get;

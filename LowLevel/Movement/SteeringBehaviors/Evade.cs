@@ -35,13 +35,13 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// <param name="actor">The actor being updated.</param>
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
-        /// <returns>The kinematics object.</returns>
-        public override Vector3 Update(SteeringManager manager, Actor actor,
+        /// <returns>The steering object.</returns>
+        public override Steering Update(SteeringManager manager, Actor actor,
 			float dt)
         {
             if (target == null)
             {
-                return Vector3.zero;
+                return Steering.zero;
             }
 
             Vector3 uVel = actor.Velocity;
@@ -59,7 +59,8 @@ namespace SanityEngine.Movement.SteeringBehaviors
                 targetPos += target.Velocity * predictionTime;
             }
 
-            return SteerAway(manager, actor, targetPos, dt);
+            return new Steering(true, SteerAway(manager, actor, targetPos, dt),
+				false, Vector3.zero);
         }
         
         public override string GetDescription()

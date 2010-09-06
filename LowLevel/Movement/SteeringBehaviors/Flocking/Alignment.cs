@@ -32,8 +32,8 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
         /// <param name="actor">The actor being updated.</param>
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
-        /// <returns>The kinematics object.</returns>
-        public override Vector3 Update(SteeringManager manager, Actor actor,
+        /// <returns>The steering object.</returns>
+        public override Steering Update(SteeringManager manager, Actor actor,
 			float dt)
         {
             Vector3 accum = Vector3.zero;
@@ -49,7 +49,8 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
                 }
             }
             accum /= count > 0 ? count : 1.0f;
-            return SteerToward(manager, actor, actor.Position + accum, dt);
+            return new Steering(true, SteerToward(manager, actor,
+				actor.Position + accum, dt), false, Vector3.zero);
         }
 
         public override string GetDescription()

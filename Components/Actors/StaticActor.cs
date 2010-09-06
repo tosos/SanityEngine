@@ -14,6 +14,11 @@ public class StaticActor : GameObjectActor {
         get { return Vector3.zero; }
     }
 
+	public override Vector3 AngularVelocity
+    {
+        get { return Vector3.zero; }
+    }
+	
     public override Vector3 Position
     {
         get { return xform.position; }

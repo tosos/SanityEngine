@@ -30,7 +30,12 @@ namespace SanityEngine.Actors
             get { return Vector3.zero; }
         }
 
-        public Vector3 Position
+		public Vector3 AngularVelocity
+		{
+			get { return Vector3.zero; }
+		}	
+
+		public Vector3 Position
         {
             get { return point; }
         }
