@@ -59,8 +59,8 @@ namespace SanityEngine.Movement.SteeringBehaviors
                 targetPos += target.Velocity * predictionTime;
             }
 
-            return new Steering(SteerAway(manager, actor, targetPos, dt),
-				Vector3.zero);
+            return new Steering(true, SteerAway(manager, actor, targetPos, dt),
+				false, Vector3.zero);
         }
         
         public override string GetDescription()

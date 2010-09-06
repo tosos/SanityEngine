@@ -65,7 +65,8 @@ namespace SanityEngine.Movement.SteeringBehaviors
                 delta *= force / dist;
             }
 
-            return new Steering(delta - actor.Velocity, Vector3.zero);
+            return new Steering(true, delta - actor.Velocity, false,
+				Vector3.zero);
         }
         
         public override string GetDescription()

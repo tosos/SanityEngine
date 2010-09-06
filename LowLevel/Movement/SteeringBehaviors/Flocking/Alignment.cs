@@ -49,8 +49,8 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
                 }
             }
             accum /= count > 0 ? count : 1.0f;
-            return new Steering(SteerToward(manager, actor,
-				actor.Position + accum, dt), Vector3.zero);
+            return new Steering(true, SteerToward(manager, actor,
+				actor.Position + accum, dt), false, Vector3.zero);
         }
 
         public override string GetDescription()

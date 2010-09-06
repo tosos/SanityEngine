@@ -34,6 +34,14 @@ namespace SanityEngine.Actors
         }
 
         /// <summary>
+        /// This actor's angular velocity.
+        /// </summary>
+        Vector3 AngularVelocity
+        {
+            get;
+        }
+		
+        /// <summary>
         /// The position of the actor.
         /// </summary>
         Vector3 Position

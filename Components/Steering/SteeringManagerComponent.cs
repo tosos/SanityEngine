@@ -13,6 +13,11 @@ public abstract class SteeringManagerComponent : GameObjectActor {
 		get;
 	}
 	
+	protected abstract float MaxAngularSpeed
+	{
+		get;
+	}
+	
 	public SteeringBehaviorAsset[] steeringAssets;
 	
 	Dictionary<string, SteeringBehaviorProxy> behaviors;
@@ -20,7 +25,7 @@ public abstract class SteeringManagerComponent : GameObjectActor {
 	GameObjectActor actor;
 	Steering steering;
 	
-	void Start () {
+	void Awake () {
 		actor = GetComponent<GameObjectActor>();
 		manager = new SteeringManager();
 			
@@ -36,6 +41,7 @@ public abstract class SteeringManagerComponent : GameObjectActor {
 	
 	void Update () {
 		manager.MaxSpeed = MaxSpeed;
+		manager.MaxAngularSpeed = MaxAngularSpeed;
 		steering = manager.Update(actor, Time.deltaTime);
 	}
 	

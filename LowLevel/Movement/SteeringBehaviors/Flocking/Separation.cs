@@ -50,7 +50,7 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
                     accum += (v / d) * str;
                 }
             }
-            return new Steering(accum, Vector3.zero);
+            return new Steering(true, accum, false, Vector3.zero);
         }
 
         public override string GetDescription()

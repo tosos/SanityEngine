@@ -7,10 +7,8 @@ public class SimpleForceActor : SteeringManagerComponent {
 	public float mass = 1.0f;
 	public float maxForce = 2.5f;
 	public float maxSpeed = 5.0f;
-	public float maxTorque = 2.5f;
-	public float maxAngularSpeed = 5.0f;
-	public float angleThreshold = 90.0f;
-	public float velocityFaceThreshold = 0.001f;
+	public float maxTorque = 720.0f;
+	public float maxAngularSpeed = 1080.0f;
 	public float linearDamp = 0.05f;
 	public float angularDamp = 0.05f;
 	public bool twoDimensionalFacing = true;
@@ -20,7 +18,7 @@ public class SimpleForceActor : SteeringManagerComponent {
 	Vector3 angularVelocity;
 	Vector3 desiredFacing;
 	
-	void Awake ()
+	void Start ()
 	{
 		velocity = Vector3.zero;
 		angularVelocity = Vector3.zero;
@@ -33,12 +31,17 @@ public class SimpleForceActor : SteeringManagerComponent {
 		get { return maxSpeed; }
 	}
 	
+	protected override float MaxAngularSpeed
+	{
+		get { return maxAngularSpeed; }
+	}
+
 	void LateUpdate ()
 	{
 		float t = Time.deltaTime;
 		Steering steering = base.Steering;
 		
-		Vector3 desired = (steering.Force - velocity) / t;
+		Vector3 desired = steering.Force;
 		float force = desired.magnitude;
 		if(force > maxForce) {
 			desired *= maxForce / force;
@@ -57,23 +60,7 @@ public class SimpleForceActor : SteeringManagerComponent {
 			velocity *= maxSpeed / speed;
 		}
 		
-		Vector3 dir = xform.forward;
-		if(velocity.magnitude > velocityFaceThreshold) {
-			dir = velocity / velocity.magnitude;
-		}
-		Vector3 delta = Quaternion.FromToRotation(xform.forward, dir).eulerAngles;
-		delta.x = twoDimensionalFacing ? 0f : Mathf.DeltaAngle(0f, delta.x);
-		delta.y = Mathf.DeltaAngle(0f, delta.y);
-		delta.z = 0.0f;
-		float angDist = delta.magnitude;
-		if(angDist > 0.0f) {
-			float torque = maxTorque * (angDist / angleThreshold);
-			torque = Mathf.Min(torque, maxTorque);
-			delta *= torque / angDist;
-		}
-		delta -= angularVelocity;
-		
-		Vector3 angAccel  = (delta - angularVelocity) / t;
+		Vector3 angAccel  = steering.Torque;
 		float torque2 = angAccel.magnitude;
 		if(torque2 > maxTorque) {
 			angAccel *= maxTorque / torque2;
@@ -94,6 +81,11 @@ public class SimpleForceActor : SteeringManagerComponent {
         get { return velocity; }
     }
 
+	public override Vector3 AngularVelocity
+    {
+        get { return angularVelocity; }
+    }
+	
     public override Vector3 Position
     {
         get { return xform.position; }

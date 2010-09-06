@@ -70,13 +70,20 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// <returns>The combined Steering object.</returns>
         public virtual Steering Update(Actor actor, float dt)
         {
+			int forces = 0;
+			int torques = 0;
+			
             Steering result = Steering.zero;
             foreach (SteeringBehavior behavior in behaviors)
             {
-                result += behavior.Update(this, actor, dt) * behavior.Weight;
+				Steering steering = behavior.Update(this, actor, dt);
+                result += steering * behavior.Weight;
+				forces += steering.HasForce ? 1 : 0;
+				torques += steering.HasTorque ? 1 : 0;
             }
             
-            result /= behaviors.Count;
+            result.Force /= forces;
+            result.Torque /= torques;
 			
             return result;
         }

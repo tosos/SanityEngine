@@ -43,8 +43,8 @@ namespace SanityEngine.Movement.SteeringBehaviors
                 return Steering.zero;
             }
 
-            return new Steering(SteerToward(manager, actor, target.Position, dt),
-				Vector3.zero);
+            return new Steering(true, SteerToward(manager, actor,
+				target.Position, dt), false, Vector3.zero);
         }
 
         public override string GetDescription()
