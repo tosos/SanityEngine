@@ -82,13 +82,16 @@ public class NewSteeringBehavior : EditorWindow {
     	    	continue;
             }
             
-            object def = null;
+            string def = "";
 			SteeringBehaviorAsset.LinkedProperty linkedProp
 				= new SteeringBehaviorAsset.LinkedProperty();
 			linkedProp.name = prop.Name;
 			linkedProp.type = GetPropertyType(prop.PropertyType, out def);
           	if(prop.CanRead) {
-               	def = prop.GetValue(impl, null);
+          		object v = prop.GetValue(impl, null);
+          		if(v != null) { 
+	               	def = v.ToString();
+          		}
 	        }
 			linkedProp.defaultValue = def;
 			props.Add(linkedProp);
@@ -99,34 +102,34 @@ public class NewSteeringBehavior : EditorWindow {
 	}
 	
 	SteeringBehaviorAsset.PropertyType GetPropertyType(System.Type type,
-		out object def)
+		out string def)
 	{
 		if(typeof(Actor).IsAssignableFrom(type)) {
 			def = null;
 			return SteeringBehaviorAsset.PropertyType.ACTOR;
 		}
 		if(type == typeof(bool)) {
-			def = new System.Boolean();
+			def = "false";
 			return SteeringBehaviorAsset.PropertyType.BOOL;
 		}
 		if(type == typeof(int)) {
-			def = new System.Int32();
+			def = "0";
 			return SteeringBehaviorAsset.PropertyType.INT;
 		}
 		if(type == typeof(float)) {
-			def = new System.Single();
+			def = "0.0";
 			return SteeringBehaviorAsset.PropertyType.FLOAT;
 		}
 		if(type == typeof(Vector2)) {
-			def = new Vector2();
+			def = "(0.0,0.0)";
 			return SteeringBehaviorAsset.PropertyType.VECTOR2;
 		}
 		if(type == typeof(Vector3)) {
-			def = new Vector3();
+			def = "(0.0,0.0,0.0)";
 			return SteeringBehaviorAsset.PropertyType.VECTOR3;
 		}
 		if(type == typeof(Vector4)) {
-			def = new Vector4();
+			def = "(0.0,0.0,0.0,1.0)";
 			return SteeringBehaviorAsset.PropertyType.VECTOR4;
 		}
 		if(type == typeof(string)) {

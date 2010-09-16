@@ -25,7 +25,7 @@ public class SteeringBehaviorAsset : ScriptableObject {
 	[System.Serializable]
 	public class LinkedProperty : SteeringProperty
 	{
-		public object defaultValue;
+		public string defaultValue;
 		public string link;
 	}
 	
