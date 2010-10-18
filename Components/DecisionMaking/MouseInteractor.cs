@@ -28,7 +28,7 @@ public class MouseInteractor : MonoBehaviour {
 		RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity,
 			clickLayerMask.value);
 		foreach(RaycastHit hit in hits)	{
-			UnityNode node = hit.transform.GetComponent<UnityNode>();
+			GameObjectNode node = hit.transform.GetComponent<GameObjectNode>();
 			if(node != null) {
 				SendMessage("SetGoalNode", node);
 				break;

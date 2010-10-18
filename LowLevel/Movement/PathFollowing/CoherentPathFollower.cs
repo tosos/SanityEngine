@@ -31,7 +31,16 @@ namespace SanityEngine.Movement.PathFollowing
 		float previousParam = 0.0f;
 		float lookAhead = 2f;
 		
-        /// <summary>
+		/// <summary>
+		/// The minimum distance to move the path target forward, in world units.
+		/// </summary>
+		public float Epsilon
+		{
+			get { return epsilon; }
+			set { epsilon = value; }
+		}
+		
+		/// <summary>
         /// The maximum distance to follow along the path, in world units.
         /// </summary>
 		public float LookAhead

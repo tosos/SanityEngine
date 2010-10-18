@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using SanityEngine.Actors;
 using SanityEngine.Movement.SteeringBehaviors;
 using SanityEngine.Movement.PathFollowing;
@@ -12,15 +12,28 @@ using SanityEngine.Utility.Heuristics;
 [AddComponentMenu("Sanity Engine/Movement/Path Follower")]
 public class PathFollowerComponent : SteeringBehaviorComponent {
 	public float lookAhead = 2.0f;
+	public float minimumMovement = 0.001f;
+	public float doneThreshold = 0.5f;
 	public Vector3 targetOffset = Vector3.zero;
+	public bool broadcastMessages = true;
 
 	PointActor target;
 	Arrive arrive;
 	ASearch<UnityNode, UnityEdge> finder;
 	Path<UnityNode, UnityEdge> path;
+	UnityNode goalNode;
 	CoherentPathFollower<UnityNode, UnityEdge> follower;
+	bool atDestination;
+	List<Component> listeners;
 
+	public override SteeringBehavior Behavior
+	{
+		get { return arrive; }
+	}	
+	
 	void Awake () {
+		listeners = new List<Component>();
+		
 		Heuristic heuristic = new EuclideanHeuristic();
 		
 		finder = new ASearch<UnityNode, UnityEdge>(heuristic.Heuristic);
@@ -33,32 +46,35 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 	}
 	
 	void Update () {
-		if(!follower.Valid) {
+		if(!follower.Valid || goalNode == null) {
 			return;
 		}
 		
 		follower.LookAhead = lookAhead;
-		float param = follower.GetNextParameter(transform.position);
+		follower.Epsilon = minimumMovement;
+		Vector3 pos = transform.position;
+		float param = follower.GetNextParameter(pos);
 		target.Point = follower.GetPosition(param + lookAhead) + targetOffset;
+		
+		if(!atDestination && Vector3.Distance(pos, goalNode.Position) < doneThreshold) {
+			PathMessage("OnPathFollowerArrived");
+		}
 	}
 	
 	void SetGoalNode(UnityNode goal)
 	{
-		if(goal == null || goal.NavMesh == null) {
-			ClearGoalNode();
-			return;
-		}
+		goalNode = goal;
 		
 		arrive.Weight = 0f;
-		
-		path = finder.Search(goal.NavMesh.Quantize(transform.position), goal);
-		follower.Path = path;
-		
+		FindNewPath(goal);		
 		arrive.Weight = 1f;
 	}
 	
 	void ClearGoalNode()
 	{
+		atDestination = false;
+		
+		goalNode = null;
 		follower.Path = null;
 		arrive.Weight = 0f;
 	}
@@ -81,8 +97,54 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 		}
 	}
 	
-	public override SteeringBehavior Behavior
+	void FindNewPath(UnityNode goal)
 	{
-		get { return arrive; }
-	}	
+		atDestination = false;
+		
+		if(goal == null || goal.NavMesh == null) {
+			ClearGoalNode();
+			return;
+		}
+
+		path = finder.Search(goal.NavMesh.Quantize(transform.position), goal);
+		if(path == null) {
+			ClearGoalNode();
+			SendMessage("OnPathFollowerNoPath", SendMessageOptions.DontRequireReceiver);
+			return;
+		}
+		follower.Path = path;
+		SendMessage("OnPathFollowerNewPath", SendMessageOptions.DontRequireReceiver);
+	}
+	
+	void PathMessage(string methodName)
+	{
+		if(broadcastMessages) {
+			BroadcastMessage(methodName, SendMessageOptions.DontRequireReceiver);
+		} else {
+			SendMessage(methodName, SendMessageOptions.DontRequireReceiver);
+		}
+		
+		for(int i = 0; i < listeners.Count; i ++) {
+			listeners[i].SendMessage(methodName, this, SendMessageOptions.DontRequireReceiver);			
+		}
+	}
+	
+	/// <summary>
+	/// Adds a listener, which will receive path follower events.
+	/// </summary>
+	/// <param name='listener'>the listener</param>
+	public void AddListener(Component listener)
+	{
+		listeners.Add(listener);
+	}
+
+	/// <summary>
+	/// Remove a listener.
+	/// </summary>
+	/// <param name='listener'>the listener</param>
+	public void RemoveListener(Component listener)
+	{
+		listeners.Remove(listener);
+	}
 }
+		

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using SanityEngine.Structure.Graph;
 
-public class GridCell : UnityNode {	
+public class GridCell : GameObjectNode {	
 	// Update is called once per frame
 	void Update () {
 	
@@ -31,7 +31,7 @@ public class GridCell : UnityNode {
 		
 		Gizmos.color = Color.red;
 		foreach(UnityEdge edge in edges) {
-			Gizmos.DrawLine(transform.position, edge.target.transform.position);
+			Gizmos.DrawLine(transform.position, edge.target.Position);
 		}
 	}
 	
