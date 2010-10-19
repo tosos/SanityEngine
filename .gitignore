@@ -6,4 +6,3 @@ obj/
 *.csproj*.user
 *.vcproj*.user
 doc/
-*.meta
