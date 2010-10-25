@@ -10,26 +10,27 @@ using SanityEngine.Search.PathFinding.Algorithms;
 using SanityEngine.Utility.Heuristics;
 
 [AddComponentMenu("Sanity Engine/Movement/Path Follower")]
-public class PathFollowerComponent : SteeringBehaviorComponent {
+public class PathFollowerComponent : MonoBehaviour {
 	public float lookAhead = 2.0f;
 	public Vector3 targetOffset = Vector3.zero;
+	public string moveBehavior;
 
+	SteeringManagerComponent manager;
 	PointActor target;
-	Arrive arrive;
 	ASearch<UnityNode, UnityEdge> finder;
 	Path<UnityNode, UnityEdge> path;
 	CoherentPathFollower<UnityNode, UnityEdge> follower;
 
-	void Awake () {
+	void Start () {
+		manager = GetComponent<SteeringManagerComponent>();
 		Heuristic heuristic = new EuclideanHeuristic();
 		
 		finder = new ASearch<UnityNode, UnityEdge>(heuristic.Heuristic);
 		follower = new CoherentPathFollower<UnityNode, UnityEdge>();
-		arrive = new Arrive();
-		arrive.ArriveRadius = lookAhead * 0.75f;
-		arrive.Weight = 0f;
+		manager[moveBehavior].SetEnabled(false);
+		manager[moveBehavior].SetFloat("ArriveRadius", lookAhead * 0.75f);
 		target = new PointActor(Vector3.zero);
-		arrive.Target = target;
+		manager[moveBehavior].SetActor("Target", target);
 	}
 	
 	void Update () {
@@ -49,18 +50,18 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 			return;
 		}
 		
-		arrive.Weight = 0f;
+		manager[moveBehavior].SetEnabled(false);
 		
 		path = finder.Search(goal.NavMesh.Quantize(transform.position), goal);
 		follower.Path = path;
 		
-		arrive.Weight = 1f;
+		manager[moveBehavior].SetEnabled(true);
 	}
 	
 	void ClearGoalNode()
 	{
 		follower.Path = null;
-		arrive.Weight = 0f;
+		manager[moveBehavior].SetEnabled(false);
 	}
 	
 	void OnDrawGizmosSelected()
@@ -80,9 +81,4 @@ public class PathFollowerComponent : SteeringBehaviorComponent {
 			Gizmos.DrawLine(edge.Source.Position, edge.Target.Position);
 		}
 	}
-	
-	public override SteeringBehavior Behavior
-	{
-		get { return arrive; }
-	}	
 }
