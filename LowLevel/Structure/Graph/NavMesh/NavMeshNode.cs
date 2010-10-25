@@ -16,5 +16,10 @@ namespace SanityEngine.Structure.Graph.NavMesh
 		{
 			get;
 		}
+		
+		NavMesh<TNode, TEdge> NavMesh
+		{
+			get;
+		}
 	}
 }

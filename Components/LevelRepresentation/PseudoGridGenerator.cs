@@ -2,11 +2,10 @@ using UnityEngine;
 using System.Collections.Generic;
 using SanityEngine.Structure.Graph;
 using SanityEngine.Structure.Graph.NavMesh;
-using SanityEngine.LevelRepresentation.Grid;
 
-[AddComponentMenu("Sanity Engine/Level Representation/Grid Generator"),
+[AddComponentMenu("Sanity Engine/Level Representation/Pseudo-Grid Generator"),
 ExecuteInEditMode()]
-public class GridGenerator : UnityGraph
+public class PseudoGridGenerator : UnityGraph
 {
 	private delegate bool Sample(Vector3 pos, Vector3 dir, out Vector3 result);
 	
@@ -41,13 +40,13 @@ public class GridGenerator : UnityGraph
 	public GridType gridType;
 	public bool drawGrid = true;
 	
-	GridCell[] cells;
+	PseudoGridCell[] cells;
 	GraphChangeHelper<UnityNode, UnityEdge> helper;
 	
 	void Awake()
 	{
 		helper = new GraphChangeHelper<UnityNode, UnityEdge>();
-		cells = GetComponentsInChildren<GridCell>();
+		cells = GetComponentsInChildren<PseudoGridCell>();
 	}
 	
 	// Use this for initialization
@@ -114,7 +113,7 @@ public class GridGenerator : UnityGraph
 		Vector3 start = new Vector3(-xOff * xRes + xOff, 0.0f, -yOff * yRes + yOff);
 		
 		float localMaxHeight = maxHeight / transform.localScale.y;
-		GridCell[,] cells = new GridCell[yRes, xRes];
+		PseudoGridCell[,] cells = new PseudoGridCell[yRes, xRes];
 		// Node creation pass
 		for(int y = 0; y < yRes ; y ++) {
 			for(int x = 0; x < xRes ; x ++) {
@@ -138,16 +137,16 @@ public class GridGenerator : UnityGraph
 				box.isTrigger = true;
 				Vector3 s = transform.localScale;
 				box.size = new Vector3(1.0f/s.x, 1.0f/s.y, 1.0f/s.z);
-				cells[y, x] = cell.AddComponent<GridCell>();
+				cells[y, x] = cell.AddComponent<PseudoGridCell>();
 			}
 		}
 		
 		// Edge creation pass
-		List<UnityEdge> edges = new List<UnityEdge>();
+		List<GameObjectEdge> edges = new List<GameObjectEdge>();
 		for(int y = 0; y < yRes ; y ++) {
 			for(int x = 0; x < xRes ; x ++) {
 				edges.Clear();
-				GridCell src = cells[y, x];
+				PseudoGridCell src = cells[y, x];
 				if(src == null) {
 					continue;
 				}
@@ -166,14 +165,14 @@ public class GridGenerator : UnityGraph
 							// TODO add 4-/8- criteria
 							continue;
 						}
-						GridCell dest = cells[y2, x2];
+						PseudoGridCell dest = cells[y2, x2];
 						if(dest == null) {
 							continue;
 						}
 						Vector3 diff = dest.transform.position - src.transform.position;
 						float slope = Mathf.Abs(Vector3.Dot(diff, transform.up));
 						if(slope < maxSlope) {
-							edges.Add(new UnityEdge(dest,
+							edges.Add(new GameObjectEdge(dest,
 								CalculateEdgeCost(src, dest)));
 						}
 					}
@@ -344,7 +343,7 @@ public class GridGenerator : UnityGraph
 		return hits.Length != 0;
 	}
 	
-	float CalculateEdgeCost(GridCell src, GridCell tgt)
+	float CalculateEdgeCost(PseudoGridCell src, PseudoGridCell tgt)
 	{
 		switch(edgeCostAlgorithm) {
 			case EdgeCostAlgorithm.EUCLIDEAN_DISTANCE:
@@ -379,8 +378,8 @@ public class GridGenerator : UnityGraph
    	{
    		// FIXME this is slow
    		float minDist = float.PositiveInfinity;
-   		GridCell nearest = null;
-   		foreach(GridCell cell in cells) {
+   		PseudoGridCell nearest = null;
+   		foreach(PseudoGridCell cell in cells) {
    			float dist = (pos - cell.transform.position).sqrMagnitude;
    			if(dist < minDist) {
    				nearest = cell;

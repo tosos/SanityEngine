@@ -4,13 +4,8 @@ using SanityEngine.Structure.Graph;
 using SanityEngine.Structure.Graph.NavMesh;
 
 /// <summary>
-/// Specialized version of a NavMeshNode that has a handle back to a
-/// UnityGraph.
+/// Specialized version of a NavMeshNode without generic parameters.
 /// </summary>
 public interface UnityNode : NavMeshNode<UnityNode, UnityEdge>
 {
-	UnityGraph NavMesh
-	{
-		get;
-	}
 }

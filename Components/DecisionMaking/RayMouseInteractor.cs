@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-[AddComponentMenu("Sanity Engine/User Interaction/Mouse Interactor")]
-public class MouseInteractor : MonoBehaviour {
+[AddComponentMenu("Sanity Engine/User Interaction/Ray Mouse Interactor")]
+public class RayMouseInteractor : MonoBehaviour {
 	public enum MouseButton {
 		LEFT = 0,
 		RIGHT = 1,

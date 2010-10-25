@@ -8,9 +8,9 @@ using SanityEngine.Structure.Graph.NavMesh;
 /// </summary>
 public abstract class GameObjectNode : MonoBehaviour, UnityNode
 {
-	public UnityEdge[] edges;
+	public GameObjectEdge[] edges;
 	
-	public UnityGraph NavMesh
+	public NavMesh<UnityNode, UnityEdge> NavMesh
 	{
 		get { return graph; }
 	}
@@ -18,7 +18,7 @@ public abstract class GameObjectNode : MonoBehaviour, UnityNode
 	UnityGraph graph;
 
 	void Awake () {
-		foreach(UnityEdge edge in edges) {
+		foreach(GameObjectEdge edge in edges) {
 			edge.SetSource(this);
 		}
 		graph = transform.parent.GetComponent<UnityGraph>();

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using SanityEngine.Structure.Graph;
 
-public class GridCell : GameObjectNode {	
+public class PseudoGridCell : GameObjectNode {	
 	// Update is called once per frame
 	void Update () {
 	
@@ -12,7 +12,8 @@ public class GridCell : GameObjectNode {
 	{
 		bool error = true;
 		if(transform.parent) {
-			GridGenerator grid = transform.parent.GetComponent<GridGenerator>();			if(grid != null) {
+			PseudoGridGenerator grid = transform.parent.GetComponent<PseudoGridGenerator>();
+			if(grid != null) {
 				error = false;
 				if(!grid.drawGrid) {
 					return;
@@ -30,7 +31,7 @@ public class GridCell : GameObjectNode {
 		}
 		
 		Gizmos.color = Color.red;
-		foreach(UnityEdge edge in edges) {
+		foreach(GameObjectEdge edge in edges) {
 			Gizmos.DrawLine(transform.position, edge.target.Position);
 		}
 	}

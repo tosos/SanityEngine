@@ -82,8 +82,12 @@ namespace SanityEngine.Movement.SteeringBehaviors
 				torques += steering.HasTorque ? 1 : 0;
             }
             
-            result.Force /= forces;
-            result.Torque /= torques;
+			if(forces > 0) {
+            	result.Force /= forces;
+			}
+			if(torques > 0) {
+            	result.Torque /= torques;
+			}
 			
             return result;
         }

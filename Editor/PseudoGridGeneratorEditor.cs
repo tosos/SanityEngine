@@ -2,16 +2,16 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
-[CustomEditor(typeof(GridGenerator))]
-public class GridGeneratorEditor : Editor {
+[CustomEditor(typeof(PseudoGridGenerator))]
+public class PseudoGridGeneratorEditor : Editor {
 	public bool edgeFoldout = true;
 	
 	public override void OnInspectorGUI()
 	{
-		GridGenerator comp = (GridGenerator)target;
-		comp.samplingType = (GridGenerator.SamplerType)EditorGUILayout.EnumPopup(
+		PseudoGridGenerator comp = (PseudoGridGenerator)target;
+		comp.samplingType = (PseudoGridGenerator.SamplerType)EditorGUILayout.EnumPopup(
 			"Sampling Type", comp.samplingType);
-		comp.gridType = (GridGenerator.GridType)
+		comp.gridType = (PseudoGridGenerator.GridType)
 			EditorGUILayout.EnumPopup("Grid Type", comp.gridType);
 		comp.xRes = EditorGUILayout.IntField("X Resolution", comp.xRes);
 		comp.yRes = EditorGUILayout.IntField("Y Resolution", comp.yRes);
@@ -27,7 +27,7 @@ public class GridGeneratorEditor : Editor {
 				comp.maxSlope);
 			comp.edgeRaycast = EditorGUILayout.Toggle("Edge Raycast",
 				comp.edgeRaycast);
-			comp.edgeCostAlgorithm = (GridGenerator.EdgeCostAlgorithm)
+			comp.edgeCostAlgorithm = (PseudoGridGenerator.EdgeCostAlgorithm)
 				EditorGUILayout.EnumPopup("Edge Cost Algorithm",
 				comp.edgeCostAlgorithm);
 			
