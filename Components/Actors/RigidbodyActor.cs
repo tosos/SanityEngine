@@ -40,7 +40,7 @@ public class RigidbodyActor : SteeringManagerComponent {
 		
 		body.AddForce(desired);
 
-		/* TODO speed clamp
+		/* TODO speed clamp?
 		velocity += accel * t;
 		velocity -= velocity * linearDamp;
 		float speed = velocity.magnitude;
@@ -58,7 +58,7 @@ public class RigidbodyActor : SteeringManagerComponent {
 
 		body.AddTorque(desired);
 
-		/* TODO angular speed clamp
+		/* TODO angular speed clamp?
 		angularVelocity += angAccel * t;
 		angularVelocity -= angularVelocity * angularDamp;
 		float angSpeed = angularVelocity.magnitude;

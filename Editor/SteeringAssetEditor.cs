@@ -14,7 +14,6 @@ public class SteeringAssetEditor : Editor {
 		
 		SteeringBehaviorAsset sab = (SteeringBehaviorAsset)target;
 		EditorGUILayout.BeginVertical();
-		Debug.Log(ParseVector3(new Vector3(1, 2, 3).ToString()));
 
 		showProperties = EditorGUILayout.Foldout(showProperties,
 			"Properties");
