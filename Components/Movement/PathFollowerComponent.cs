@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using SanityEngine.Actors;
 using SanityEngine.Movement.SteeringBehaviors;
 using SanityEngine.Movement.PathFollowing;
@@ -12,16 +12,27 @@ using SanityEngine.Utility.Heuristics;
 [AddComponentMenu("Sanity Engine/Movement/Path Follower")]
 public class PathFollowerComponent : MonoBehaviour {
 	public float lookAhead = 2.0f;
+	public float epsilon = 0.001f;
+	public float doneThreshhold = 0.1f;
 	public Vector3 targetOffset = Vector3.zero;
 	public string moveBehavior;
+	public bool broadcastMessages = true;
 
 	SteeringManagerComponent manager;
 	PointActor target;
 	ASearch<UnityNode, UnityEdge> finder;
 	Path<UnityNode, UnityEdge> path;
 	CoherentPathFollower<UnityNode, UnityEdge> follower;
+	UnityNode goal;
+	List<MonoBehaviour> listeners;
+	
+	void Awake ()
+	{
+		listeners = new List<MonoBehaviour>();
+	}
 
-	void Start () {
+	void Start ()
+	{
 		manager = GetComponent<SteeringManagerComponent>();
 		Heuristic heuristic = new EuclideanHeuristic();
 		
@@ -34,11 +45,18 @@ public class PathFollowerComponent : MonoBehaviour {
 	}
 	
 	void Update () {
-		if(!follower.Valid) {
+		if(goal == null || !follower.Valid) {
+			return;
+		}
+		
+		if(Vector3.Distance(transform.position, goal.Position) < doneThreshhold) {
+			SendPathMessage("OnPathArrived");
+			ClearGoalNode();
 			return;
 		}
 		
 		follower.LookAhead = lookAhead;
+		follower.Epsilon = epsilon;
 		float param = follower.GetNextParameter(transform.position);
 		target.Point = follower.GetPosition(param + lookAhead) + targetOffset;
 	}
@@ -51,15 +69,22 @@ public class PathFollowerComponent : MonoBehaviour {
 		}
 		
 		manager[moveBehavior].SetEnabled(false);
+
+		this.goal = goal;
 		
 		path = finder.Search(goal.NavMesh.Quantize(transform.position), goal);
-		follower.Path = path;
+		if(path == null) {
+			SendPathMessage("OnPathNotFound");
+			return;
+		}
+		SendPathMessage("OnPathNew");
 		
 		manager[moveBehavior].SetEnabled(true);
 	}
 	
 	void ClearGoalNode()
 	{
+		goal = null;
 		follower.Path = null;
 		manager[moveBehavior].SetEnabled(false);
 	}
@@ -80,5 +105,28 @@ public class PathFollowerComponent : MonoBehaviour {
 			Gizmos.DrawSphere(edge.Target.Position, 0.1f);
 			Gizmos.DrawLine(edge.Source.Position, edge.Target.Position);
 		}
+	}
+	
+	void SendPathMessage(string message)
+	{
+		if(broadcastMessages) {
+			BroadcastMessage(message, SendMessageOptions.DontRequireReceiver);
+		} else {
+			SendMessage(message, SendMessageOptions.DontRequireReceiver);
+		}
+
+		for(int i = 0; i < listeners.Count; i ++) {
+			listeners[i].SendMessage(message, this, SendMessageOptions.DontRequireReceiver);
+		}
+	}
+	
+	public void AddListener(MonoBehaviour listener)
+	{
+		listeners.Add(listener);
+	}
+
+	public void RemoveListener(MonoBehaviour listener)
+	{
+		listeners.Remove(listener);
 	}
 }
