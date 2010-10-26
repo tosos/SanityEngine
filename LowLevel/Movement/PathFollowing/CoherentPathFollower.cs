@@ -26,56 +26,9 @@ namespace SanityEngine.Movement.PathFollowing
         where TEdge : Edge<TNode, TEdge>
     {
         Path<TNode, TEdge> path;
-        float epsilon = 0.001f;
 		float totalLength = 0.0f;
 		float previousParam = 0.0f;
-		float lookAhead = 2f;
 		
-		/// <summary>
-		/// The minimum distance to move the path target forward, in world units.
-		/// </summary>
-		public float Epsilon
-		{
-			get { return epsilon; }
-			set { epsilon = value; }
-		}
-		
-		/// <summary>
-        /// The maximum distance to follow along the path, in world units.
-        /// </summary>
-		public float LookAhead
-		{
-			get { return lookAhead; }
-			set { lookAhead = value; }
-		}
-
-        /// <summary>
-        /// The underlying path being followed.
-        /// </summary>
-        public Path<TNode, TEdge> Path
-        {
-            set
-            {
-                path = value;
-                previousParam = 0.0f;
-				totalLength = 0.0f;
-				for(int i = 1;path != null && i < path.StepCount; i ++) {
-                    TEdge edge = path.GetStep(i);
-					Vector3 pos1 = edge.Source.Position;
-                    Vector3 pos2 = edge.Target.Position;
-                    totalLength += (pos2 - pos1).magnitude;
-				}
-            }
-        }
-		
-        /// <summary>
-        /// <code>true</code> if this path follower has a valid path.
-        /// </summary>
-		public bool Valid
-		{
-			get { return path != null; }
-		}
-
         /// <summary>
         /// Create a path follower.
         /// </summary>
@@ -90,14 +43,33 @@ namespace SanityEngine.Movement.PathFollowing
         {
             previousParam = 0.0f;
         }
+		
+		/// <summary>
+		/// Sets the path.
+		/// </summary>
+		/// <param name="newPath">The new path.</param>
+		public void SetPath(Path<TNode, TEdge> newPath)
+        {
+            this.path = newPath;
+            previousParam = 0.0f;
+			totalLength = 0.0f;
+			for(int i = 1;path != null && i < path.StepCount; i ++) {
+                TEdge edge = path.GetStep(i);
+				Vector3 pos1 = edge.Source.Position;
+                Vector3 pos2 = edge.Target.Position;
+                totalLength += (pos2 - pos1).magnitude;
+			}
+        }
 
         /// <summary>
         /// Get the next parameter based on the agent's position.
         /// </summary>
         /// <param name="pos">The agent's position.</param>
+        /// <param name="epsilon">The smallest amount to move forward.
+        /// <param name="lookAhead">The maximum distance to look ahead.</param>
         /// <returns>The next target parameter.</returns>
         /// <seealso cref="GetPosition"/>
-        public float GetNextParameter(Vector3 pos)
+        public float GetNextParameter(Vector3 pos, float epsilon, float lookAhead)
         {
             float min = previousParam + epsilon;
 			float max = min + lookAhead;

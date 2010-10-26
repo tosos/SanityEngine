@@ -542,38 +542,19 @@ public class Grid : UnityGraph
 	/// <param name="y1">The y-coordinate of the source square.</param>
 	/// <param name="x2">The x-coordinate of the destination square.</param>
 	/// <param name="y2">The y-coordinate of the destination square.</param>
-	public void EdgeChanged (int x1, int y1, int x2, int y2)
+	/// <param name="cost">The new cost of the edge, set to Infinity to disable.</param>
+	public void EdgeChanged (int x1, int y1, int x2, int y2, float cost)
 	{
-		#if false
-		// TODO is all of this needed anymore?
-		SimpleNode src = nodes[GetIdx (x1, y1)];
-		SimpleNode dest = nodes[GetIdx (x2, y2)];
-		float cost = GetEdgeCost (x1, y1, x2, y2);
-		for (int i = 0; i < src.OutEdgeCount; i++) {
-			UnityEdge edge = src.GetOutEdge (i);
-			if (edge.Target == dest) {
-				if (cost != Mathf.Infinity) {
-					((GridEdge)edge).Cost = cost;
-				} else {
-					src.RemoveOutEdge (i);
-				}
-				helper.MarkChanged (edge);
-				break;
+		SimpleNode src = nodes[y1, x1];
+		SimpleNode target = nodes[y2, x2];
+
+		for(int i = 0; i < src.OutEdgeCount; i ++) {
+			SimpleEdge edge = (SimpleEdge)src.GetOutEdge(i);
+			if(edge.Target == target) {
+				edge.Cost = cost;
+				helper.MarkChanged(edge);
 			}
 		}
-		for (int i = 0; i < src.InEdgeCount; i++) {
-			UnityEdge edge = src.GetInEdge (i);
-			if (edge.Target == dest) {
-				if (cost != Mathf.Infinity) {
-					((GridEdge)edge).Cost = cost;
-				} else {
-					src.RemoveInEdge (i);
-				}
-				helper.MarkChanged (edge);
-				break;
-			}
-		}
-		#endif
 	}
 
 	int GetIdx (int x, int y)

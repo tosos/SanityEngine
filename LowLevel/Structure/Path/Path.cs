@@ -6,7 +6,7 @@
 //
 // For more information, see the file LICENSE
 
-using System;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
 using SanityEngine.Search.PathFinding;
@@ -24,7 +24,7 @@ namespace SanityEngine.Structure.Path
     {
         readonly Graph.Graph<TNode, TEdge> graph;
         TEdge[] steps;
-
+		
         /// <summary>
         /// The graph this path refers to.
         /// </summary>
@@ -61,6 +61,16 @@ namespace SanityEngine.Structure.Path
             this.graph = graph;
             this.steps = steps;
         }
+		
+		public bool TestValidity()
+		{
+			for(int i = 0; i < StepCount; i ++) {
+				if(GetStep(i).Cost == Mathf.Infinity) {
+					return false;
+				}
+			}
+			return true;
+		}
 
         /// <summary>
         /// String representation of a path for debugging purposes.
