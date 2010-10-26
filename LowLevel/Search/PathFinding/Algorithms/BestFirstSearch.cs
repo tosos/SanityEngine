@@ -6,6 +6,7 @@
 //
 // For more information, see the file LICENSE
 
+using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -86,6 +87,9 @@ namespace SanityEngine.Search.PathFinding.Algorithms
                 for (int i = 0; i < node.Node.OutEdgeCount; i++)
                 {
                     TEdge edge = node.Node.GetOutEdge(i);
+					if(edge.Cost == Mathf.Infinity) {
+						continue;
+					}
 
                     TNode nextNode = edge.Target;
 
