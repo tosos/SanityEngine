@@ -23,7 +23,7 @@ public class PathFollowerComponent : MonoBehaviour {
 	ASearch<UnityNode, UnityEdge> finder;
 	Path<UnityNode, UnityEdge> path;
 	CoherentPathFollower<UnityNode, UnityEdge> follower;
-	UnityNode goal;
+	UnityNode goalNode;
 	List<MonoBehaviour> listeners;
 	
 	void Awake ()
@@ -45,19 +45,26 @@ public class PathFollowerComponent : MonoBehaviour {
 	}
 	
 	void Update () {
-		if(goal == null || !follower.Valid) {
+		if(goalNode == null || path == null) {
 			return;
 		}
 		
-		if(Vector3.Distance(transform.position, goal.Position) < doneThreshhold) {
+		if(Vector3.Distance(transform.position, goalNode.Position) < doneThreshhold) {
 			SendPathMessage("OnPathArrived");
 			ClearGoalNode();
 			return;
 		}
 		
-		follower.LookAhead = lookAhead;
-		follower.Epsilon = epsilon;
-		float param = follower.GetNextParameter(transform.position);
+		if(path.Graph.HasChanged) {
+			// XXX replace with callbacks
+			if(!path.TestValidity()) {
+				FindNewPath();
+			}
+			path.Graph.ResetChanges();
+			return;
+		}
+		
+		float param = follower.GetNextParameter(transform.position, epsilon, lookAhead);
 		target.Point = follower.GetPosition(param + lookAhead) + targetOffset;
 	}
 	
@@ -70,22 +77,17 @@ public class PathFollowerComponent : MonoBehaviour {
 		
 		manager[moveBehavior].SetEnabled(false);
 
-		this.goal = goal;
+		this.goalNode = goal;
 		
-		path = finder.Search(goal.NavMesh.Quantize(transform.position), goal);
-		if(path == null) {
-			SendPathMessage("OnPathNotFound");
-			return;
-		}
-		SendPathMessage("OnPathNew");
-		
+		FindNewPath();
+				
 		manager[moveBehavior].SetEnabled(true);
 	}
 	
 	void ClearGoalNode()
 	{
-		goal = null;
-		follower.Path = null;
+		goalNode = null;
+		path = null;
 		manager[moveBehavior].SetEnabled(false);
 	}
 	
@@ -105,6 +107,20 @@ public class PathFollowerComponent : MonoBehaviour {
 			Gizmos.DrawSphere(edge.Target.Position, 0.1f);
 			Gizmos.DrawLine(edge.Source.Position, edge.Target.Position);
 		}
+	}
+	
+	void FindNewPath()
+	{
+		path = finder.Search(goalNode.NavMesh.Quantize(transform.position), goalNode);
+		if(path == null) {
+			ClearGoalNode();
+			SendPathMessage("OnPathNotFound");
+			return;
+		}
+		
+		follower.SetPath(path);
+		
+		SendPathMessage("OnPathNew");
 	}
 	
 	void SendPathMessage(string message)
