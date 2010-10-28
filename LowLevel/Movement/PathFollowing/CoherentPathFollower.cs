@@ -25,9 +25,16 @@ namespace SanityEngine.Movement.PathFollowing
         where TNode : NavMeshNode<TNode, TEdge>
         where TEdge : Edge<TNode, TEdge>
     {
-        Path<TNode, TEdge> path;
+		List<Segment> segments = new List<Segment>();
 		float totalLength = 0.0f;
-		float previousParam = 0.0f;
+		
+		struct Segment
+		{
+			public Vector3 origin;
+			public Vector3 dir;
+			public float start;
+			public float end;
+		}
 		
         /// <summary>
         /// Create a path follower.
@@ -35,29 +42,26 @@ namespace SanityEngine.Movement.PathFollowing
         public CoherentPathFollower()
         {
         }
-
-        /// <summary>
-        /// Reset the path follower to the beginning of the path.
-        /// </summary>
-        public void Reset()
-        {
-            previousParam = 0.0f;
-        }
 		
 		/// <summary>
 		/// Sets the path.
 		/// </summary>
 		/// <param name="newPath">The new path.</param>
-		public void SetPath(Path<TNode, TEdge> newPath)
+		public void SetPath(Path<TNode, TEdge> path)
         {
-            this.path = newPath;
-            previousParam = 0.0f;
+			segments.Clear();
 			totalLength = 0.0f;
 			for(int i = 1;path != null && i < path.StepCount; i ++) {
                 TEdge edge = path.GetStep(i);
+				Segment s = new Segment();
 				Vector3 pos1 = edge.Source.Position;
                 Vector3 pos2 = edge.Target.Position;
+				s.origin = pos1;
+				s.dir = Vector3.Normalize(pos2 - pos1);
+				s.start = totalLength;
                 totalLength += (pos2 - pos1).magnitude;
+				s.end = totalLength;
+				segments.Add(s);
 			}
         }
 
@@ -65,48 +69,37 @@ namespace SanityEngine.Movement.PathFollowing
         /// Get the next parameter based on the agent's position.
         /// </summary>
         /// <param name="pos">The agent's position.</param>
-        /// <param name="epsilon">The smallest amount to move forward.
-        /// <param name="lookAhead">The maximum distance to look ahead.</param>
         /// <returns>The next target parameter.</returns>
         /// <seealso cref="GetPosition"/>
-        public float GetNextParameter(Vector3 pos, float epsilon, float lookAhead)
+        public float GetNextParameter(Vector3 pos, float min, float max)
         {
-            float min = previousParam + epsilon;
-			float max = min + lookAhead;
-
-            float minDist = float.PositiveInfinity;
-            float nearestParam = min;
-
-			float totalDist = 0.0f;
-            for (int i = 0; i < path.StepCount; i++)
-            {
-                TEdge edge = path.GetStep(i);
-                Vector3 s = edge.Source.Position;
-                Vector3 e = edge.Target.Position;
-                Vector3 seg = e - s;
-				float mag = seg.magnitude;
-                Vector3 dir = pos - s;
-                float proj = Vector3.Dot(seg, dir) / (mag * mag);
-				float param = totalDist + mag * proj;
-				totalDist += mag;
-				
-				//param = Math.Max(min, Math.Min(max, param));
-				if(param < min || param > max) {
-					continue;
+			float nearestDist = Mathf.Infinity;
+			float nearestParam = Mathf.Min(min, totalLength);
+        	foreach(Segment s in segments) {
+            	if(s.end < min) {
+            	    continue;
 				}
+        	    if(s.start > max) {
+    	            break;
+				}
+	            float p0 = Mathf.Max(s.start, min) - s.start;
+            	float p1 = Mathf.Min(s.end, max) - s.start;
+        	    Vector3 v = pos - s.origin;
+    	        float proj = Vector3.Dot(s.dir, v);
+	            float param = s.start + proj;
+            	if(param < s.start || param > s.end) {
+        	        continue;
+				}
+    	        proj = Mathf.Max(p0, Mathf.Min(p1, proj));
+	            Vector3 projPoint = s.origin + s.dir * proj;
+            	float dist = Vector3.Distance(pos, projPoint);
+        	    if(dist < nearestDist) {
+    	            nearestDist = dist;
+					nearestParam = s.start + proj;
+				}
+			}
+	        return nearestParam;
 
-                Vector3 pt = Vector3.Lerp(s, e, proj);
-                Vector3 vec = pos - (s + pt);
-                float dist = vec.magnitude;
-                if (dist < minDist)
-                {
-                    minDist = dist;
-                    nearestParam = param;
-                }
-            }
-			
-			previousParam = nearestParam;
-            return nearestParam;
         }
 
         /// <summary>
@@ -118,33 +111,15 @@ namespace SanityEngine.Movement.PathFollowing
         /// <seealso cref="GetNextParameter"/>
         public Vector3 GetPosition(float param)
         {
-        	if(path == null || path.StepCount <= 0) {
-        		return Vector3.zero;
-        	}
-			if(param <= 0.0f) {
-				return path.GetStep(0).Source.Position;
-			}
-			if(param >= totalLength) {
-				return path.GetStep(path.StepCount - 1).Target.Position;
-			}
-			
-			float totalDist = 0.0f;
-            for (int i = 0; i < path.StepCount; i++)
-            {
-                TEdge edge = path.GetStep(i);
-                Vector3 s = edge.Source.Position;
-                Vector3 e = edge.Target.Position;
-                Vector3 seg = e - s;
-				float mag = seg.magnitude;
-				if(param >= totalDist && param <= totalDist + mag) {
-					float segParam = (param - totalDist) / mag;
-					Vector3 v = Vector3.Lerp(s, e, segParam);
-					return v;
+	        foreach(Segment s in segments) {
+    	        if(param < s.start || param > s.end) {
+        	        continue;
 				}
-				
-				totalDist += mag;
-            }
-            return Vector3.zero;
+            	float p = param - s.start;
+	            return s.origin + p * s.dir;
+			}
+    	    Segment seg = segments[segments.Count - 1];
+        	return seg.origin + (seg.end - seg.start) * seg.dir;
         }
     }
 }
