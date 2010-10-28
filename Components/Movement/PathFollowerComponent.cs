@@ -25,6 +25,7 @@ public class PathFollowerComponent : MonoBehaviour {
 	CoherentPathFollower<UnityNode, UnityEdge> follower;
 	UnityNode goalNode;
 	List<MonoBehaviour> listeners;
+	float prevParam;
 	
 	void Awake ()
 	{
@@ -33,6 +34,7 @@ public class PathFollowerComponent : MonoBehaviour {
 
 	void Start ()
 	{
+		prevParam = 0.0f;
 		manager = GetComponent<SteeringManagerComponent>();
 		Heuristic heuristic = new EuclideanHeuristic();
 		
@@ -64,8 +66,9 @@ public class PathFollowerComponent : MonoBehaviour {
 			return;
 		}
 		
-		float param = follower.GetNextParameter(transform.position, epsilon, lookAhead);
+		float param = follower.GetNextParameter(transform.position, prevParam + epsilon, prevParam + lookAhead);
 		target.Point = follower.GetPosition(param + lookAhead) + targetOffset;
+		prevParam = param;
 	}
 	
 	void SetGoalNode(UnityNode goal)
@@ -118,6 +121,7 @@ public class PathFollowerComponent : MonoBehaviour {
 			return;
 		}
 		
+		prevParam = 0.0f;
 		follower.SetPath(path);
 		
 		SendPathMessage("OnPathNew");
