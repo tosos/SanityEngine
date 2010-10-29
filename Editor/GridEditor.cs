@@ -25,6 +25,8 @@ public class GridEditor : Editor {
 			comp.newParameters.xDimension);
 		comp.newParameters.yDimension = EditorGUILayout.IntField("Y Dimension",
 			comp.newParameters.yDimension);
+		comp.noHitNoCell = EditorGUILayout.Toggle("No Hit No cell",
+			comp.noHitNoCell);
 		EditorGUILayout.PropertyField(maskProp);
 		serObj.ApplyModifiedProperties();
 		
@@ -53,7 +55,9 @@ public class GridEditor : Editor {
 			EditorUtility.SetDirty(target);
 			comp.FindCells();
 		}
-		comp.alwaysDrawGrid= EditorGUILayout.Toggle("Always Draw Grid",
+		comp.drawEdges = EditorGUILayout.Toggle("Draw Edges",
+			comp.drawEdges);
+		comp.alwaysDrawGrid = EditorGUILayout.Toggle("Always Draw Grid",
 			comp.alwaysDrawGrid);
 		
 		int x, y;
@@ -92,6 +96,9 @@ public class GridEditor : Editor {
 			float size = Mathf.Min(cellSize.x, Mathf.Min(cellSize.y, cellSize.z)) * 0.5f;
 			for (int y = 0; y < yDim; y++) {
 				for (int x = 0; x < xDim; x++) {
+					if(comp.IsCellVisible(x, y)) {
+						continue;
+					}
 					Vector3 pos = comp.GetWorldCellPosition(x, y);
 					if(comp.IsSelected(x, y)) {
 						Handles.color = new Color(1.0f, 0.5f, 0.0f);

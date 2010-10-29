@@ -100,10 +100,12 @@ public class Grid : UnityGraph
 	public bool edgeRaycast = false;
 	public EdgeCostAlgorithm edgeCostAlgorithm;
 	public GridType gridType;
-	public bool alwaysDrawGrid = true;
 	public int selectedX = -1;
 	public int selectedY = -1;
 	public GridParameters newParameters;
+	public bool noHitNoCell = true;
+	public bool alwaysDrawGrid = true;
+	public bool drawEdges = true;
 
 	[SerializeField]
 	GridCell[] cells;
@@ -206,11 +208,14 @@ public class Grid : UnityGraph
 			for (int y = 0; y < parameters.yDimension; y++) {
 				for (int x = 0; x < parameters.xDimension; x++) {
 					GridCell cell = cells[GetIdx (x, y)];
+					if(cell.height < 0f) {
+						continue;
+					}
 					Vector3 cellPos = GetLocalCellPosition(x, y) + (cell.height + 0.5f) * Vector3.up;
 					Gizmos.color = new Color(1.0f, 1.0f, 1.0f, 0.2f);
 					Gizmos.DrawWireCube (cellPos, cellSize);
 					
-					if(cell.edges != null) {
+					if(drawEdges && cell.edges != null) {
 						if(selectedX >= 0 && (selectedX != x || selectedY != y)) {
 							continue;
 						}
@@ -267,7 +272,7 @@ public class Grid : UnityGraph
 				Vector3 rayPos = transform.TransformPoint (GetLocalCellPosition(x, y)
 					+ Vector3.up * parameters.scanHeight);
 				Vector3 pos;
-				float height = 0f;
+				float height = noHitNoCell ? -1f : 0f;
 				if (sampler (rayPos, down * parameters.scanHeight, out pos)) {
 					Vector3 localPos = transform.InverseTransformPoint (pos);
 					height = localPos.y + parameters.scanHeight * 0.5f;
@@ -302,7 +307,9 @@ public class Grid : UnityGraph
 				GridCell tgt = cells[GetIdx(ex, ey)];
 				float cost = GetEdgeCost (x, y, ex, ey);
 				float change = tgt.height - src.height;
-				if(change > maxEdgeHeightChange) {
+				if(change > maxEdgeHeightChange || src.height < 0f
+					|| tgt.height < 0f)
+				{
 					cost = Mathf.Infinity;
 				}
 				GridEdge edge = new GridEdge (ex, ey, cost);
@@ -494,6 +501,28 @@ public class Grid : UnityGraph
 		return cells[GetIdx(x, y)].height;
 	}
 	
+	public bool IsCellVisible(int x, int y)
+	{
+		if(cells[GetIdx(x, y)].height < 0) {
+			return false;
+		}
+		
+		foreach(GridEdge edge in cells[GetIdx(x, y)].edges) {
+			if(edge.cost != Mathf.Infinity) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/// <summary>
+	/// Sets the height of the cell.
+	/// </summary>
+	/// <param name='x'>the cell's x-coordinate</param>
+	/// <param name='y'>the cell's y-coordinate</param>
+	/// <param name='height'>the cell's new height</param>
+	/// <remarks>Note that this does NOT change the edge costs</remarks>
 	public void SetCellHeight(int x, int y, float height)
 	{
 		if(height < 0) {
