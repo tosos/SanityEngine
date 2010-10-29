@@ -15,9 +15,16 @@ public class GridEditor : Editor {
 			"Sampling Type", comp.samplingType);
 		comp.gridType = (Grid.GridType)
 			EditorGUILayout.EnumPopup("Grid Type", comp.gridType);
-		comp.size = EditorGUILayout.Vector3Field("Size", comp.size);
-		comp.xRes = EditorGUILayout.IntField("X Resolution", comp.xRes);
-		comp.yRes = EditorGUILayout.IntField("Y Resolution", comp.yRes);
+		comp.newParameters.xSize = EditorGUILayout.FloatField("Cell x-size",
+			comp.newParameters.xSize);
+		comp.newParameters.ySize = EditorGUILayout.FloatField("Cell y-size",
+			comp.newParameters.ySize);
+		comp.newParameters.scanHeight = EditorGUILayout.FloatField("Ray Scan Height",
+			comp.newParameters.scanHeight);
+		comp.newParameters.xDimension = EditorGUILayout.IntField("X Dimension",
+			comp.newParameters.xDimension);
+		comp.newParameters.yDimension = EditorGUILayout.IntField("Y Dimension",
+			comp.newParameters.yDimension);
 		EditorGUILayout.PropertyField(maskProp);
 		serObj.ApplyModifiedProperties();
 		
@@ -46,8 +53,8 @@ public class GridEditor : Editor {
 			EditorUtility.SetDirty(target);
 			comp.FindCells();
 		}
-		comp.drawGrid = EditorGUILayout.Toggle("Draw Grid",
-			comp.drawGrid);
+		comp.alwaysDrawGrid= EditorGUILayout.Toggle("Always Draw Grid",
+			comp.alwaysDrawGrid);
 		
 		int x, y;
 		Grid.GridCell cell = comp.GetSelectedCell(out x, out y);
@@ -80,9 +87,11 @@ public class GridEditor : Editor {
 		
 		if(comp.IsInitialized) {
 			Vector3 cellSize = comp.GetCellSize();
+			int xDim, yDim;
+			comp.GetDimensions(out xDim, out yDim);
 			float size = Mathf.Min(cellSize.x, Mathf.Min(cellSize.y, cellSize.z)) * 0.5f;
-			for (int y = 0; y < comp.yRes; y++) {
-				for (int x = 0; x < comp.xRes; x++) {
+			for (int y = 0; y < yDim; y++) {
+				for (int x = 0; x < xDim; x++) {
 					Vector3 pos = comp.GetWorldCellPosition(x, y);
 					if(comp.IsSelected(x, y)) {
 						Handles.color = new Color(1.0f, 0.5f, 0.0f);

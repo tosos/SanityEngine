@@ -74,40 +74,63 @@ public class Grid : UnityGraph
 			this.height = height;
 		}
 	}
+	
+	[System.Serializable]
+	public class GridParameters
+	{
+		public float xSize = 1.0f;
+		public float ySize = 1.0f;
+		public float scanHeight = 5.0f;
+		public int xDimension = 10;
+		public int yDimension = 10;
+		
+		public void CopyTo(GridParameters other)
+		{
+			other.xSize = xSize;
+			other.ySize = ySize;
+			other.scanHeight = scanHeight;
+			other.xDimension = xDimension;
+			other.yDimension = yDimension;
+		}
+	}
 
 	public SamplerType samplingType = SamplerType.MONTE_CARLO;
-	public Vector3 size = new Vector3 (10f, 5f, 10f);
-	public int xRes = 10;
-	public int yRes = 10;
 	public LayerMask layerMask = -1;
 	public float maxEdgeHeightChange = Mathf.Infinity;
 	public bool edgeRaycast = false;
 	public EdgeCostAlgorithm edgeCostAlgorithm;
 	public GridType gridType;
-	public bool drawGrid = true;
+	public bool alwaysDrawGrid = true;
 	public int selectedX = -1;
 	public int selectedY = -1;
+	public GridParameters newParameters;
 
 	[SerializeField]
 	GridCell[] cells;
 	SimpleNode[,] nodes;
 	GraphChangeHelper<UnityNode, UnityEdge> helper;
+	[SerializeField]
+	GridParameters parameters;
 
 	// Use this for initialization
 	void Start ()
 	{
+		if(cells == null) {
+			return;
+		}
+		
 		helper = new GraphChangeHelper<UnityNode, UnityEdge> ();
-		nodes = new SimpleNode[yRes, xRes];
-		for (int y = 0; y < yRes; y++) {
-			for (int x = 0; x < xRes; x++) {
+		nodes = new SimpleNode[parameters.yDimension, parameters.xDimension];
+		for (int y = 0; y < parameters.yDimension; y++) {
+			for (int x = 0; x < parameters.xDimension; x++) {
 				nodes[y, x] = new SimpleNode(transform.TransformPoint(
 					GetLocalCellPosition(x, y) + cells[GetIdx(x, y)].height
 					* Vector3.up), this);
 			}
 		}
 		
-		for (int y = 0; y < yRes; y++) {
-			for (int x = 0; x < xRes; x++) {
+		for (int y = 0; y < parameters.yDimension; y++) {
+			for (int x = 0; x < parameters.xDimension; x++) {
 				GridCell cell = cells[GetIdx(x, y)];
 				foreach(GridEdge edge in cell.edges) {
 					SimpleNode src = nodes[y, x];
@@ -128,14 +151,14 @@ public class Grid : UnityGraph
 
 	void OnDrawGizmos ()
 	{
-		if (drawGrid) {
+		if (alwaysDrawGrid) {
 			DrawGizmos ();
 		}
 	}
 
 	void OnDrawGizmosSelected ()
 	{
-		if (!drawGrid) {
+		if (!alwaysDrawGrid) {
 			DrawGizmos ();
 		}
 	}
@@ -173,14 +196,15 @@ public class Grid : UnityGraph
 		Vector3 pos = transform.position;
 		Gizmos.matrix = Matrix4x4.TRS (pos, transform.rotation, Vector3.one);
 		Gizmos.color = new Color(1.0f, 1.0f, 0.0f, 0.5f);
-		Gizmos.DrawWireCube (Vector3.zero, size);
+		Gizmos.DrawWireCube (Vector3.zero, new Vector3(parameters.xSize * parameters.xDimension,
+			parameters.scanHeight, parameters.ySize * parameters.yDimension));
 		
 		if (cells != null) {
 			Vector3 cellSize = GetCellSize();
 			float radius = Mathf.Min(cellSize.x, Mathf.Min(cellSize.y, cellSize.z)) * 0.05f;
 			
-			for (int y = 0; y < yRes; y++) {
-				for (int x = 0; x < xRes; x++) {
+			for (int y = 0; y < parameters.yDimension; y++) {
+				for (int x = 0; x < parameters.xDimension; x++) {
 					GridCell cell = cells[GetIdx (x, y)];
 					Vector3 cellPos = GetLocalCellPosition(x, y) + (cell.height + 0.5f) * Vector3.up;
 					Gizmos.color = new Color(1.0f, 1.0f, 1.0f, 0.2f);
@@ -214,6 +238,8 @@ public class Grid : UnityGraph
 	
 	public void FindCells ()
 	{
+		newParameters.CopyTo(parameters);
+		
 		// Choose a sampler function
 		Sample sampler = null;
 		switch (samplingType) {
@@ -234,24 +260,24 @@ public class Grid : UnityGraph
 			break;
 		}
 		
-		cells = new GridCell[xRes * yRes];
+		cells = new GridCell[parameters.xDimension * parameters.yDimension];
 		Vector3 down = -transform.up;
-		for (int y = 0; y < yRes; y++) {
-			for (int x = 0; x < xRes; x++) {
+		for (int y = 0; y < parameters.yDimension; y++) {
+			for (int x = 0; x < parameters.xDimension; x++) {
 				Vector3 rayPos = transform.TransformPoint (GetLocalCellPosition(x, y)
-					+ Vector3.up * size.y);
+					+ Vector3.up * parameters.scanHeight);
 				Vector3 pos;
 				float height = 0f;
-				if (sampler (rayPos, down * size.y, out pos)) {
+				if (sampler (rayPos, down * parameters.scanHeight, out pos)) {
 					Vector3 localPos = transform.InverseTransformPoint (pos);
-					height = localPos.y + size.y * 0.5f;
+					height = localPos.y + parameters.scanHeight * 0.5f;
 				}
 				
 				cells[GetIdx (x, y)] = new GridCell (height);
 			}
 		}
-		for (int y = 0; y < yRes; y++) {
-			for (int x = 0; x < xRes; x++) {
+		for (int y = 0; y < parameters.yDimension; y++) {
+			for (int x = 0; x < parameters.xDimension; x++) {
 				RegenerateEdges(x, y);
 			}
 		}
@@ -260,9 +286,9 @@ public class Grid : UnityGraph
 	public void RegenerateEdges(int x, int y)
 	{
 		int minY = y <= 0 ? 0 : y - 1;
-		int maxY = y >= yRes - 1 ? yRes - 1 : y + 1;
+		int maxY = y >= parameters.yDimension - 1 ? parameters.yDimension - 1 : y + 1;
 		int minX = x <= 0 ? 0 : x - 1;
-		int maxX = x >= xRes - 1 ? xRes - 1 : x + 1;
+		int maxX = x >= parameters.xDimension - 1 ? parameters.xDimension - 1 : x + 1;
 		
 		GridCell src = cells[GetIdx(x, y)];
 		for (int ey = minY; ey <= maxY; ey++) {
@@ -296,8 +322,8 @@ public class Grid : UnityGraph
 
 	bool SampleCornersAvg (Vector3 pos, Vector3 dir, out Vector3 result)
 	{
-		Vector3 r = transform.right * (size.x / xRes) * 0.5f;
-		Vector3 f = transform.forward * (size.z / yRes) * 0.5f;
+		Vector3 r = transform.right * parameters.xSize * 0.5f;
+		Vector3 f = transform.forward * parameters.ySize * 0.5f;
 		
 		Vector3 sum = Vector3.zero;
 		
@@ -327,8 +353,8 @@ public class Grid : UnityGraph
 
 	bool SampleCornersMin (Vector3 pos, Vector3 dir, out Vector3 result)
 	{
-		Vector3 r = transform.right * (size.x / xRes) * 0.5f;
-		Vector3 f = transform.forward * (size.z / yRes) * 0.5f;
+		Vector3 r = transform.right * parameters.xSize * 0.5f;
+		Vector3 f = transform.forward * parameters.ySize * 0.5f;
 		
 		float minDist = Mathf.Infinity;
 		float max = dir.magnitude;
@@ -358,8 +384,8 @@ public class Grid : UnityGraph
 
 	bool SampleCornersMax (Vector3 pos, Vector3 dir, out Vector3 result)
 	{
-		Vector3 r = transform.right * (size.x / xRes) * 0.5f;
-		Vector3 f = transform.forward * (size.z / yRes) * 0.5f;
+		Vector3 r = transform.right * parameters.xSize * 0.5f;
+		Vector3 f = transform.forward * parameters.ySize * 0.5f;
 		
 		bool wasHit = false;
 		float maxDist = 0f;
@@ -390,8 +416,8 @@ public class Grid : UnityGraph
 
 	bool SampleMonteCarlo (Vector3 pos, Vector3 dir, out Vector3 result)
 	{
-		Vector3 r = transform.right * (size.x / xRes) * 0.5f;
-		Vector3 f = transform.forward * (size.z / yRes) * 0.5f;
+		Vector3 r = transform.right * parameters.xSize * 0.5f;
+		Vector3 f = transform.forward * parameters.ySize * 0.5f;
 		
 		const int numRays = 9;
 		Vector3 sum = Vector3.zero;
@@ -427,10 +453,12 @@ public class Grid : UnityGraph
 
 	Vector3 GetLocalCellPosition (int x, int y)
 	{
-		float w = (size.x / xRes);
-		float h = (size.z / yRes);
-		return new Vector3 (x * w - (size.x - w) * 0.5f, -size.y * 0.5f,
-			y * h - (size.z - h) * 0.5f);
+		float cw = parameters.xSize;
+		float ch = parameters.ySize;
+		float w = parameters.xSize * parameters.xDimension;
+		float h = parameters.ySize * parameters.yDimension;
+		return new Vector3 (x * cw - (w - cw) * 0.5f, -parameters.scanHeight * 0.5f,
+			y * ch - (h - ch) * 0.5f);
 	}
 	
 	public bool IsInitialized
@@ -447,7 +475,18 @@ public class Grid : UnityGraph
 	
 	public Vector3 GetCellSize()
 	{
-		return new Vector3 (size.x / xRes, 1.0f, size.z / yRes);
+		return new Vector3 (parameters.xSize, 1.0f, parameters.ySize);
+	}
+	
+	public void GetDimensions(out int x, out int y)
+	{
+		if(parameters == null) {
+			x = 0;
+			y = 0;
+			return;
+		}
+		x = parameters.xDimension;
+		y = parameters.yDimension;
 	}
 	
 	public float GetCellHeight(int x, int y)
@@ -459,8 +498,8 @@ public class Grid : UnityGraph
 	{
 		if(height < 0) {
 			height = 0;
-		} else if(height > size.y) {
-			height = size.y;
+		} else if(height > parameters.scanHeight) {
+			height = parameters.scanHeight;
 		}
 		cells[GetIdx(x, y)].height = height;
 	}
@@ -524,14 +563,16 @@ public class Grid : UnityGraph
 	public override UnityNode Quantize (Vector3 pos)
 	{
 		Vector3 p = transform.InverseTransformPoint (pos);
-		float xSize = size.x / xRes;
-		float ySize = size.z / yRes;
-		int x = Mathf.FloorToInt ((p.x + size.x * 0.5f) / xSize);
-		int y = Mathf.FloorToInt ((p.z + size.z * 0.5f) / ySize);
+		float xSize = parameters.xSize;
+		float ySize = parameters.ySize;
+		float w = xSize * parameters.xDimension;
+		float h = ySize * parameters.yDimension;
+		int x = Mathf.FloorToInt ((p.x + w * 0.5f) / xSize);
+		int y = Mathf.FloorToInt ((p.z + h * 0.5f) / ySize);
 		if(x < 0) x = 0;
-		else if(x >= xRes) x = xRes - 1;
+		else if(x >= parameters.xDimension) x = parameters.xDimension - 1;
 		if(y < 0) y = 0;
-		else if(y >= yRes) y = yRes - 1;
+		else if(y >= parameters.yDimension) y = parameters.yDimension - 1;
 		return nodes[y, x];
 	}
 
@@ -559,6 +600,6 @@ public class Grid : UnityGraph
 
 	int GetIdx (int x, int y)
 	{
-		return x + y * xRes;
+		return x + y * parameters.xDimension;
 	}
 }
