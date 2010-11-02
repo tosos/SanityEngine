@@ -12,10 +12,11 @@ public class SteeringBehaviorProxy
 		public readonly PropertyInfo property;
 		public readonly SteeringBehavior behavior;
 		
-		public PropProxy(PropertyInfo prop, SteeringBehavior behavior)
+		public PropProxy(PropertyInfo prop, SteeringBehavior behavior, object defaultValue)
 		{
 			this.property = prop;
 			this.behavior = behavior;
+			property.SetValue(behavior, defaultValue, null);
 		}
 	}
 	public readonly SteeringBehavior[] behaviors;
@@ -35,18 +36,19 @@ public class SteeringBehaviorProxy
     	    behavior.Weight = def.weight;
     	    behavior.Enabled = def.enabled;
     	    behaviors.Add(behavior);
-	        foreach(SteeringBehaviorAsset.SteeringProperty prop
-	        	in asset.properties)
+	        foreach(SteeringBehaviorAsset.LinkedProperty prop
+	        	in def.properties)
     	    {
+				Debug.Log(prop.name + ":" + prop.link);
     	    	List<PropProxy> props = null;
-    	    	if(properties.ContainsKey(prop.name)) {
-    	    		props = properties[prop.name];
+    	    	if(properties.ContainsKey(prop.link)) {
+    	    		props = properties[prop.link];
     	    	} else {
     	    		props = new List<PropProxy>();
-    	    		properties[prop.name] = props;
+    	    		properties[prop.link] = props;
     	    	}
         		props.Add(new PropProxy(type.GetProperty(prop.name),
-        			behavior));
+   	    			behavior, ParseValue(prop.type, prop.defaultValue)));
         	}
 		}
 		this.behaviors = behaviors.ToArray();
@@ -127,5 +129,26 @@ public class SteeringBehaviorProxy
 		foreach(PropProxy prop in props) {
 			prop.property.SetValue(prop.behavior, val, null);
 		}
+	}
+	
+	object ParseValue(SteeringBehaviorAsset.PropertyType t, string val)
+	{
+		switch(t) {
+		case SteeringBehaviorAsset.PropertyType.BOOL:
+			return System.Boolean.Parse(val);
+		case SteeringBehaviorAsset.PropertyType.INT:
+			return System.Int32.Parse(val);
+		case SteeringBehaviorAsset.PropertyType.FLOAT:
+			return System.Single.Parse(val);
+		case SteeringBehaviorAsset.PropertyType.STRING:
+			return val;
+		case SteeringBehaviorAsset.PropertyType.VECTOR2:
+			return SteeringBehaviorAsset.ParseVector2(val);
+		case SteeringBehaviorAsset.PropertyType.VECTOR3:
+			return SteeringBehaviorAsset.ParseVector3(val);
+		case SteeringBehaviorAsset.PropertyType.VECTOR4:
+			return SteeringBehaviorAsset.ParseVector4(val);
+		}
+		return null;
 	}
 }

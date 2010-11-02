@@ -147,15 +147,15 @@ public class SteeringAssetEditor : Editor {
 			result = EditorGUILayout.TextField("Default Value", val);
 			break;
 		case SteeringBehaviorAsset.PropertyType.VECTOR2:
-			Vector2 v2 = ParseVector2(val);
+			Vector2 v2 = SteeringBehaviorAsset.ParseVector2(val);
 			result = EditorGUILayout.Vector2Field("Default Value", v2);
 			break;
 		case SteeringBehaviorAsset.PropertyType.VECTOR3:
-			Vector3 v3 = ParseVector3(val);
+			Vector3 v3 = SteeringBehaviorAsset.ParseVector3(val);
 			result = EditorGUILayout.Vector3Field("Default Value", v3);
 			break;
 		case SteeringBehaviorAsset.PropertyType.VECTOR4:
-			Vector4 v4 = ParseVector4(val);
+			Vector4 v4 = SteeringBehaviorAsset.ParseVector4(val);
 			result = EditorGUILayout.Vector4Field("Default Value", v4);
 			break;
 		}
@@ -187,35 +187,5 @@ public class SteeringAssetEditor : Editor {
 			newName = name + (i++);
 		}
 		return newName;
-	}
-	
-	Vector2 ParseVector2(string val)
-	{
-		string[] vals = val.Substring(1, val.Length - 2).Split(
-			new char[]{','}, System.StringSplitOptions.None);
-		float x = System.Single.Parse(vals[0]);
-		float y = System.Single.Parse(vals[1]);
-		return new Vector2(x, y);
-	}
-
-	Vector3 ParseVector3(string val)
-	{
-		string[] vals = val.Substring(1, val.Length - 2).Split(
-			new char[]{','}, System.StringSplitOptions.None);
-		float x = System.Single.Parse(vals[0]);
-		float y = System.Single.Parse(vals[1]);
-		float z = System.Single.Parse(vals[2]);
-		return new Vector3(x, y, z);
-	}
-
-	Vector4 ParseVector4(string val)
-	{
-		string[] vals = val.Substring(1, val.Length - 2).Split(
-			new char[]{','}, System.StringSplitOptions.None);
-		float x = System.Single.Parse(vals[0]);
-		float y = System.Single.Parse(vals[1]);
-		float z = System.Single.Parse(vals[2]);
-		float w = System.Single.Parse(vals[3]);
-		return new Vector4(x, y, z, w);
 	}
 }
