@@ -141,4 +141,34 @@ public class SteeringBehaviorAsset : ScriptableObject {
 		}
 		return count;
 	}
+	
+	public static Vector2 ParseVector2(string val)
+	{
+		string[] vals = val.Substring(1, val.Length - 2).Split(
+			new char[]{','}, System.StringSplitOptions.None);
+		float x = System.Single.Parse(vals[0]);
+		float y = System.Single.Parse(vals[1]);
+		return new Vector2(x, y);
+	}
+
+	public static Vector3 ParseVector3(string val)
+	{
+		string[] vals = val.Substring(1, val.Length - 2).Split(
+			new char[]{','}, System.StringSplitOptions.None);
+		float x = System.Single.Parse(vals[0]);
+		float y = System.Single.Parse(vals[1]);
+		float z = System.Single.Parse(vals[2]);
+		return new Vector3(x, y, z);
+	}
+
+	public static Vector4 ParseVector4(string val)
+	{
+		string[] vals = val.Substring(1, val.Length - 2).Split(
+			new char[]{','}, System.StringSplitOptions.None);
+		float x = System.Single.Parse(vals[0]);
+		float y = System.Single.Parse(vals[1]);
+		float z = System.Single.Parse(vals[2]);
+		float w = System.Single.Parse(vals[3]);
+		return new Vector4(x, y, z, w);
+	}
 }
