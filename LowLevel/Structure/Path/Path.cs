@@ -17,18 +17,15 @@ namespace SanityEngine.Structure.Path
     /// <summary>
     /// A path through a graph.
     /// </summary>
-    /// <typeparam name="TID">The node ID type.</typeparam>
-    public class Path<TNode, TEdge>
-        where TNode : Node<TNode, TEdge>
-        where TEdge : Edge<TNode, TEdge>
+    public class Path
     {
-        readonly Graph.Graph<TNode, TEdge> graph;
-        TEdge[] steps;
+        readonly Graph.Graph graph;
+        Edge[] steps;
 		
         /// <summary>
         /// The graph this path refers to.
         /// </summary>
-        public Graph.Graph<TNode, TEdge> Graph
+        public Graph.Graph Graph
         {
             get { return graph; }
         }
@@ -46,7 +43,7 @@ namespace SanityEngine.Structure.Path
         /// </summary>
         /// <param name="step">The 0-based step number</param>
         /// <returns>The node index for the step.</returns>
-        public TEdge GetStep(int step)
+        public Edge GetStep(int step)
         {
             return steps[step];
         }
@@ -56,7 +53,7 @@ namespace SanityEngine.Structure.Path
         /// </summary>
         /// <param name="graph">The graph this path is through.</param>
         /// <param name="steps">The edges.</param>
-        public Path(Graph.Graph<TNode, TEdge> graph, TEdge[] steps)
+        public Path(Graph.Graph graph, Edge[] steps)
         {
             this.graph = graph;
             this.steps = steps;
@@ -79,7 +76,7 @@ namespace SanityEngine.Structure.Path
         public override string ToString()
         {
             string str = "[";
-            foreach (TEdge step in steps)
+            foreach (Edge step in steps)
             {
                 str += " " + step.ToString() + " ";
             }

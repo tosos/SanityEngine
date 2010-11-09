@@ -19,22 +19,19 @@ namespace SanityEngine.Search.PathFinding.Algorithms
     /// <summary>
     /// A base class for best-first search algorithms.
     /// </summary>
-    /// <typeparam name="TID">The node ID type.</typeparam>
-    public class BestFirstSearch<TNode, TEdge> : PathFinder<TNode, TEdge>
-        where TNode : Node<TNode, TEdge>
-        where TEdge : Edge<TNode, TEdge>
+    public class BestFirstSearch : PathFinder
     {
         private class NodeData : IComparable<NodeData>
         {
-            public readonly TNode Node;
+            public readonly Node Node;
             public bool OnOpen = false;
             public bool OnClosed = false;
             public float gScore = 0.0f;
             public float fScore = 0.0f;
             public NodeData Previous;
-            public TEdge TakenEdge;
+            public Edge TakenEdge;
 
-            public NodeData(TNode node)
+            public NodeData(Node node)
             {
                 this.Node = node;
             }
@@ -48,12 +45,13 @@ namespace SanityEngine.Search.PathFinding.Algorithms
         /// <summary>
         /// Perform a search from the start to the goal.
         /// </summary>
+        /// <param name="graph">The graph to search.</para>
         /// <param name="start">The start node.</param>
         /// <param name="goal">The goal node.</param>
         /// <returns>The path or <code>null</code> if no path could be found.</returns>
-        public Path<TNode, TEdge> Search(TNode start, TNode goal)
+        public Path Search(Graph graph, Node start, Node goal)
         {
-            Dictionary<TNode, NodeData> nodeData = new Dictionary<TNode, NodeData>();
+            Dictionary<Node, NodeData> nodeData = new Dictionary<Node, NodeData>();
             PriorityQueue<NodeData> openList = new PriorityQueue<NodeData>();
 
             openList.Clear();
@@ -69,7 +67,7 @@ namespace SanityEngine.Search.PathFinding.Algorithms
                 if (node.Node.Equals(goal))
                 {
                     NodeData step = node;
-                    Stack<TEdge> steps = new Stack<TEdge>();
+                    Stack<Edge> steps = new Stack<Edge>();
                     while (step != null)
                     {
                         if (step.TakenEdge != null)
@@ -78,20 +76,21 @@ namespace SanityEngine.Search.PathFinding.Algorithms
                         }
                         step = step.Previous;
                     }
-                    Path<TNode, TEdge> path = new Path<TNode, TEdge>(goal.Graph, steps.ToArray());
+                    Path path = new Path(graph, steps.ToArray());
                     return path;
                 }
 
                 node.OnOpen = false;
                 node.OnClosed = true;
-                for (int i = 0; i < node.Node.OutEdgeCount; i++)
+				int outCount = graph.GetOutEdgeCount(node.Node);
+                for (int i = 0; i < outCount; i++)
                 {
-                    TEdge edge = node.Node.GetOutEdge(i);
+                    Edge edge = graph.GetOutEdge(node.Node, i);
 					if(edge.Cost == Mathf.Infinity) {
 						continue;
 					}
 
-                    TNode nextNode = edge.Target;
+                    Node nextNode = edge.Target;
 
                     NodeData next = null;
                     if (nodeData.ContainsKey(nextNode))
@@ -139,7 +138,7 @@ namespace SanityEngine.Search.PathFinding.Algorithms
         /// <param name="next">The next node.</param>
         /// <param name="goal">The goal node.</param>
         /// <returns>The estimated cost.</returns>
-        protected virtual float EstimateCost(TNode next, TNode goal)
+        protected virtual float EstimateCost(Node next, Node goal)
         {
             return 0.0f;
         }

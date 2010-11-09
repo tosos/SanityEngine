@@ -20,10 +20,7 @@ namespace SanityEngine.Movement.PathFollowing
     /// A coherent path follower. This path follower ensures that the actor
     /// does not backtrack on the path, nor seek too far forward.
     /// </summary>
-    /// <typeparam name="TID">The node ID type.</typeparam>
-    public class CoherentPathFollower<TNode, TEdge>
-        where TNode : NavMeshNode<TNode, TEdge>
-        where TEdge : Edge<TNode, TEdge>
+    public class CoherentPathFollower
     {
 		List<Segment> segments = new List<Segment>();
 		float totalLength = 0.0f;
@@ -47,15 +44,17 @@ namespace SanityEngine.Movement.PathFollowing
 		/// Sets the path.
 		/// </summary>
 		/// <param name="newPath">The new path.</param>
-		public void SetPath(Path<TNode, TEdge> path)
+		public void SetPath(Path path)
         {
 			segments.Clear();
 			totalLength = 0.0f;
 			for(int i = 1;path != null && i < path.StepCount; i ++) {
-                TEdge edge = path.GetStep(i);
+                Edge edge = path.GetStep(i);
 				Segment s = new Segment();
-				Vector3 pos1 = edge.Source.Position;
-                Vector3 pos2 = edge.Target.Position;
+				NavMeshNode src = (NavMeshNode)edge.Source;
+				NavMeshNode tgt = (NavMeshNode)edge.Target;
+				Vector3 pos1 = src.Position;
+                Vector3 pos2 = tgt.Position;
 				s.origin = pos1;
 				s.dir = Vector3.Normalize(pos2 - pos1);
 				s.start = totalLength;

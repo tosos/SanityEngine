@@ -19,10 +19,7 @@ namespace SanityEngine.Search.PathFinding.Algorithms
     /// <summary>
     /// Implementation of the Lifelong Planning A* algorithm.
     /// </summary>
-    /// <typeparam name="TID">The node ID type.</typeparam>
-    public class LPAStarSearch<TNode, TEdge> : PathFinder<TNode, TEdge>
-        where TNode : Node<TNode, TEdge>
-        where TEdge : Edge<TNode, TEdge>
+    public class LPAStarSearch : PathFinder
     {
         /// <summary>
         /// Heuristic callback.
@@ -31,15 +28,15 @@ namespace SanityEngine.Search.PathFinding.Algorithms
         /// <param name="goal">The goal node.</param>
         /// <returns>The estimated cost from the current node to the goal
         /// </returns>
-        public delegate float Heuristic(TNode current, TNode goal);
+        public delegate float Heuristic(Node current, Node goal);
 
         private const float epsilon = 0.00001f;
 
         private class NodeData : IComparable<NodeData>
         {
-            public delegate float CalcHScore(TNode node);
+            public delegate float CalcHScore(Node node);
 
-            public readonly TNode Node;
+            public readonly Node Node;
             public bool OnQueue = false;
 
             public float RHS
@@ -78,7 +75,7 @@ namespace SanityEngine.Search.PathFinding.Algorithms
             float k1 = float.PositiveInfinity;
             float k2 = float.PositiveInfinity;
 
-            public NodeData(TNode node, CalcHScore calcHScore)
+            public NodeData(Node node, CalcHScore calcHScore)
             {
                 this.Node = node;
                 this.calcHScore = calcHScore;
@@ -103,7 +100,7 @@ namespace SanityEngine.Search.PathFinding.Algorithms
 
         Heuristic heuristic;
         PriorityQueue<NodeData> queue = new PriorityQueue<NodeData>();
-        Dictionary<TNode, NodeData> nodeData = new Dictionary<TNode, NodeData>();
+        Dictionary<Node, NodeData> nodeData = new Dictionary<Node, NodeData>();
         NodeData start;
         NodeData goal;
 
@@ -122,7 +119,7 @@ namespace SanityEngine.Search.PathFinding.Algorithms
         /// <param name="start">The start node.</param>
         /// <param name="goal">The goal node.</param>
         /// <returns>The path or <code>null</code> if no path could be found.</returns>
-        public Path<TNode, TEdge> Search(TNode start, TNode goal)
+        public Path Search(Graph graph, Node start, Node goal)
         {
             if (this.start == null)
             {
@@ -130,38 +127,39 @@ namespace SanityEngine.Search.PathFinding.Algorithms
                 this.goal = new NodeData(goal, CalcHScore);
                 nodeData[start] = this.start;
                 nodeData[goal] = this.goal;
-                Initialize();
+                Initialize(graph);
             }
             else
             {
-                TEdge[] changed = start.Graph.GetChangedEdges();
-                foreach (TEdge c in changed)
+                Edge[] changed = graph.GetChangedEdges();
+                foreach (Edge c in changed)
                 {
 					NodeData src = GetNodeData(c.Source);
 					NodeData tgt = GetNodeData(c.Target);
-                    UpdateState(src);
-                    UpdateState(tgt);
+                    UpdateState(graph, src);
+                    UpdateState(graph, tgt);
                 }
-				start.Graph.ResetChanges();
+				graph.ResetChanges();
             }
 
-            ComputePlan();
+            ComputePlan(graph);
             if (float.IsInfinity(this.start.G))
             {
                 return null;
             }
 
-            List<TEdge> steps = new List<TEdge>();
+            List<Edge> steps = new List<Edge>();
 
             NodeData node = this.start;
             while (node != this.goal)
             {
                 float min = float.PositiveInfinity;
                 NodeData nextNode = null;
-                TEdge takenEdge = default(TEdge);
-                for (int i = 0; i < node.Node.OutEdgeCount; i++)
+                Edge takenEdge = default(Edge);
+				int outCount = graph.GetOutEdgeCount(node.Node);
+                for (int i = 0; i < outCount; i++)
                 {
-                    TEdge edge = node.Node.GetOutEdge(i);
+                    Edge edge = graph.GetOutEdge(node.Node, i);
                     NodeData testNode = nodeData[edge.Target];
                     float cost = edge.Cost + testNode.G;
                     if (cost < min)
@@ -176,23 +174,24 @@ namespace SanityEngine.Search.PathFinding.Algorithms
                 steps.Add(takenEdge);
             }
 
-            return new Path<TNode, TEdge>(start.Graph, steps.ToArray());
+            return new Path(graph, steps.ToArray());
         }
 
-        private void Initialize()
+        private void Initialize(Graph graph)
         {
             goal.RHS = 0.0f;
-            UpdateState(goal);
+            UpdateState(graph, goal);
         }
 
-        private void UpdateState(NodeData node)
+        private void UpdateState(Graph graph, NodeData node)
         {
             if (node != goal)
             {
                 float min = float.PositiveInfinity;
-                for (int i = 0; i < node.Node.OutEdgeCount; i++)
+				int outCount = graph.GetOutEdgeCount(node.Node);
+                for (int i = 0; i < outCount; i++)
                 {
-                    TEdge edge = node.Node.GetOutEdge(i);
+                    Edge edge = graph.GetOutEdge(node.Node, i);
                     NodeData target = GetNodeData(edge.Target);
                     float total = edge.Cost + target.G;
                     if (total < min)
@@ -221,7 +220,7 @@ namespace SanityEngine.Search.PathFinding.Algorithms
             }
         }
 
-        private void ComputePlan()
+        private void ComputePlan(Graph graph)
         {
             while (!queue.Empty && (queue.Peek().CompareTo(start) < 0
                 || Math.Abs(start.RHS - start.G) >= epsilon))
@@ -231,24 +230,26 @@ namespace SanityEngine.Search.PathFinding.Algorithms
                 if (node.G > node.RHS)
                 {
                     node.G = node.RHS;
-                    for (int i = 0; i < node.Node.InEdgeCount; i++)
+					int inCount = graph.GetInEdgeCount(node.Node);
+                    for (int i = 0; i < inCount; i++)
                     {
-                        UpdateState(GetNodeData(node.Node.GetInEdge(i).Source));
+                        UpdateState(graph, GetNodeData(graph.GetInEdge(node.Node, i).Source));
                     }
                 }
                 else
                 {
                     node.G = float.PositiveInfinity;
-                    for (int i = 0; i < node.Node.InEdgeCount; i++)
+					int inCount = graph.GetInEdgeCount(node.Node);
+                    for (int i = 0; i < inCount; i++)
                     {
-                        UpdateState(GetNodeData(node.Node.GetInEdge(i).Source));
+                        UpdateState(graph, GetNodeData(graph.GetInEdge(node.Node, i).Source));
                     }
-                    UpdateState(node);
+                    UpdateState(graph, node);
                 }
             }
         }
 
-        private NodeData GetNodeData(TNode node)
+        private NodeData GetNodeData(Node node)
         {
             if (nodeData.ContainsKey(node))
             {
@@ -259,7 +260,7 @@ namespace SanityEngine.Search.PathFinding.Algorithms
             return data;
         }
 
-        private float CalcHScore(TNode node)
+        private float CalcHScore(Node node)
         {
             return heuristic(node, start.Node);
         }
@@ -269,7 +270,7 @@ namespace SanityEngine.Search.PathFinding.Algorithms
         /// </summary>
         /// <param name="node">The node</param>
         /// <returns>The node's "G" score.</returns>
-		public float GetG(TNode node)
+		public float GetG(Node node)
 		{
 			return GetNodeData(node).G;
 		}
@@ -279,7 +280,7 @@ namespace SanityEngine.Search.PathFinding.Algorithms
         /// </summary>
         /// <param name="node">The node</param>
         /// <returns>The node's "RHS" score.</returns>
-        public float GetRHS(TNode node)
+        public float GetRHS(Node node)
 		{
 			return GetNodeData(node).RHS;
 		}

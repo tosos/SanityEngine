@@ -20,10 +20,7 @@ namespace SanityEngine.Search.PathFinding.Algorithms
     /// the "perfect" information (i.e. less than the actual cost from the
     /// given node to the goal)
     /// </summary>
-    /// <typeparam name="TID">The node ID type.</typeparam>
-    public class ASearch<TNode, TEdge> : BestFirstSearch<TNode, TEdge>
-        where TNode : Node<TNode, TEdge>
-        where TEdge : Edge<TNode, TEdge>
+    public class ASearch : BestFirstSearch
     {
         /// <summary>
         /// Heuristic callback.
@@ -32,7 +29,7 @@ namespace SanityEngine.Search.PathFinding.Algorithms
         /// <param name="goal">The goal node.</param>
         /// <returns>The estimated cost from the current node to the goal
         /// </returns>
-        public delegate float Heuristic(TNode current, TNode goal);
+        public delegate float Heuristic(Node current, Node goal);
 
         private readonly Heuristic heuristic;
 
@@ -52,7 +49,7 @@ namespace SanityEngine.Search.PathFinding.Algorithms
         /// <param name="next">The next node.</param>
         /// <param name="goal">The goal node.</param>
         /// <returns>The estimated cost.</returns>
-        protected override float EstimateCost(TNode next, TNode goal)
+        protected override float EstimateCost(Node next, Node goal)
         {
             return heuristic(next, goal);
         }

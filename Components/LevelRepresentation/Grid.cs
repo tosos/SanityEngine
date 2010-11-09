@@ -35,43 +35,78 @@ public class Grid : UnityGraph
 
 	public enum GridType
 	{
-		EIGHT_GRID,
-		FOUR_GRID
+		EIGHT_GRID = 8,
+		FOUR_GRID = 4
+	}
+		
+	public enum EdgeDir
+	{
+		North = 0,
+		South = 1,
+		West = 2,
+		East = 3,
+		NorthWest = 4,
+		NorthEast = 5,
+		SouthWest = 6,
+		SouthEast = 7,
+	}
+	
+	[System.Flags]
+	public enum CellFlags : byte
+	{
+		Invalid =	0x01,
+		Blocked =	0x02
 	}
 
 	[System.Serializable]
-	public class GridEdge
+	public class GridCell : NavMeshNode
 	{
-		public int targetX;
-		public int targetY;
-		public float cost;
-
-		public GridEdge ()
+		public float[] edges;
+		public Vector3 Position
 		{
+			get { return position; }
+			set { position = value; }
 		}
+		
+		[SerializeField]
+		Vector3 position;
 
-		public GridEdge (int tx, int ty, float cost)
+		[SerializeField]
+		byte flags;
+		
+		[SerializeField]
+		int index;
+
+		public GridCell (int index, GridType gridType, Vector3 pos)
 		{
-			this.targetX = tx;
-			this.targetY = ty;
-			this.cost = cost;
+			this.index = index;
+			this.edges = new float[(int)gridType];
+			this.position = pos;
 		}
-	}
-
-	[System.Serializable]
-	public class GridCell
-	{
-		public List<GridEdge> edges;
-		public float height;
-
-		public GridCell ()
+		
+		public void SetFlags(CellFlags flags)
 		{
+			this.flags |= (byte)flags;
 		}
-
-		public GridCell (float height)
+		
+		public void ClearFlags(CellFlags flags)
 		{
-			this.edges = new List<GridEdge> ();
-			this.height = height;
+			this.flags &= (byte)~((byte)flags);
+		}
+		
+		public bool TestFlags(CellFlags flags)
+		{
+			return (this.flags & (byte)flags) != 0;
+		}
+		
+		public bool Equals (Node other)
+		{
+			return other == this;
+		}
+				
+		public override int GetHashCode ()
+		{
+			return index;
 		}
 	}
 	
@@ -83,6 +118,7 @@ public class Grid : UnityGraph
 		public float scanHeight = 5.0f;
 		public int xDimension = 10;
 		public int yDimension = 10;
+		public GridType gridType = GridType.EIGHT_GRID;
 		
 		public void CopyTo(GridParameters other)
 		{
@@ -91,6 +127,36 @@ public class Grid : UnityGraph
 			other.scanHeight = scanHeight;
 			other.xDimension = xDimension;
 			other.yDimension = yDimension;
+			other.gridType = gridType;
+		}
+	}
+	
+	struct GridEdge : Edge
+	{
+        public Node Source
+        {
+            get { return source; }
+        }
+
+        public Node Target
+        {
+            get { return target; }
+        }
+
+        public float Cost
+        {
+            get { return cost; }
+        }
+		
+		GridCell source;
+		GridCell target;
+		float cost;
+		
+		public GridEdge(GridCell source, GridCell target, float cost)
+		{
+			this.source = source;
+			this.target = target;
+			this.cost = cost;
 		}
 	}
 
@@ -99,20 +165,30 @@ public class Grid : UnityGraph
 	public float maxEdgeHeightChange = Mathf.Infinity;
 	public bool edgeRaycast = false;
 	public EdgeCostAlgorithm edgeCostAlgorithm;
-	public GridType gridType;
 	public int selectedX = -1;
 	public int selectedY = -1;
 	public GridParameters newParameters;
 	public bool noHitNoCell = true;
 	public bool alwaysDrawGrid = true;
 	public bool drawEdges = true;
-
+	
+	public static readonly int[,] edgeGridOffsets = {
+		{ 0, -1 },
+		{ 0, 1 },
+		{ -1, 0 },
+		{ 1, 0 },
+		{ -1, -1 },
+		{ 1, -1 },
+		{ -1, 1 },
+		{ 1, 1 },
+	}; 
+		
 	[SerializeField]
 	GridCell[] cells;
-	SimpleNode[,] nodes;
-	GraphChangeHelper<UnityNode, UnityEdge> helper;
 	[SerializeField]
 	GridParameters parameters;
+
+	GraphChangeHelper helper;
 
 	// Use this for initialization
 	void Start ()
@@ -121,28 +197,7 @@ public class Grid : UnityGraph
 			return;
 		}
 		
-		helper = new GraphChangeHelper<UnityNode, UnityEdge> ();
-		nodes = new SimpleNode[parameters.yDimension, parameters.xDimension];
-		for (int y = 0; y < parameters.yDimension; y++) {
-			for (int x = 0; x < parameters.xDimension; x++) {
-				nodes[y, x] = new SimpleNode(transform.TransformPoint(
-					GetLocalCellPosition(x, y) + cells[GetIdx(x, y)].height
-					* Vector3.up), this);
-			}
-		}
-		
-		for (int y = 0; y < parameters.yDimension; y++) {
-			for (int x = 0; x < parameters.xDimension; x++) {
-				GridCell cell = cells[GetIdx(x, y)];
-				foreach(GridEdge edge in cell.edges) {
-					SimpleNode src = nodes[y, x];
-					SimpleNode tgt = nodes[edge.targetY, edge.targetX];
-					SimpleEdge e = new SimpleEdge(src, tgt, edge.cost); 
-					src.AddOutEdge(e);
-					tgt.AddInEdge(e);
-				}
-			}
-		}
+		helper = new GraphChangeHelper ();
 	}
 
 	// Update is called once per frame
@@ -208,30 +263,35 @@ public class Grid : UnityGraph
 			for (int y = 0; y < parameters.yDimension; y++) {
 				for (int x = 0; x < parameters.xDimension; x++) {
 					GridCell cell = cells[GetIdx (x, y)];
-					if(cell.height < 0f) {
+					if(cell.TestFlags(CellFlags.Invalid)) {
 						continue;
 					}
-					Vector3 cellPos = GetLocalCellPosition(x, y) + (cell.height + 0.5f) * Vector3.up;
+					Vector3 cellPos = transform.InverseTransformPoint(cell.Position);
 					Gizmos.color = new Color(1.0f, 1.0f, 1.0f, 0.2f);
 					Gizmos.DrawWireCube (cellPos, cellSize);
 					
-					if(drawEdges && cell.edges != null) {
+					if(drawEdges) {
 						if(selectedX >= 0 && (selectedX != x || selectedY != y)) {
 							continue;
 						}
-						foreach(GridEdge edge in cell.edges) {
-							if(edge.cost == Mathf.Infinity) {
+						for(int i = 0; i < (int)parameters.gridType; i ++) {
+							if(cell.edges[i] < 0f) {
+								continue;
+							}
+							if(cell.edges[i] == Mathf.Infinity) {
 								Gizmos.color = Color.red;
 							} else {
 								Gizmos.color = Color.green;
 							}
-							int tx = edge.targetX;
-							int ty = edge.targetY;
-							int dir = GetDirection(x, y, tx, ty);
+							int tx = x + edgeGridOffsets[i,0];
+							int ty = y + edgeGridOffsets[i,1];
+							if(!Valid(tx, ty)) {
+								continue;
+							}
 							GridCell tcell = cells[GetIdx(tx, ty)];
-							Vector3 tCellPos = GetLocalCellPosition(tx, ty) + (tcell.height + 0.5f) * Vector3.up;
-							Vector3 start = cellPos + Vector3.Scale(cellSize, offsets[dir,0]);
-							Vector3 end = tCellPos + Vector3.Scale(cellSize, offsets[dir,1]);
+							Vector3 tCellPos = transform.InverseTransformPoint(tcell.Position);
+							Vector3 start = cellPos + Vector3.Scale(cellSize, offsets[i,0]);
+							Vector3 end = tCellPos + Vector3.Scale(cellSize, offsets[i,1]);
 							Gizmos.DrawLine(start, end);
 							Gizmos.DrawSphere(end, radius);
 						}
@@ -269,7 +329,7 @@ public class Grid : UnityGraph
 		Vector3 down = -transform.up;
 		for (int y = 0; y < parameters.yDimension; y++) {
 			for (int x = 0; x < parameters.xDimension; x++) {
-				Vector3 rayPos = transform.TransformPoint (GetLocalCellPosition(x, y)
+				Vector3 rayPos = transform.TransformPoint (GetLocalCellBase(x, y)
 					+ Vector3.up * parameters.scanHeight);
 				Vector3 pos;
 				float height = noHitNoCell ? -1f : 0f;
@@ -278,7 +338,8 @@ public class Grid : UnityGraph
 					height = localPos.y + parameters.scanHeight * 0.5f;
 				}
 				
-				cells[GetIdx (x, y)] = new GridCell (height);
+				cells[GetIdx (x, y)] = new GridCell (GetIdx(x, y),
+					parameters.gridType, GetLocalCellBase(x, y) + Vector3.up * height);
 			}
 		}
 		for (int y = 0; y < parameters.yDimension; y++) {
@@ -290,31 +351,23 @@ public class Grid : UnityGraph
 	
 	public void RegenerateEdges(int x, int y)
 	{
-		int minY = y <= 0 ? 0 : y - 1;
-		int maxY = y >= parameters.yDimension - 1 ? parameters.yDimension - 1 : y + 1;
-		int minX = x <= 0 ? 0 : x - 1;
-		int maxX = x >= parameters.xDimension - 1 ? parameters.xDimension - 1 : x + 1;
-		
 		GridCell src = cells[GetIdx(x, y)];
-		for (int ey = minY; ey <= maxY; ey++) {
-			for (int ex = minX; ex <= maxX; ex++) {
-				if (ex == x && ey == y) {
-					continue;
-				}
-				if(gridType == GridType.FOUR_GRID && !(y == ey || x == ex)) {
-					continue;
-				}
-				GridCell tgt = cells[GetIdx(ex, ey)];
-				float cost = GetEdgeCost (x, y, ex, ey);
-				float change = tgt.height - src.height;
-				if(change > maxEdgeHeightChange || src.height < 0f
-					|| tgt.height < 0f)
+		for(int i = 0; i < (int)parameters.gridType; i ++) {
+			int tx = x + edgeGridOffsets[i, 0];
+			int ty = y + edgeGridOffsets[i, 1];
+			float cost = Mathf.NegativeInfinity;
+			if(Valid(tx, ty)) {
+				GridCell tgt = cells[GetIdx(tx, ty)];
+				float change = Vector3.Dot(tgt.Position - src.Position, transform.up);
+				if(change > maxEdgeHeightChange || src.TestFlags(CellFlags.Invalid)
+					|| tgt.TestFlags(CellFlags.Invalid))
 				{
 					cost = Mathf.Infinity;
+				} else {
+					cost = GetEdgeCost (x, y, tx, ty);
 				}
-				GridEdge edge = new GridEdge (ex, ey, cost);
-				src.edges.Add (edge);
 			}
+			src.edges[i] = cost;
 		}
 	}
 
@@ -458,7 +511,7 @@ public class Grid : UnityGraph
 		return hits.Length != 0;
 	}
 
-	Vector3 GetLocalCellPosition (int x, int y)
+	Vector3 GetLocalCellBase (int x, int y)
 	{
 		float cw = parameters.xSize;
 		float ch = parameters.ySize;
@@ -475,9 +528,7 @@ public class Grid : UnityGraph
 	
 	public Vector3 GetWorldCellPosition(int x, int y)
 	{
-		GridCell cell = cells[GetIdx(x, y)];
-		return transform.TransformPoint(GetLocalCellPosition(x, y)
-			+ (0.5f + cell.height) * Vector3.up);
+		return cells[GetIdx(x, y)].Position;
 	}
 	
 	public Vector3 GetCellSize()
@@ -498,22 +549,14 @@ public class Grid : UnityGraph
 	
 	public float GetCellHeight(int x, int y)
 	{
-		return cells[GetIdx(x, y)].height;
+		Vector3 pos = transform.InverseTransformPoint(
+			cells[GetIdx(x, y)].Position) - GetLocalCellBase(x, y);
+		return pos.y;
 	}
 	
-	public bool IsCellVisible(int x, int y)
+	public bool IsCellShown(int x, int y)
 	{
-		if(cells[GetIdx(x, y)].height < 0) {
-			return false;
-		}
-		
-		foreach(GridEdge edge in cells[GetIdx(x, y)].edges) {
-			if(edge.cost != Mathf.Infinity) {
-				return true;
-			}
-		}
-		
-		return false;
+		return !cells[GetIdx(x, y)].TestFlags(CellFlags.Invalid);
 	}
 	
 	/// <summary>
@@ -530,7 +573,8 @@ public class Grid : UnityGraph
 		} else if(height > parameters.scanHeight) {
 			height = parameters.scanHeight;
 		}
-		cells[GetIdx(x, y)].height = height;
+		cells[GetIdx(x, y)].Position = transform.TransformPoint(
+			GetLocalCellBase(x, y) + Vector3.up * height);
 	}
 	
 	public bool IsSelected(int x, int y)
@@ -563,7 +607,7 @@ public class Grid : UnityGraph
 		get { return helper.HasChanged; }
 	}
 
-	public override UnityEdge[] GetChangedEdges ()
+	public override Edge[] GetChangedEdges ()
 	{
 		return helper.GetChangedEdges ();
 	}
@@ -572,11 +616,11 @@ public class Grid : UnityGraph
 	{
 		helper.Reset ();
 	}
-
+	
 	public float GetEdgeCost (int x1, int y1, int x2, int y2)
 	{
-		Vector3 src = GetLocalCellPosition (x1, y1);
-		Vector3 tgt = GetLocalCellPosition (x2, y2);
+		Vector3 src = transform.InverseTransformPoint(cells[GetIdx(x1, y1)].Position);
+		Vector3 tgt = transform.InverseTransformPoint(cells[GetIdx(x2, y2)].Position);
 		
 		switch (edgeCostAlgorithm) {
 		case EdgeCostAlgorithm.EUCLIDEAN_DISTANCE:
@@ -589,7 +633,55 @@ public class Grid : UnityGraph
 		return 1.0f;
 	}
 
-	public override UnityNode Quantize (Vector3 pos)
+    public override int GetOutEdgeCount(Node node)
+	{
+		return (int)parameters.gridType;
+	}
+
+    public override int GetInEdgeCount(Node node)
+	{
+		return GetOutEdgeCount(node);
+	}
+
+    public override Edge GetOutEdge(Node node, int edgeIndex)
+	{
+		int index = node.GetHashCode();
+		int x, y;
+		SplitIdx(index, out x, out y);
+
+		GridCell source = cells[index];
+
+		int tx = x + edgeGridOffsets[edgeIndex,0];
+		int ty = y + edgeGridOffsets[edgeIndex,1];
+		if(!Valid(tx, ty)) {
+			return new GridEdge(source, null, Mathf.Infinity);
+		}
+		
+		GridCell target = cells[GetIdx(tx, ty)];
+
+		return new GridEdge(source, target, source.edges[edgeIndex]);
+	}
+
+    public override Edge GetInEdge(Node node, int edgeIndex)
+	{
+		int index = node.GetHashCode();
+		int x, y;
+		SplitIdx(index, out x, out y);
+
+		GridCell target = cells[index];
+
+		int sx = x + edgeGridOffsets[edgeIndex,0];
+		int sy = y + edgeGridOffsets[edgeIndex,1];
+		if(!Valid(sx, sy)) {
+			return new GridEdge(null, target, Mathf.Infinity);
+		}
+		
+		GridCell source = cells[GetIdx(sx, sy)];
+
+		return new GridEdge(source, target, source.edges[edgeIndex]);
+	}
+
+	public override NavMeshNode Quantize (Vector3 pos)
 	{
 		Vector3 p = transform.InverseTransformPoint (pos);
 		float xSize = parameters.xSize;
@@ -602,7 +694,7 @@ public class Grid : UnityGraph
 		else if(x >= parameters.xDimension) x = parameters.xDimension - 1;
 		if(y < 0) y = 0;
 		else if(y >= parameters.yDimension) y = parameters.yDimension - 1;
-		return nodes[y, x];
+		return cells[GetIdx(x, y)];
 	}
 
 	/// <summary>
@@ -615,20 +707,29 @@ public class Grid : UnityGraph
 	/// <param name="cost">The new cost of the edge, set to Infinity to disable.</param>
 	public void EdgeChanged (int x1, int y1, int x2, int y2, float cost)
 	{
-		SimpleNode src = nodes[y1, x1];
-		SimpleNode target = nodes[y2, x2];
-
-		for(int i = 0; i < src.OutEdgeCount; i ++) {
-			SimpleEdge edge = (SimpleEdge)src.GetOutEdge(i);
-			if(edge.Target == target) {
-				edge.Cost = cost;
-				helper.MarkChanged(edge);
-			}
-		}
+		GridCell src = cells[GetIdx(x1, y1)];
+		GridCell target = cells[GetIdx(x2, y2)];
+		int dir = GetDirection(x1, y2, x2, y2);
+		
+		src.edges[dir] = cost;
+		
+		helper.MarkChanged(new GridEdge(src, target, cost));
 	}
 
 	int GetIdx (int x, int y)
 	{
 		return x + y * parameters.xDimension;
+	}
+	
+	void SplitIdx(int index, out int x, out int y)
+	{
+		x = index % parameters.xDimension;
+		y = index / parameters.xDimension;
+	}
+	
+	bool Valid(int x, int y)
+	{
+		return x >= 0 && y >= 0
+			&& x < parameters.xDimension && y < parameters.yDimension;
 	}
 }

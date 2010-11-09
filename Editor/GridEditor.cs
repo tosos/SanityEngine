@@ -13,8 +13,8 @@ public class GridEditor : Editor {
 		SerializedProperty maskProp = serObj.FindProperty("layerMask");
 		comp.samplingType = (Grid.SamplerType)EditorGUILayout.EnumPopup(
 			"Sampling Type", comp.samplingType);
-		comp.gridType = (Grid.GridType)
-			EditorGUILayout.EnumPopup("Grid Type", comp.gridType);
+		comp.newParameters.gridType = (Grid.GridType)
+			EditorGUILayout.EnumPopup("Grid Type", comp.newParameters.gridType);
 		comp.newParameters.xSize = EditorGUILayout.FloatField("Cell x-size",
 			comp.newParameters.xSize);
 		comp.newParameters.ySize = EditorGUILayout.FloatField("Cell y-size",
@@ -66,14 +66,22 @@ public class GridEditor : Editor {
 			EditorGUILayout.Separator();
 			EditorGUILayout.BeginVertical("box");
 			EditorGUILayout.LabelField("Cell", "(" + x +"," + y + ")");
-			comp.SetCellHeight(x, y, EditorGUILayout.FloatField("Height", cell.height));
+			comp.SetCellHeight(x, y, EditorGUILayout.FloatField("Height", comp.GetCellHeight(x, y)));
 			EditorGUI.indentLevel ++;
-			foreach(Grid.GridEdge edge in cell.edges) {
-				EditorGUILayout.LabelField("Target", "(" + edge.targetX +"," + edge.targetY + ")");
-				edge.cost = EditorGUILayout.FloatField("Cost", edge.cost);
-				if(edge.cost < 0f) {
-					edge.cost = 0f;
+			int outCount = comp.GetOutEdgeCount(cell);
+			for(int i = 0; i < outCount; i ++) {
+				float cost = cell.edges[i];
+				if(cost == Mathf.Infinity) {
+					continue;
 				}
+				int tx = x + Grid.edgeGridOffsets[i,0];
+				int ty = y + Grid.edgeGridOffsets[i,0];
+				EditorGUILayout.LabelField("Target", "(" + tx +"," + ty + ")");
+				cost = EditorGUILayout.FloatField("Cost", cost);
+				if(cost < 0f) {
+					cost = 0f;
+				}
+				cell.edges[i] = cost;
 				EditorGUILayout.Separator();
 			}
 			EditorGUI.indentLevel --;
@@ -96,7 +104,7 @@ public class GridEditor : Editor {
 			float size = Mathf.Min(cellSize.x, Mathf.Min(cellSize.y, cellSize.z)) * 0.5f;
 			for (int y = 0; y < yDim; y++) {
 				for (int x = 0; x < xDim; x++) {
-					if(comp.IsCellVisible(x, y)) {
+					if(comp.IsCellShown(x, y)) {
 						continue;
 					}
 					Vector3 pos = comp.GetWorldCellPosition(x, y);

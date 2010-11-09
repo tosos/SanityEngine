@@ -4,6 +4,7 @@ using SanityEngine.Actors;
 using SanityEngine.Movement.SteeringBehaviors;
 using SanityEngine.Movement.PathFollowing;
 using SanityEngine.Structure.Graph;
+using SanityEngine.Structure.Graph.NavMesh;
 using SanityEngine.Structure.Path;
 using SanityEngine.Search.PathFinding;
 using SanityEngine.Search.PathFinding.Algorithms;
@@ -20,10 +21,11 @@ public class PathFollowerComponent : MonoBehaviour {
 
 	SteeringManagerComponent manager;
 	PointActor target;
-	ASearch<UnityNode, UnityEdge> finder;
-	Path<UnityNode, UnityEdge> path;
-	CoherentPathFollower<UnityNode, UnityEdge> follower;
-	UnityNode goalNode;
+	ASearch finder;
+	NavMesh navMesh;
+	Path path;
+	CoherentPathFollower follower;
+	NavMeshNode goalNode;
 	List<MonoBehaviour> listeners;
 	float prevParam;
 	
@@ -38,8 +40,8 @@ public class PathFollowerComponent : MonoBehaviour {
 		manager = GetComponent<SteeringManagerComponent>();
 		Heuristic heuristic = new EuclideanHeuristic();
 		
-		finder = new ASearch<UnityNode, UnityEdge>(heuristic.Heuristic);
-		follower = new CoherentPathFollower<UnityNode, UnityEdge>();
+		finder = new ASearch(heuristic.Heuristic);
+		follower = new CoherentPathFollower();
 		manager[moveBehavior].SetEnabled(false);
 		manager[moveBehavior].SetFloat("ArriveRadius", lookAhead * 0.75f);
 		target = new PointActor(Vector3.zero);
@@ -71,13 +73,18 @@ public class PathFollowerComponent : MonoBehaviour {
 		prevParam = param;
 	}
 	
-	void SetGoalNode(UnityNode goal)
+	void SetNavMesh(NavMesh navMesh)
 	{
-		if(goal == null || goal.NavMesh == null) {
+		this.navMesh = navMesh;
+	}
+	
+	void SetGoalNode(NavMeshNode goal)
+	{
+		if(goal == null) {
 			ClearGoalNode();
 			return;
 		}
-		
+				
 		manager[moveBehavior].SetEnabled(false);
 
 		this.goalNode = goal;
@@ -91,6 +98,7 @@ public class PathFollowerComponent : MonoBehaviour {
 	{
 		goalNode = null;
 		path = null;
+		navMesh = null;
 		manager[moveBehavior].SetEnabled(false);
 	}
 	
@@ -106,15 +114,17 @@ public class PathFollowerComponent : MonoBehaviour {
 		
 		Gizmos.color = Color.white;
 		for(int i=0;i<path.StepCount;i++) {
-			UnityEdge edge = path.GetStep(i);
-			Gizmos.DrawSphere(edge.Target.Position, 0.1f);
-			Gizmos.DrawLine(edge.Source.Position, edge.Target.Position);
+			Edge edge = path.GetStep(i);
+			NavMeshNode src = (NavMeshNode)edge.Source;
+			NavMeshNode tgt = (NavMeshNode)edge.Target;
+			Gizmos.DrawSphere(tgt.Position, 0.1f);
+			Gizmos.DrawLine(src.Position, tgt.Position);
 		}
 	}
 	
 	void FindNewPath()
 	{
-		path = finder.Search(goalNode.NavMesh.Quantize(transform.position), goalNode);
+		path = finder.Search(navMesh, navMesh.Quantize(transform.position), goalNode);
 		if(path == null) {
 			ClearGoalNode();
 			SendPathMessage("OnPathNotFound");

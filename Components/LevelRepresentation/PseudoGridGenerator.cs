@@ -5,8 +5,9 @@ using SanityEngine.Structure.Graph.NavMesh;
 
 [AddComponentMenu("Sanity Engine/Level Representation/Pseudo-Grid Generator"),
 ExecuteInEditMode()]
-public class PseudoGridGenerator : UnityGraph
+public class PseudoGridGenerator// : UnityGraph
 {
+#if false
 	private delegate bool Sample(Vector3 pos, Vector3 dir, out Vector3 result);
 	
 	public enum SamplerType {
@@ -41,11 +42,11 @@ public class PseudoGridGenerator : UnityGraph
 	public bool drawGrid = true;
 	
 	PseudoGridCell[] cells;
-	GraphChangeHelper<UnityNode, UnityEdge> helper;
+	GraphChangeHelper helper;
 	
 	void Awake()
 	{
-		helper = new GraphChangeHelper<UnityNode, UnityEdge>();
+		helper = new GraphChangeHelper();
 		cells = GetComponentsInChildren<PseudoGridCell>();
 	}
 	
@@ -364,7 +365,7 @@ public class PseudoGridGenerator : UnityGraph
         get { return helper.HasChanged; }
     }
 
-    public override UnityEdge[] GetChangedEdges()
+    public override Edge[] GetChangedEdges()
     {
     	return helper.GetChangedEdges();
     }
@@ -374,7 +375,7 @@ public class PseudoGridGenerator : UnityGraph
     	helper.Reset();
     }
         
-   	public override UnityNode Quantize(Vector3 pos)
+   	public override NavMeshNode Quantize(Vector3 pos)
    	{
    		// FIXME this is slow
    		float minDist = float.PositiveInfinity;
@@ -388,4 +389,5 @@ public class PseudoGridGenerator : UnityGraph
    		}
    		return nearest;
    	}
+#endif
 }
