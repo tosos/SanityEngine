@@ -58,6 +58,11 @@ public class PathFollowerComponent : MonoBehaviour {
 			ClearGoalNode();
 			return;
 		}
+
+		if(path.StepCount < 1) {
+			target.Point = goalNode.Position;
+			return;
+		}
 		
 		if(path.Graph.HasChanged) {
 			// XXX replace with callbacks

@@ -48,7 +48,11 @@ namespace SanityEngine.Movement.PathFollowing
         {
 			segments.Clear();
 			totalLength = 0.0f;
-			for(int i = 1;path != null && i < path.StepCount; i ++) {
+			if(path == null) {
+				return;
+			}
+			
+			for(int i = 0;i < path.StepCount; i ++) {
                 Edge edge = path.GetStep(i);
 				Segment s = new Segment();
 				NavMeshNode src = (NavMeshNode)edge.Source;
