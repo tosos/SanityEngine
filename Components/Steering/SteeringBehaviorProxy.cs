@@ -39,7 +39,6 @@ public class SteeringBehaviorProxy
 	        foreach(SteeringBehaviorAsset.LinkedProperty prop
 	        	in def.properties)
     	    {
-				Debug.Log(prop.name + ":" + prop.link);
     	    	List<PropProxy> props = null;
     	    	if(properties.ContainsKey(prop.link)) {
     	    		props = properties[prop.link];

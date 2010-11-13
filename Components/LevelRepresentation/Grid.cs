@@ -246,8 +246,8 @@ public class Grid : UnityGraph
 			{ new Vector3(-0.4f, 0.0f, 0.1f), new Vector3(0.4f, 0.0f, 0.1f) },
 			{ new Vector3(0.4f, 0.0f, -0.1f), new Vector3(-0.4f, 0.0f, -0.1f) },
 			{ new Vector3(-0.4f, 0.0f, -0.3f), new Vector3(0.3f, 0.0f, 0.4f) },
-			{ new Vector3(-0.3f, 0.0f, 0.4f), new Vector3(0.4f, 0.0f, -0.3f) },
 			{ new Vector3(0.3f, 0.0f, -0.4f), new Vector3(-0.4f, 0.0f, 0.3f) },
+			{ new Vector3(-0.3f, 0.0f, 0.4f), new Vector3(0.4f, 0.0f, -0.3f) },
 			{ new Vector3(0.4f, 0.0f, 0.3f), new Vector3(-0.3f, 0.0f, -0.4f) }
 		};
 		Vector3 pos = transform.position;
@@ -266,7 +266,7 @@ public class Grid : UnityGraph
 					if(cell.TestFlags(CellFlags.Invalid)) {
 						continue;
 					}
-					Vector3 cellPos = transform.InverseTransformPoint(cell.Position);
+					Vector3 cellPos = cell.Position;
 					Gizmos.color = new Color(1.0f, 1.0f, 1.0f, 0.2f);
 					Gizmos.DrawWireCube (cellPos, cellSize);
 					
@@ -288,8 +288,11 @@ public class Grid : UnityGraph
 							if(!Valid(tx, ty)) {
 								continue;
 							}
+							if(i == 5 && x == 0) {
+								Gizmos.color = Color.magenta;
+							}
 							GridCell tcell = cells[GetIdx(tx, ty)];
-							Vector3 tCellPos = transform.InverseTransformPoint(tcell.Position);
+							Vector3 tCellPos = tcell.Position;
 							Vector3 start = cellPos + Vector3.Scale(cellSize, offsets[i,0]);
 							Vector3 end = tCellPos + Vector3.Scale(cellSize, offsets[i,1]);
 							Gizmos.DrawLine(start, end);
