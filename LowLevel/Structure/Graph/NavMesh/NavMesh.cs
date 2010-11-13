@@ -6,13 +6,11 @@ namespace SanityEngine.Structure.Graph.NavMesh
     /// Specialized version of the graph interface for graphs with nodes
     /// representing points in space.
     /// </summary>
-    public interface NavMesh<TNode, TEdge> : Graph<TNode, TEdge>
-        where TNode : NavMeshNode<TNode, TEdge>
-        where TEdge : Edge<TNode, TEdge>
+    public interface NavMesh : Graph
     {
     	/// <summary>
     	/// Find the node containing the point.
     	/// </summary>
-    	TNode Quantize(Vector3 pos);
+    	NavMeshNode Quantize(Vector3 pos);
     }
 }

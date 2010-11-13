@@ -6,6 +6,7 @@ using SanityEngine.Structure.Graph.NavMesh;
 /// <summary>
 /// Specialized version of a NavMeshNode without generic parameters.
 /// </summary>
-public interface UnityNode : NavMeshNode<UnityNode, UnityEdge>
+[System.Obsolete("No longer needed")]
+public interface UnityNode : NavMeshNode
 {
 }

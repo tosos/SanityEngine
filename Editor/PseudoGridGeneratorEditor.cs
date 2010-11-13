@@ -3,7 +3,8 @@ using UnityEditor;
 using System.Collections;
 
 [CustomEditor(typeof(PseudoGridGenerator))]
-public class PseudoGridGeneratorEditor : Editor {
+public class PseudoGridGeneratorEditor {// : Editor {
+#if false
 	public bool edgeFoldout = true;
 	
 	public override void OnInspectorGUI()
@@ -51,4 +52,5 @@ public class PseudoGridGeneratorEditor : Editor {
 			EditorUtility.SetDirty(target);
 		}
 	}
+#endif
 }

@@ -5,5 +5,6 @@ using SanityEngine.Structure.Graph;
 /// <summary>
 /// Specialized version of Edge without generic parameters.
 /// </summary>
-public interface UnityEdge : Edge<UnityNode, UnityEdge> {
+[System.Obsolete("No longer needed")]
+public interface UnityEdge : Edge {
 }

@@ -18,16 +18,15 @@ namespace SanityEngine.Search.PathFinding
     /// Path finding interface.
     /// </summary>
     /// <typeparam name="TID">The node ID type.</typeparam>
-    public interface PathFinder<TNode, TEdge>
-        where TNode : Node<TNode, TEdge>
-        where TEdge : Edge<TNode, TEdge>
+    public interface PathFinder
     {
         /// <summary>
         /// Perform a search from the start to the goal.
         /// </summary>
+        /// <param name="graph">The graph to search.</para>
         /// <param name="start">The start node.</param>
         /// <param name="goal">The goal node.</param>
         /// <returns>The path or <code>null</code> if no path could be found.</returns>
-        Path<TNode, TEdge> Search(TNode start, TNode goal);
+        Path Search(Graph graph, Node start, Node goal);
     }
 }

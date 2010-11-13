@@ -15,12 +15,9 @@ namespace SanityEngine.Structure.Graph
     /// <summary>
     /// Helper class for storing graph changes.
     /// </summary>
-    /// <typeparam name="TID">The graph ID type.</typeparam>
-    public class GraphChangeHelper<TNode, TEdge>
-        where TNode : Node<TNode, TEdge>
-        where TEdge : Edge<TNode, TEdge>
+    public class GraphChangeHelper
     {
-        List<TEdge> changedEdges = new List<TEdge>();
+        List<Edge> changedEdges = new List<Edge>();
 
         /// <summary>
         /// <code>true</code> if there are changes.
@@ -34,7 +31,7 @@ namespace SanityEngine.Structure.Graph
         /// Mark the given edge as changed.
         /// </summary>
         /// <param name="edge">The edge to mark.</param>
-        public void MarkChanged(TEdge edge)
+        public void MarkChanged(Edge edge)
         {
             changedEdges.Add(edge);
         }
@@ -51,7 +48,7 @@ namespace SanityEngine.Structure.Graph
         /// Get the list of changed edges since the last reset.
         /// </summary>
         /// <returns>The list of changed edges.</returns>
-        public TEdge[] GetChangedEdges()
+        public Edge[] GetChangedEdges()
         {
             return changedEdges.ToArray();
         }

@@ -10,14 +10,14 @@ using UnityEngine;
 using System.Collections.Generic;
 using SanityEngine.Structure.Graph;
 
-public class SimpleEdge : UnityEdge
+public class SimpleEdge : Edge
 {
-	public UnityNode Source
+	public Node Source
 	{
 		get { return source; }
 	}
 
-	public UnityNode Target
+	public Node Target
 	{
 		get { return target; }
 	}

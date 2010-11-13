@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections;
 using SanityEngine.Structure.Graph;
 
-public class PseudoGridCell : GameObjectNode {	
+public class PseudoGridCell : GameObjectNode {
+#if false
 	// Update is called once per frame
 	void Update () {
 	
@@ -23,18 +24,6 @@ public class PseudoGridCell : GameObjectNode {
 		
 		DrawCell(error);
 	}
-
-	void OnDrawGizmosSelected()
-	{
-		if(edges == null) {
-			return;
-		}
-		
-		Gizmos.color = Color.red;
-		foreach(GameObjectEdge edge in edges) {
-			Gizmos.DrawLine(transform.position, edge.target.Position);
-		}
-	}
 	
 	void DrawCell(bool error)
 	{
@@ -46,4 +35,5 @@ public class PseudoGridCell : GameObjectNode {
 		Gizmos.DrawWireCube(Vector3.zero, transform.localScale);
 		Gizmos.matrix = Matrix4x4.identity;
 	}
+#endif
 }

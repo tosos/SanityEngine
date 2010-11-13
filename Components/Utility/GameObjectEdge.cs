@@ -3,7 +3,7 @@ using System.Collections;
 using SanityEngine.Structure.Graph;
 
 [System.Serializable]
-public class GameObjectEdge : UnityEdge {
+public class GameObjectEdge : Edge {
 	public GameObjectNode source;
 	public GameObjectNode target;
 	public float cost;
@@ -18,12 +18,12 @@ public class GameObjectEdge : UnityEdge {
 		this.cost = cost;
 	}
 
-    public UnityNode Source
+    public Node Source
     {
         get { return source; }
     }
 
-    public UnityNode Target
+    public Node Target
     {
         get { return target; }
     }
