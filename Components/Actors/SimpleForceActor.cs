@@ -12,11 +12,11 @@ public class SimpleForceActor : SteeringManagerComponent {
 	public float linearDamp = 0.05f;
 	public float angularDamp = 0.05f;
 	public bool twoDimensionalFacing = true;
+	public float gravity = -9.81f;
 	Transform xform;
 	CharacterController controller;
 	Vector3 velocity;
 	Vector3 angularVelocity;
-	Vector3 desiredFacing;
 	
 	void Start ()
 	{
@@ -36,9 +36,9 @@ public class SimpleForceActor : SteeringManagerComponent {
 		get { return maxAngularSpeed; }
 	}
 
-	void LateUpdate ()
+	void FixedUpdate ()
 	{
-		float t = Time.deltaTime;
+		float t = Time.fixedDeltaTime;
 		Steering steering = base.Steering;
 		
 		Vector3 desired = steering.Force;
@@ -49,8 +49,16 @@ public class SimpleForceActor : SteeringManagerComponent {
 		Vector3 accel = desired / mass;
 		
 		if(controller == null) {
+			accel += Vector3.up * gravity;
 			xform.Translate(velocity * t + 0.5f * accel * t * t, Space.World);
 		} else {
+			if(controller.isGrounded) {
+				if(velocity.y < 0f) {
+					velocity.y = 0.0f;
+				}
+			} else {
+				accel += Vector3.up * gravity;
+			}
 			controller.Move(velocity * t);// + 0.5f * accel * t * t);
 		}
 		velocity += accel * t;

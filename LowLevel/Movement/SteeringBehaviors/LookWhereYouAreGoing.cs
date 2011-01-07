@@ -16,20 +16,10 @@ namespace SanityEngine.Movement.SteeringBehaviors
     /// </summary>
     public class LookWhereYouAreGoing : SteeringBehavior
     {
-        Actor target;
 		bool twoDimensionalFacing = true;
 		float velocityFaceThreshold = 0.001f;
 		float angleThreshold = 90.0f;
 
-        /// <summary>
-        /// The target actor.
-        /// </summary>
-        public virtual Actor Target
-        {
-            get { return target; }
-            set { target = value; }
-        }
-		
         /// <summary>
         /// Use two-dimensional facing? (Y = up)
         /// </summary>
@@ -68,11 +58,6 @@ namespace SanityEngine.Movement.SteeringBehaviors
         public override Steering Update(SteeringManager manager, Actor actor,
 			float dt)
         {
-            if (target == null)
-            {
-                return Steering.zero;
-            }
-
 			Vector3 dir = actor.Facing;
 			if(actor.Velocity.magnitude > velocityFaceThreshold) {
 				dir = actor.Velocity / actor.Velocity.magnitude;
