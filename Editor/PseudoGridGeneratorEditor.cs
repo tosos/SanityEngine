@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
-[CustomEditor(typeof(PseudoGridGenerator))]
+//[CustomEditor(typeof(PseudoGridGenerator))]
 public class PseudoGridGeneratorEditor {// : Editor {
 #if false
 	public bool edgeFoldout = true;
