@@ -19,11 +19,15 @@ public class DynamicActor : GameObjectActor {
 		oldRotation = xform.rotation.eulerAngles;
 	}
 	
-	void LateUpdate()
+	void FixedUpdate()
 	{
-		float scale = 1f / Time.deltaTime;
+		float scale = 1f / Time.fixedDeltaTime;
 		velocity = (xform.position - oldPosition) * scale;
-		angularVelocity = (xform.rotation.eulerAngles - oldRotation) * scale;
+		Debug.Log(velocity);
+		Vector3 rot = xform.rotation.eulerAngles;
+		angularVelocity = (rot - oldRotation) * scale;
+		oldPosition = xform.position;
+		oldRotation = rot;
 	}
 		
 	public override Vector3 Velocity

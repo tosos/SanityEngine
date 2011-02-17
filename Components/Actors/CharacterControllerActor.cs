@@ -23,7 +23,7 @@ public class CharacterControllerActor : GameObjectActor {
 		oldRotation = xform.rotation.eulerAngles;
 	}
 	
-	void LateUpdate()
+	void FixedUpdate()
 	{
 		if(motor) {
 			velocity = motor.Velocity;
@@ -31,7 +31,10 @@ public class CharacterControllerActor : GameObjectActor {
 		} else {
 			float scale = 1f / Time.deltaTime;
 			velocity = (xform.position - oldPosition) * scale;
-			angularVelocity = (xform.rotation.eulerAngles - oldRotation) * scale;
+			Vector3 rot = xform.rotation.eulerAngles;
+			angularVelocity = (rot - oldRotation) * scale;
+			oldPosition = xform.position;
+			oldRotation = rot;
 		}
 	}
 		
