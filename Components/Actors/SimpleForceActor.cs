@@ -11,7 +11,6 @@ public class SimpleForceActor : SteeringManagerComponent {
 	public float maxAngularSpeed = 1080.0f;
 	public float linearDamp = 0.05f;
 	public float angularDamp = 0.05f;
-	public bool twoDimensionalFacing = true;
 	public float gravity = -9.81f;
 	Transform xform;
 	CharacterController controller;
@@ -26,27 +25,21 @@ public class SimpleForceActor : SteeringManagerComponent {
 		controller = GetComponent<CharacterController>();
 	}
 	
-	protected override float MaxSpeed
+	protected override float MaxForce
 	{
-		get { return maxSpeed; }
+		get { return maxForce; }
 	}
 	
-	protected override float MaxAngularSpeed
+	protected override float MaxTorque
 	{
-		get { return maxAngularSpeed; }
+		get { return maxTorque; }
 	}
 
-	void FixedUpdate ()
+	protected override void SteeringUpdate (Steering steering)
 	{
 		float t = Time.fixedDeltaTime;
-		Steering steering = base.Steering;
-		
-		Vector3 desired = steering.Force;
-		float force = desired.magnitude;
-		if(force > maxForce) {
-			desired *= maxForce / force;
-		}
-		Vector3 accel = desired / mass;
+
+		Vector3 accel = steering.Force / mass;
 		
 		if(controller == null) {
 			accel += Vector3.up * gravity;
@@ -68,11 +61,7 @@ public class SimpleForceActor : SteeringManagerComponent {
 			velocity *= maxSpeed / speed;
 		}
 		
-		Vector3 angAccel  = steering.Torque;
-		float torque2 = angAccel.magnitude;
-		if(torque2 > maxTorque) {
-			angAccel *= maxTorque / torque2;
-		}
+		Vector3 angAccel = steering.Torque / mass;
 
 		xform.Rotate(angularVelocity * t + angAccel * t * t, Space.World);
 

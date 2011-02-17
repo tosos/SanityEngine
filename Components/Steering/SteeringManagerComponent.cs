@@ -4,16 +4,12 @@ using SanityEngine.Movement.SteeringBehaviors;
 
 [AddComponentMenu("")]
 public abstract class SteeringManagerComponent : GameObjectActor {
-	protected Steering Steering {
-		get { return steering; }
-	}
-	
-	protected abstract float MaxSpeed
+	protected abstract float MaxForce
 	{
 		get;
 	}
 	
-	protected abstract float MaxAngularSpeed
+	protected abstract float MaxTorque
 	{
 		get;
 	}
@@ -23,7 +19,6 @@ public abstract class SteeringManagerComponent : GameObjectActor {
 	Dictionary<string, SteeringBehaviorProxy> behaviors;
 	SteeringManager manager;
 	GameObjectActor actor;
-	Steering steering;
 	
 	void Awake () {
 		actor = GetComponent<GameObjectActor>();
@@ -39,11 +34,13 @@ public abstract class SteeringManagerComponent : GameObjectActor {
 		}
 	}
 	
-	void Update () {
-		manager.MaxSpeed = MaxSpeed;
-		manager.MaxAngularSpeed = MaxAngularSpeed;
-		steering = manager.Update(actor, Time.deltaTime);
+	protected void FixedUpdate () {
+		manager.MaxForce = MaxForce;
+		manager.MaxTorque = MaxTorque;
+		SteeringUpdate(manager.Update(actor, Time.fixedDeltaTime));
 	}
+	
+	protected abstract void SteeringUpdate(Steering steering);
 	
 	/// <summary>
 	/// Access a steering behavior definition group by name.

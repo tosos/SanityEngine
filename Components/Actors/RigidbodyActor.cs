@@ -12,14 +12,14 @@ public class RigidbodyActor : SteeringManagerComponent {
 	Rigidbody body;
 	Transform xform;
 	
-	protected override float MaxSpeed
+	protected override float MaxForce
 	{
-		get { return maxSpeed; }
+		get { return maxForce; }
 	}
 	
-	protected override float MaxAngularSpeed
+	protected override float MaxTorque
 	{
-		get { return maxAngularSpeed * Mathf.Deg2Rad; }
+		get { return maxTorque; }
 	}
 	
 	void Start ()
@@ -28,15 +28,9 @@ public class RigidbodyActor : SteeringManagerComponent {
 		xform = transform;
 	}
 	
-	void FixedUpdate ()
+	protected override void SteeringUpdate (Steering steering)
 	{
-		Steering steering = base.Steering;
-		
 		Vector3 desired = steering.Force;
-		float force = desired.magnitude;
-		if(force > maxForce) {
-			desired *= maxForce / force;
-		}
 		
 		body.AddForce(desired);
 
@@ -49,12 +43,7 @@ public class RigidbodyActor : SteeringManagerComponent {
 		}
 		*/
 		
-		desired = steering.Torque;
-		float torque2 = desired.magnitude;
-		float max = maxTorque * Mathf.Deg2Rad;
-		if(torque2 > max) {
-			desired *= max / torque2;
-		}
+		desired = steering.Torque * Mathf.Deg2Rad;
 
 		body.AddTorque(desired);
 

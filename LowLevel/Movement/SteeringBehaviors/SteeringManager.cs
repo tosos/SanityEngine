@@ -18,21 +18,21 @@ namespace SanityEngine.Movement.SteeringBehaviors
     public class SteeringManager
     {
 		/// <summary>
-		/// The max speed to be applied in the steering behaviors.
+		/// The max force to be applied in the steering behaviors.
 		/// </summary>
-		public float MaxSpeed
+		public float MaxForce
 		{
-			get { return maxSpeed; }
-			set { maxSpeed = value; }
+			get { return maxForce; }
+			set { maxForce = value; }
 		}
 
 		/// <summary>
-		/// The max angular speed to be applied in the steering behaviors.
+		/// The max torque to be applied in the steering behaviors.
 		/// </summary>
-		public float MaxAngularSpeed
+		public float MaxTorque
 		{
-			get { return maxAngularSpeed; }
-			set { maxAngularSpeed = value; }
+			get { return maxTorque; }
+			set { maxTorque = value; }
 		}
 		
         /// <summary>
@@ -40,8 +40,8 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// </summary>
         protected List<SteeringBehavior> behaviors = new List<SteeringBehavior>();
 		
-		float maxSpeed = 1.0f;
-		float maxAngularSpeed = 1.0f;
+		float maxForce = 1.0f;
+		float maxTorque = 1.0f;
 
         /// <summary>
         /// Add a steering behavior to be updated by this manager.
@@ -70,24 +70,20 @@ namespace SanityEngine.Movement.SteeringBehaviors
         /// <returns>The combined Steering object.</returns>
         public virtual Steering Update(Actor actor, float dt)
         {
-			int forces = 0;
-			int torques = 0;
-			
             Steering result = Steering.zero;
             foreach (SteeringBehavior behavior in behaviors)
             {
 				Steering steering = behavior.Update(this, actor, dt);
                 result += steering * behavior.Weight;
-				forces += steering.HasForce ? 1 : 0;
-				torques += steering.HasTorque ? 1 : 0;
             }
-            
-			if(forces > 0) {
-            	result.Force /= forces;
-			}
-			if(torques > 0) {
-            	result.Torque /= torques;
-			}
+
+			float force = result.Force.magnitude;
+			float max = Mathf.Min(force, maxForce);
+			result.Force *= (max / force);
+	
+			force = result.Torque.magnitude;
+			max = Mathf.Min(force, maxTorque);
+			result.Torque *= (max / force);
 			
             return result;
         }

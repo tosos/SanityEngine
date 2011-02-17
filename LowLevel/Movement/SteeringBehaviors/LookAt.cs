@@ -71,8 +71,8 @@ namespace SanityEngine.Movement.SteeringBehaviors
 			delta.z = 0.0f;
 			float angDist = delta.magnitude;
 			if(angDist > 0.0f) {
-				float torque = manager.MaxAngularSpeed * (angDist / angleThreshold);
-				torque = Mathf.Min(torque, manager.MaxAngularSpeed);
+				float torque = manager.MaxTorque * (angDist / angleThreshold);
+				torque = Mathf.Min(torque, manager.MaxTorque);
 				delta *= torque / angDist;
 			}
 			return new Steering(false, Vector3.zero,

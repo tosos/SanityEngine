@@ -60,8 +60,8 @@ namespace SanityEngine.Movement.SteeringBehaviors
             float dist = delta.magnitude;
             if (dist > 0.0f)
             {
-				float force = manager.MaxSpeed * (dist / arriveRadius);
-				force = Mathf.Min(force, manager.MaxSpeed);
+				float force = manager.MaxForce * (dist / arriveRadius);
+				force = Mathf.Min(force, manager.MaxForce);
                 delta *= force / dist;
             }
 
