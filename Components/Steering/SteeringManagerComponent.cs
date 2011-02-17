@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SanityEngine.Movement.SteeringBehaviors;
 
 [AddComponentMenu("")]
-public abstract class SteeringManagerComponent : GameObjectActor {
+public abstract class SteeringManagerComponent : MonoBehaviour {
 	protected abstract float MaxForce
 	{
 		get;
@@ -23,6 +23,9 @@ public abstract class SteeringManagerComponent : GameObjectActor {
 	
 	void Awake () {
 		actor = GetComponent<GameObjectActor>();
+		if(!actor) {
+			Debug.LogError("Steering manager is not attached to an actor!");
+		}
 		manager = new SteeringManager();
 			
 		behaviors = new Dictionary<string, SteeringBehaviorProxy>();

@@ -2,8 +2,9 @@ using UnityEngine;
 using System.Collections;
 using SanityEngine.Movement.SteeringBehaviors;
 
-[AddComponentMenu("Sanity Engine/Actors/Simple Force Actor")]
-public class SimpleForceActor : SteeringManagerComponent {
+[AddComponentMenu("Sanity Engine/Steering Motors/Character Controller Motor"),
+RequireComponent(typeof(CharacterControllerActor))]
+public class CharacterControllerMotor : SteeringManagerComponent {
 	public float mass = 1.0f;
 	public float maxForce = 2.5f;
 	public float maxSpeed = 5.0f;
@@ -16,6 +17,16 @@ public class SimpleForceActor : SteeringManagerComponent {
 	CharacterController controller;
 	Vector3 velocity;
 	Vector3 angularVelocity;
+	
+	public Vector3 Velocity
+	{
+		get { return velocity; }
+	}
+	
+	public Vector3 AngularVelocity
+	{
+		get { return angularVelocity; }
+	}
 	
 	void Start ()
 	{
@@ -41,19 +52,15 @@ public class SimpleForceActor : SteeringManagerComponent {
 
 		Vector3 accel = steering.Force / mass;
 		
-		if(controller == null) {
-			accel += Vector3.up * gravity;
-			xform.Translate(velocity * t + 0.5f * accel * t * t, Space.World);
-		} else {
-			if(controller.isGrounded) {
-				if(velocity.y < 0f) {
-					velocity.y = 0.0f;
-				}
-			} else {
-				accel += Vector3.up * gravity;
+		if(controller.isGrounded) {
+			if(velocity.y < 0f) {
+				velocity.y = 0.0f;
 			}
-			controller.Move(velocity * t);// + 0.5f * accel * t * t);
+		} else {
+			accel += Vector3.up * gravity;
 		}
+		controller.Move(velocity * t);// + 0.5f * accel * t * t);
+		
 		velocity += accel * t;
 		velocity -= velocity * linearDamp;
 		float speed = velocity.magnitude;
@@ -72,24 +79,4 @@ public class SimpleForceActor : SteeringManagerComponent {
 			angularVelocity *= maxAngularSpeed / angSpeed;
 		}
 	}
-		
-	public override Vector3 Velocity
-    {
-        get { return velocity; }
-    }
-
-	public override Vector3 AngularVelocity
-    {
-        get { return angularVelocity; }
-    }
-	
-    public override Vector3 Position
-    {
-        get { return xform.position; }
-    }
-
-    public override Vector3 Facing
-    {
-        get { return xform.forward; }
-    }
 }
