@@ -35,6 +35,15 @@ namespace SanityEngine.Movement.SteeringBehaviors
 			set { maxTorque = value; }
 		}
 		
+		/// <summary>
+		/// If this is set, the behaviors ignore the y component.
+		/// </summary>
+		public bool IsPlanar
+		{
+			get { return isPlanar; }
+			set { isPlanar = value; }
+		}
+		
         /// <summary>
         /// The currently registered behaviors.
         /// </summary>
@@ -42,6 +51,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
 		
 		float maxForce = 1.0f;
 		float maxTorque = 1.0f;
+		bool isPlanar = false;
 
         /// <summary>
         /// Add a steering behavior to be updated by this manager.
@@ -76,14 +86,24 @@ namespace SanityEngine.Movement.SteeringBehaviors
 				Steering steering = behavior.Update(this, actor, dt);
                 result += steering * behavior.Weight;
             }
+			
+			if(isPlanar) {
+				result.Force.y = 0f;
+				result.Torque.x = 0f;
+				result.Torque.z = 0f;
+			}
 
 			float force = result.Force.magnitude;
-			float max = Mathf.Min(force, maxForce);
-			result.Force *= (max / force);
+			if(force > 0f) {
+				float max = Mathf.Min(force, maxForce);
+				result.Force *= (max / force);
+			}
 	
-			force = result.Torque.magnitude;
-			max = Mathf.Min(force, maxTorque);
-			result.Torque *= (max / force);
+			float torque = result.Torque.magnitude;
+			if(torque > 0f) {
+				float max = Mathf.Min(torque, maxTorque);
+				result.Torque *= (max / torque);
+			}
 			
             return result;
         }

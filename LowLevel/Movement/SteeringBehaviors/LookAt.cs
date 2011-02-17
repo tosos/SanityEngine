@@ -17,7 +17,6 @@ namespace SanityEngine.Movement.SteeringBehaviors
     public class LookAt : SteeringBehavior
     {
         Actor target;
-		bool twoDimensionalFacing = true;
 		float angleThreshold = 90.0f;
 
         /// <summary>
@@ -28,16 +27,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
             get { return target; }
             set { target = value; }
         }
-		
-        /// <summary>
-        /// Use two-dimensional facing? (Y = up)
-        /// </summary>
-        public virtual bool TwoDimensionalFacing
-        {
-            get { return twoDimensionalFacing; }
-            set { twoDimensionalFacing = value; }
-        }
-		
+				
         /// <summary>
         /// The angle inside which the turning will slow down.
         /// </summary>
@@ -64,19 +54,32 @@ namespace SanityEngine.Movement.SteeringBehaviors
             }
 
 			Vector3 dir = target.Position - actor.Position;
-			dir.Normalize();
-			Vector3 delta = Quaternion.FromToRotation(actor.Facing, dir).eulerAngles;
-			delta.x = twoDimensionalFacing ? 0f : Mathf.DeltaAngle(0f, delta.x);
-			delta.y = Mathf.DeltaAngle(0f, delta.y);
+			Vector3 facing = actor.Facing;
+			
+			dir.y = manager.IsPlanar ? 0f : dir.y;
+			facing.y = manager.IsPlanar ? 0f : facing.y;
+			
+			Vector3 delta = Quaternion.FromToRotation(facing, dir).eulerAngles;
+			Vector3 angVel = actor.AngularVelocity;
+			
+			if(manager.IsPlanar) {
+				angVel.x = 0f;
+				delta.x = 0f;
+			} else {
+				delta.x = Mathf.DeltaAngle(0f, delta.x);
+			}
+			
+			angVel.z = 0f;
 			delta.z = 0.0f;
+			delta.y = Mathf.DeltaAngle(0f, delta.y);
+			
 			float angDist = delta.magnitude;
 			if(angDist > 0.0f) {
 				float torque = manager.MaxTorque * (angDist / angleThreshold);
 				torque = Mathf.Min(torque, manager.MaxTorque);
 				delta *= torque / angDist;
 			}
-			return new Steering(false, Vector3.zero,
-				true, delta - actor.AngularVelocity);
+			return new Steering(Vector3.zero, delta - angVel);
 		}
 
         public override string GetDescription()

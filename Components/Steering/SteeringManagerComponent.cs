@@ -15,6 +15,7 @@ public abstract class SteeringManagerComponent : GameObjectActor {
 	}
 	
 	public SteeringBehaviorAsset[] steeringAssets;
+	public bool isPlanar = false;
 	
 	Dictionary<string, SteeringBehaviorProxy> behaviors;
 	SteeringManager manager;
@@ -37,6 +38,7 @@ public abstract class SteeringManagerComponent : GameObjectActor {
 	protected void FixedUpdate () {
 		manager.MaxForce = MaxForce;
 		manager.MaxTorque = MaxTorque;
+		manager.IsPlanar = isPlanar;
 		SteeringUpdate(manager.Update(actor, Time.fixedDeltaTime));
 	}
 	

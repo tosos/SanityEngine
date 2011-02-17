@@ -62,18 +62,29 @@ namespace SanityEngine.Movement.SteeringBehaviors
 			if(actor.Velocity.magnitude > velocityFaceThreshold) {
 				dir = actor.Velocity / actor.Velocity.magnitude;
 			}
+			
 			Vector3 delta = Quaternion.FromToRotation(actor.Facing, dir).eulerAngles;
-			delta.x = twoDimensionalFacing ? 0f : Mathf.DeltaAngle(0f, delta.x);
-			delta.y = Mathf.DeltaAngle(0f, delta.y);
+			Vector3 angVel = actor.AngularVelocity;
+			
+			if(manager.IsPlanar) {
+				angVel.x = 0f;
+				delta.x = 0f;
+			} else {
+				delta.x = Mathf.DeltaAngle(0f, delta.x);
+			}
+			
+			angVel.z = 0f;
 			delta.z = 0.0f;
+			delta.y = Mathf.DeltaAngle(0f, delta.y);
+			
+			
 			float angDist = delta.magnitude;
 			if(angDist > 0.0f) {
 				float torque = manager.MaxTorque * (angDist / angleThreshold);
 				torque = Mathf.Min(torque, manager.MaxTorque);
 				delta *= torque / angDist;
 			}
-			return new Steering(false, Vector3.zero,
-				true, delta - actor.AngularVelocity);
+			return new Steering(Vector3.zero, delta - angVel);
 		}
 
         public override string GetDescription()

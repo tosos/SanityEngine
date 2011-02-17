@@ -57,6 +57,12 @@ namespace SanityEngine.Movement.SteeringBehaviors
             }
 
             Vector3 delta = Target.Position - actor.Position;
+			Vector3 currentVel = actor.Velocity;
+			if(manager.IsPlanar) {
+				delta.y = 0f;
+				currentVel.y = 0f;
+			}
+			
             float dist = delta.magnitude;
             if (dist > 0.0f)
             {
@@ -65,8 +71,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
                 delta *= force / dist;
             }
 
-            return new Steering(true, delta - actor.Velocity, false,
-				Vector3.zero);
+            return new Steering(delta - currentVel, Vector3.zero);
         }
         
         public override string GetDescription()

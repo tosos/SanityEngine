@@ -59,6 +59,11 @@ namespace SanityEngine.Movement.SteeringBehaviors
 			Vector3 target, float dt)
         {
             Vector3 desired = target - actor.Position;
+			
+			if(manager.IsPlanar) {
+				desired.y = 0f;
+			}
+			
             float dist = desired.magnitude;
             if (dist > 0.0f)
             {
@@ -79,6 +84,11 @@ namespace SanityEngine.Movement.SteeringBehaviors
 			Vector3 target, float dt)
         {
             Vector3 desired = actor.Position - target;
+			
+			if(manager.IsPlanar) {
+				desired.y = 0f;
+			}
+			
             float dist = desired.magnitude;
             if (dist > 0.0f)
             {

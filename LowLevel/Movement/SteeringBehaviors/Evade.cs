@@ -45,12 +45,20 @@ namespace SanityEngine.Movement.SteeringBehaviors
             }
 
             Vector3 uVel = actor.Velocity;
-            uVel.Normalize();
             Vector3 uTargetVel = target.Velocity;
-            uTargetVel.Normalize();
-            float dv = Vector3.Dot(uVel, uTargetVel);
             Vector3 deltaPos = target.Position - actor.Position;
             Vector3 targetPos = target.Position;
+			
+			if(manager.IsPlanar) {
+				uVel.y = 0f;
+				uTargetVel.y = 0f;
+				deltaPos.y = 0f;
+				targetPos.y = 0f;
+			}
+			
+            uVel.Normalize();
+            uTargetVel.Normalize();
+            float dv = Vector3.Dot(uVel, uTargetVel);
             if (Vector3.Dot(deltaPos, uVel) < 0 || dv > -0.93)
             {
                 Vector3 vel = uVel * manager.MaxForce;
@@ -59,8 +67,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
                 targetPos += target.Velocity * predictionTime;
             }
 
-            return new Steering(true, SteerAway(manager, actor, targetPos, dt),
-				false, Vector3.zero);
+            return new Steering(SteerAway(manager, actor, targetPos, dt), Vector3.zero);
         }
         
         public override string GetDescription()
