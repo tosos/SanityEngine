@@ -9,5 +9,6 @@ public class SteeringAssetCreator
 		string path = AssetDatabase.GenerateUniqueAssetPath(
 			"Assets/new steering behavior.asset");
 		AssetDatabase.CreateAsset(behavior, path);
+		AssetDatabase.SetLabels(behavior, new string[] { "sanity", "steering" });
 	}
 }
