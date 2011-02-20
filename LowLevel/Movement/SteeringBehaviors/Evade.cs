@@ -59,12 +59,14 @@ namespace SanityEngine.Movement.SteeringBehaviors
             uVel.Normalize();
             uTargetVel.Normalize();
             float dv = Vector3.Dot(uVel, uTargetVel);
-            if (Vector3.Dot(deltaPos, uVel) < 0 || dv > -0.93)
+            if (Vector3.Dot(deltaPos, uVel) < 0f || dv > -0.93f)
             {
                 Vector3 vel = uVel * manager.MaxForce;
                 float combinedSpeed = (vel + target.Velocity).magnitude;
-                float predictionTime = deltaPos.magnitude / combinedSpeed;
-                targetPos += target.Velocity * predictionTime;
+				if(combinedSpeed > 0f) {
+                	float predictionTime = deltaPos.magnitude / combinedSpeed;
+                	targetPos += target.Velocity * predictionTime;
+				}
             }
 
             return new Steering(SteerAway(manager, actor, targetPos, dt), Vector3.zero);
