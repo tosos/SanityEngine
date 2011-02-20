@@ -16,18 +16,8 @@ namespace SanityEngine.Movement.SteeringBehaviors
     /// </summary>
     public class LookWhereYouAreGoing : SteeringBehavior
     {
-		bool twoDimensionalFacing = true;
 		float velocityFaceThreshold = 0.001f;
 		float angleThreshold = 90.0f;
-
-        /// <summary>
-        /// Use two-dimensional facing? (Y = up)
-        /// </summary>
-        public virtual bool TwoDimensionalFacing
-        {
-            get { return twoDimensionalFacing; }
-            set { twoDimensionalFacing = value; }
-        }
 
         /// <summary>
         /// The angle inside which the turning will slow down.

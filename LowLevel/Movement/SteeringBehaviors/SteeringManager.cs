@@ -83,8 +83,10 @@ namespace SanityEngine.Movement.SteeringBehaviors
             Steering result = Steering.zero;
             foreach (SteeringBehavior behavior in behaviors)
             {
-				Steering steering = behavior.Update(this, actor, dt);
-                result += steering * behavior.Weight;
+				if(behavior.Enabled) {
+					Steering steering = behavior.Update(this, actor, dt);
+                	result += steering * behavior.Weight;
+				}
             }
 			
 			if(isPlanar) {

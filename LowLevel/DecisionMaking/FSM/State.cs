@@ -15,10 +15,13 @@ namespace SanityEngine.DecisionMaking.FSM
     /// A state in a finite state machine.
     /// </summary>
     /// <typeparam name="TData">The data type used for transition guard checks.</typeparam>
-	public class State<TData>
+	public class State
 	{
 		readonly string name;
-		Dictionary<string, List<Transition<TData>>> transitions = new Dictionary<string, List<Transition<TData>>>();
+		readonly Action tickAction;
+		readonly Action enterAction;
+		readonly Action exitAction;
+		Dictionary<FSMEvent, List<Transition>> transitions = new Dictionary<FSMEvent, List<Transition>>();
 		
         /// <summary>
         /// The name of the state.
@@ -28,37 +31,64 @@ namespace SanityEngine.DecisionMaking.FSM
 			get { return name; }
 		}
 		
-		internal State (string name)
+		internal State (string name, Action tickAction, Action enterAction, Action exitAction)
 		{
 			this.name = name;
+			this.tickAction = tickAction;
+			this.enterAction = enterAction;
+			this.exitAction = exitAction;
 		}
-		
-		internal void AddTransition(Transition<TData> transition)
+				
+		internal void AddTransition(Transition transition)
 		{
-			List<Transition<TData>> ts = null;
-			if(!transitions.ContainsKey(transition.EventName)) {
-				ts = new List<Transition<TData>>();
-				transitions[transition.EventName] = ts;
+			List<Transition> ts = null;
+			if(!transitions.ContainsKey(transition.Trigger)) {
+				ts = new List<Transition>();
+				transitions[transition.Trigger] = ts;
 			} else {
-				ts = transitions[transition.EventName];
+				ts = transitions[transition.Trigger];
 			}
 			ts.Add(transition);
 		}
-		
-		internal State<TData> TriggerEvent(string eventName, TData data)
+
+		internal void Tick()
 		{
-			if(!transitions.ContainsKey(eventName)) {
+			if(tickAction != null) {
+				tickAction();
+			}
+		}
+		
+		internal State TriggerEvent(FSMEvent trigger)
+		{
+			if(!transitions.ContainsKey(trigger)) {
 				return null;
 			}
 
-            foreach (Transition<TData> transition in transitions[eventName])
+            foreach (Transition transition in transitions[trigger])
             {
-				if(transition.Check(data)) {
-					transition.FireAction(data);
-					return transition.Target;
+				if(transition.CheckGuard()) {
+					FireExitAction();
+					transition.FireAction();
+					State newState = transition.Target;
+					newState.FireEnterAction();
+					return newState;
 				}
 			}
 			return null;
+		}
+
+		public void FireEnterAction()
+		{
+			if(enterAction != null) {
+				enterAction();
+			}
+		}
+
+		public void FireExitAction()
+		{
+			if(exitAction != null) {
+				exitAction();
+			}
 		}
 	}
 }

@@ -13,50 +13,50 @@ namespace SanityEngine.DecisionMaking.FSM
     /// <summary>
     /// A transition from one state to another.
     /// </summary>
-	class Transition<TData>
+	class Transition
 	{
-		readonly string eventName;
-        readonly State<TData> target;
-        readonly Predicate<TData> pred;
-		Action<TData> action;
+		readonly FSMEvent trigger;
+        readonly State target;
+        readonly Guard guard;
+		Action action;
 		
         /// <summary>
         /// The name of the event triggering the transition.
         /// </summary>
-		public string EventName
+		public FSMEvent Trigger
 		{
-			get { return eventName; }
+			get { return trigger; }
 		}
 		
         /// <summary>
         /// The target state after the transition occurs.
         /// </summary>
-        public State<TData> Target
+        public State Target
 		{
 			get { return target; }
 		}
 
-        public Transition(string eventName, State<TData> target,
-			Predicate<TData> pred, Action<TData> action)
+        public Transition(FSMEvent trigger, State target,
+			Guard guard, Action action)
 		{
-			this.eventName = eventName;
+			this.trigger = trigger;
 			this.target = target;
-            this.pred = pred;
+			this.guard = guard;
 			this.action = action;
 		}
 		
-		public bool Check(TData data)
+		public bool CheckGuard()
 		{
-			if(pred != null) {
-				return pred(data);
+			if(guard != null) {
+				return guard();
 			}
 			return true;
 		}
 		
-		public void FireAction(TData data)
+		public void FireAction()
 		{
 			if(action != null) {
-				action(data);
+				action();
 			}
 		}
 	}
