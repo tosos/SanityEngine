@@ -12,13 +12,13 @@ namespace SanityEngine.DecisionMaking.BehaviorTree
 			this.root = node;
 		}
 		
-		public void Tick(Actor actor)
+		public bool Tick(Actor actor)
 		{
 			if(root == null) {
 				throw new System.InvalidOperationException("No root node set");
 			}
 			
-			root.Tick(actor);
+			return root.Tick(actor);
 		}
 	}
 }
