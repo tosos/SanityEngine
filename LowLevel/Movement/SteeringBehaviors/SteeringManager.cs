@@ -97,8 +97,8 @@ namespace SanityEngine.Movement.SteeringBehaviors
 
 			float force = result.Force.magnitude;
 			if(force > 0f) {
-				float max = Mathf.Min(force, maxForce);
-				result.Force *= (max / force);
+				//float max = Mathf.Min(force, maxForce);
+				//result.Force *= (max / force);
 			}
 	
 			float torque = result.Torque.magnitude;
