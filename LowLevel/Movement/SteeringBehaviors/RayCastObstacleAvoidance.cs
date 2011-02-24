@@ -76,6 +76,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
 				float weight = 1f - Mathf.Abs(angle / maxAngle) * 0.25f;
 				float dist = maxDistance - Mathf.Abs(-dHalf + i * dSize);
 				Vector3 dir = Quaternion.AngleAxis(angle, Vector3.up) * forward;
+				Debug.DrawLine(actor.Position, actor.Position + dir * dist);
 				RaycastHit hit;
 				if(Physics.Raycast(actor.Position, dir, out hit, dist, mask)) {
 					totalWeight += weight;
