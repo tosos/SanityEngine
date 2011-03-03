@@ -40,11 +40,21 @@ namespace SanityEngine.Actors
             get { return actor.Position + actor.Velocity; }
         }
 
-        public Vector3 Facing
+        public Vector3 Forward
         {
-            get { return actor.Facing; }
+            get { return actor.Forward; }
         }
 
+        public Vector3 Right
+        {
+            get { return actor.Right; }
+        }
+		
+        public Vector3 Up
+        {
+            get { return actor.Up; }
+        }
+		
         public VelocityWrapperActor(Actor actor)
         {
             this.actor = actor;

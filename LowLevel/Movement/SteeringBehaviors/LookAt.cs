@@ -54,7 +54,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
             }
 
 			Vector3 dir = target.Position - actor.Position;
-			Vector3 facing = actor.Facing;
+			Vector3 facing = actor.Forward;
 			
 			dir.y = manager.IsPlanar ? 0f : dir.y;
 			facing.y = manager.IsPlanar ? 0f : facing.y;

@@ -40,10 +40,20 @@ namespace SanityEngine.Actors
             get { return point; }
         }
 
-        public Vector3 Facing
-        {
-            get { return Vector3.zero; }
-        }
+    	public Vector3 Forward
+    	{
+        	get { return Vector3.forward; }
+    	}
+
+		public Vector3 Right
+    	{
+        	get { return Vector3.right; }
+    	}
+    
+		public Vector3 Up
+    	{
+    	    get { return Vector3.up; }
+	    }
 
         public float MaxForce
         {

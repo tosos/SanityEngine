@@ -29,8 +29,18 @@ public class RigidbodyActor : GameObjectActor {
         get { return xform.position; }
     }
 
-    public override Vector3 Facing
+    public override Vector3 Forward
     {
         get { return xform.forward; }
+    }
+
+	public override Vector3 Right
+    {
+        get { return xform.right; }
+    }
+    
+	public override Vector3 Up
+    {
+        get { return xform.up; }
     }
 }

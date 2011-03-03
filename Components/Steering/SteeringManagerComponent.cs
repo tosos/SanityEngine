@@ -21,7 +21,7 @@ public abstract class SteeringManagerComponent : MonoBehaviour {
 	SteeringManager manager;
 	GameObjectActor actor;
 	
-	void Awake () {
+	protected void Awake () {
 		actor = GetComponent<GameObjectActor>();
 		if(!actor) {
 			Debug.LogError("Steering manager is not attached to an actor!");

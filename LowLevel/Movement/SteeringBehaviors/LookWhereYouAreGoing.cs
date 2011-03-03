@@ -48,12 +48,12 @@ namespace SanityEngine.Movement.SteeringBehaviors
         public override Steering Update(SteeringManager manager, Actor actor,
 			float dt)
         {
-			Vector3 dir = actor.Facing;
+			Vector3 dir = actor.Forward;
 			if(actor.Velocity.magnitude > velocityFaceThreshold) {
 				dir = actor.Velocity / actor.Velocity.magnitude;
 			}
 			
-			Vector3 delta = Quaternion.FromToRotation(actor.Facing, dir).eulerAngles;
+			Vector3 delta = Quaternion.FromToRotation(actor.Forward, dir).eulerAngles;
 			Vector3 angVel = actor.AngularVelocity;
 			
 			if(manager.IsPlanar) {

@@ -69,7 +69,7 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
         		return false;
         	}
         	
-            Vector3 f = actor.Facing;
+            Vector3 f = actor.Forward;
             Vector3 v = other.Position - actor.Position;
             float dist = v.magnitude;
             if (dist > maxDistance)

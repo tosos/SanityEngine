@@ -52,11 +52,27 @@ namespace SanityEngine.Actors
         /// <summary>
         /// The vector pointing in the direction the actor is facing.
         /// </summary>
-        Vector3 Facing
+        Vector3 Forward
         {
             get;
         }
+		
+        /// <summary>
+        /// The vector pointing 90 degrees right of the direction the actor is facing.
+        /// </summary>
+		Vector3 Right
+		{
+			get;
+		}
 
+        /// <summary>
+        /// The vector pointing 90 degrees up from the direction the actor is facing.
+        /// </summary>
+		Vector3 Up
+		{
+			get;
+		}
+		
         /// <summary>
         /// Set a property on the given actor.
         /// </summary>

@@ -24,11 +24,21 @@ public abstract class GameObjectActor : MonoBehaviour, Actor {
         get;
     }
 
-    public abstract Vector3 Facing
+    public abstract Vector3 Forward
     {
         get;
     }
 
+	public abstract Vector3 Right
+    {
+        get;
+    }
+
+    public abstract Vector3 Up
+    {
+        get;
+    }
+	
 	Dictionary<string, string> props = new Dictionary<string, string>();
 		
     public void SetProperty(string name, string value)
