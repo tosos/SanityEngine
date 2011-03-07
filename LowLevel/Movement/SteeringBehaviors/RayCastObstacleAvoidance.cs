@@ -92,10 +92,11 @@ namespace SanityEngine.Movement.SteeringBehaviors
 					Vector3 half = Vector3.zero;
 					if(side < 0f) { // Normal is to the left
 						tangent = Vector3.Cross(actor.Up, hit.normal);
+						half = tangent - actor.Right;
 					} else { // Normal is to the right
 						tangent = Vector3.Cross(hit.normal, actor.Up);
+						half = actor.Right - tangent;
 					}
-					half = tangent - hit.normal;
 					tangent.Normalize();
 					half.Normalize();
 					totalWeight += weight;
@@ -108,7 +109,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
 				}
 			}
 
-			steering.Force = force;// / (totalWeight > 0f ? totalWeight : 1f);
+			steering.Force = force / (totalWeight > 0f ? totalWeight : 1f);
 			steering.Torque = torque;
 			
 			return steering;

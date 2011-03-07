@@ -51,7 +51,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
         public override Steering Update(SteeringManager manager, Actor actor,
 			float dt)
         {
-            if (Target == null)
+            if (target == null || !target.Alive)
             {
                 return Steering.zero;
             }
