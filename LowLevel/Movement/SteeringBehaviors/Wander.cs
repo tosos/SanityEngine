@@ -27,6 +27,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
 
         float minCountdownTime = 1.0f;
         float maxCountdownTime = 2.0f;
+		float countdown = 0.0f;
         float maxDeviation = 0.2f;
         float wanderAngle = 0.0f;
 		PointActor target;
@@ -79,8 +80,12 @@ namespace SanityEngine.Movement.SteeringBehaviors
         public override Steering Update(SteeringManager manager, Actor actor,
 			float dt)
         {
-            float angle = Random.Range(-maxDeviation, maxDeviation);
-            wanderAngle += angle;
+			countdown -= dt;
+			if(countdown <= 0f) {
+				countdown = Random.Range(minCountdownTime, maxCountdownTime);
+            	float angle = Random.Range(-maxDeviation, maxDeviation);
+            	wanderAngle += angle;
+			}
             int radius = 200;
             Vector3 currPos = actor.Position;
             float x = currPos.x + radius * Mathf.Cos(wanderAngle);
