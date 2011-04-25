@@ -266,7 +266,7 @@ public class Grid : UnityGraph
 					if(cell.TestFlags(CellFlags.Invalid)) {
 						continue;
 					}
-					Vector3 cellPos = cell.Position;
+					Vector3 cellPos = transform.InverseTransformPoint(cell.Position);
 					Gizmos.color = new Color(1.0f, 1.0f, 1.0f, 0.2f);
 					Gizmos.DrawWireCube (cellPos, cellSize);
 					
@@ -288,11 +288,11 @@ public class Grid : UnityGraph
 							if(!Valid(tx, ty)) {
 								continue;
 							}
-							if(i == 5 && x == 0) {
-								Gizmos.color = Color.magenta;
-							}
 							GridCell tcell = cells[GetIdx(tx, ty)];
-							Vector3 tCellPos = tcell.Position;
+							if(tcell.TestFlags(CellFlags.Invalid)) {
+								continue;
+							}
+							Vector3 tCellPos = transform.InverseTransformPoint(tcell.Position);
 							Vector3 start = cellPos + Vector3.Scale(cellSize, offsets[i,0]);
 							Vector3 end = tCellPos + Vector3.Scale(cellSize, offsets[i,1]);
 							Gizmos.DrawLine(start, end);
@@ -342,7 +342,11 @@ public class Grid : UnityGraph
 				}
 				
 				cells[GetIdx (x, y)] = new GridCell (GetIdx(x, y),
-					parameters.gridType, GetLocalCellBase(x, y) + Vector3.up * height);
+					parameters.gridType, transform.TransformPoint(
+					GetLocalCellBase(x, y) + Vector3.up * height));
+				if(height < 0f) {
+					cells[GetIdx (x, y)].SetFlags(CellFlags.Invalid);
+				}
 			}
 		}
 		for (int y = 0; y < parameters.yDimension; y++) {
@@ -697,7 +701,11 @@ public class Grid : UnityGraph
 		else if(x >= parameters.xDimension) x = parameters.xDimension - 1;
 		if(y < 0) y = 0;
 		else if(y >= parameters.yDimension) y = parameters.yDimension - 1;
-		return cells[GetIdx(x, y)];
+		GridCell cell = cells[GetIdx(x, y)];
+		if(cell.TestFlags(CellFlags.Invalid)) {
+			return null;
+		}
+		return cell;
 	}
 
 	/// <summary>

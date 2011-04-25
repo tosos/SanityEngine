@@ -103,7 +103,6 @@ public class PathFollowerComponent : MonoBehaviour {
 	{
 		goalNode = null;
 		path = null;
-		navMesh = null;
 		manager[moveBehavior].SetEnabled(false);
 	}
 	
