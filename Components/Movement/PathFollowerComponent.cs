@@ -18,6 +18,7 @@ public class PathFollowerComponent : MonoBehaviour {
 	public Vector3 targetOffset = Vector3.zero;
 	public string moveBehavior;
 	public bool broadcastMessages = true;
+	public float pathWidth = 5f;
 
 	SteeringManagerComponent manager;
 	PointActor target;
@@ -28,6 +29,7 @@ public class PathFollowerComponent : MonoBehaviour {
 	NavMeshNode goalNode;
 	List<MonoBehaviour> listeners;
 	float prevParam;
+	Vector3 prevPoint;
 	
 	void Awake ()
 	{
@@ -48,7 +50,7 @@ public class PathFollowerComponent : MonoBehaviour {
 		manager[moveBehavior].SetActor("Target", target);
 	}
 	
-	void Update () {
+	void LateUpdate () {
 		if(goalNode == null || path == null) {
 			return;
 		}
@@ -74,8 +76,21 @@ public class PathFollowerComponent : MonoBehaviour {
 		}
 		
 		float param = follower.GetNextParameter(transform.position, prevParam + epsilon, prevParam + lookAhead);
-		target.Point = follower.GetPosition(param + lookAhead) + targetOffset;
+		Vector3 point = follower.GetPosition(param + lookAhead) + targetOffset;
+		
+		Vector3 toMe = transform.position - point;
+		Vector3 dir = point - prevPoint;
+		Vector3 side = Vector3.Cross(Vector3.up, dir);
+		Vector3 offset = Vector3.Project(toMe, side);
+		float mag = offset.magnitude;
+		float radius = pathWidth * 0.5f;
+		if(mag >= radius) {
+			offset *= radius / mag;
+		}
+		
+		target.Point = point + offset;
 		prevParam = param;
+		prevPoint = point;
 	}
 	
 	void SetNavMesh(NavMesh navMesh)
