@@ -24,16 +24,16 @@ public class NewSteeringBehavior : EditorWindow {
 		Assembly asm = behaviorType.Assembly;
     	System.Type[] types = asm.GetTypes();
 	    foreach(System.Type type in types) {
-    	    if(type.IsSubclassOf(typeof(FlockingBehavior))) {
-    	    	continue;
-    	    }
-    	    
     	    if(!type.IsSubclassOf(behaviorType) || type.IsAbstract) {
         	  	continue;
 	        }
 	        
 	        classes.Add(type);
-	        names.Add(type.Name);
+    	    if(type.IsSubclassOf(typeof(FlockingBehavior))) {
+		        names.Add("Flock/" + type.Name);
+    	    } else {
+		        names.Add(type.Name);
+			}
     	}
 	}
 	
@@ -108,6 +108,10 @@ public class NewSteeringBehavior : EditorWindow {
 			def = null;
 			return SteeringBehaviorAsset.PropertyType.ACTOR;
 		}
+		if(typeof(Flock).IsAssignableFrom(type)) {
+			def = null;
+			return SteeringBehaviorAsset.PropertyType.FLOCK;
+		}
 		if(type == typeof(bool)) {
 			def = "false";
 			return SteeringBehaviorAsset.PropertyType.BOOL;
@@ -136,6 +140,6 @@ public class NewSteeringBehavior : EditorWindow {
 			def = "";
 			return SteeringBehaviorAsset.PropertyType.STRING;
 		}
-		throw new System.ArgumentException("Unsupported type");
+		throw new System.ArgumentException("Unsupported type: " + type.Name);
 	}
 }

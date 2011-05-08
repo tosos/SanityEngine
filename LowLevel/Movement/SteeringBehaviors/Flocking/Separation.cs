@@ -16,15 +16,14 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
     /// </summary>
     public class Separation : FlockingBehavior
     {
-        /// <summary>
-        /// Create an separation behavior.
-        /// </summary>
-        /// <param name="flock">The flock.</param>
-        public Separation(Flock flock)
-            : base(flock)
-        {
-        }
-
+		float threshold = 5f;
+		
+		public float Threshold
+		{
+			get { return threshold; }
+			set { threshold = value; }
+		}
+		
         /// <summary>
         /// Update the behavior.
         /// </summary>
@@ -33,22 +32,17 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The steering object.</returns>
-        public override Steering Update(SteeringManager manager, Actor actor,
+        protected override Steering FlockingUpdate(SteeringManager manager, Actor actor,
 			float dt)
         {
-            float threshold = base.MaxDistance;
-
             Vector3 accum = Vector3.zero;
             foreach (Actor f in Flock.Members)
             {
-                if (base.IsAffecting(actor, f))
-                {
-                    Vector3 v = actor.Position - f.Position;
-                    float d = v.magnitude;
-                    float str = Mathf.Max(0.0f, (threshold - d) / threshold)
-						* manager.MaxForce;
-                    accum += (v / d) * str;
-                }
+                Vector3 v = actor.Position - f.Position;
+                float d = v.magnitude;
+                float str = Mathf.Max(0.0f, (threshold - d) / threshold)
+					* manager.MaxForce;
+                accum += (v / d) * str;
             }
 			
 			if(manager.IsPlanar) {

@@ -121,6 +121,11 @@ public class SteeringBehaviorProxy
 	{
 		SetProperty(name, val);
 	}
+
+	public void SetFlock(string name, Flock val)
+	{
+		SetProperty(name, val);
+	}
 	
 	void SetProperty(string name, object val)
 	{

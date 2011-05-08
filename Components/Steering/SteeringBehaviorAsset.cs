@@ -12,7 +12,8 @@ public class SteeringBehaviorAsset : ScriptableObject {
 		VECTOR3,
 		VECTOR4,
 		STRING,
-		ACTOR
+		ACTOR,
+		FLOCK
 	}
 		
 	[System.Serializable]

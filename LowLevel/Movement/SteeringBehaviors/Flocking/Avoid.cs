@@ -19,19 +19,14 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
     /// </summary>
     public class Avoid : FlockingBehavior
     {
-        PointActor target;
+		PointActor target;
         Flee flee = new Flee();
-
-        /// <summary>
-        /// Create an avoid behavior.
-        /// </summary>
-        /// <param name="flock">The flock.</param>
-        public Avoid(Flock flock)
-            : base(flock)
-        {
-            target = new PointActor(Vector3.zero);
-            flee.Target = target;
-        }
+		
+		public Avoid()
+		{
+			target = new PointActor(Vector3.zero);
+			flee.Target = target;
+		}
 
         /// <summary>
         /// Update the behavior.
@@ -41,7 +36,7 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The steering object.</returns>
-        public override Steering Update(SteeringManager manager, Actor actor,
+        protected override Steering FlockingUpdate(SteeringManager manager, Actor actor,
 			float dt)
         {
             float smallestHitTime = float.PositiveInfinity;
@@ -50,11 +45,6 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
 
             foreach (Actor other in Flock.Members)
             {
-                if (!base.IsAffecting(actor, other))
-                {
-                    continue;
-                }
-
                 Vector3 a = actor.Position - other.Position;
                 Vector3 b = actor.Velocity - other.Velocity;
 

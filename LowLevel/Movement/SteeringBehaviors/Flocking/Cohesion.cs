@@ -21,17 +21,12 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
     {
         PointActor target;
         Seek seeker = new Seek();
-
-        /// <summary>
-        /// Create a cohesion behavior.
-        /// </summary>
-        /// <param name="flock">The flock.</param>
-        public Cohesion(Flock flock)
-            : base(flock)
-        {
-            target = new PointActor(Vector3.zero);
-            seeker.Target = target;
-        }
+		
+		public Cohesion()
+		{
+			target = new PointActor(Vector3.zero);
+			seeker.Target = target;
+		}
 
         /// <summary>
         /// Update the behavior.
@@ -41,18 +36,15 @@ namespace SanityEngine.Movement.SteeringBehaviors.Flocking
         /// <param name="dt">The time since the last update, in seconds.
         /// </param>
         /// <returns>The steering object.</returns>
-        public override Steering Update(SteeringManager manager, Actor actor,
+        protected override Steering FlockingUpdate(SteeringManager manager, Actor actor,
 			float dt)
         {
             int count = 0;
             Vector3 avg = Vector3.zero;
             foreach (Actor f in Flock.Members)
             {
-                if (base.IsAffecting(actor, f))
-                {
-                    avg += f.Position;
-                    count++;
-                }
+                avg += f.Position;
+                count++;
             }
             target.Point = count > 0 ? avg / count : avg;
             return seeker.Update(manager, actor, dt);
