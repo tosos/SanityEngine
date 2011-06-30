@@ -85,8 +85,12 @@ namespace SanityEngine.Movement.SteeringBehaviors
 				float dist = maxDistance - Mathf.Abs(-dHalf + i * dSize);
 				Vector3 dir = Quaternion.AngleAxis(angle, Vector3.up) * forward;
 				Debug.DrawLine(actor.Position, actor.Position + dir * dist, new Color(1f, 1f, 0f, weight));
-				RaycastHit hit;
-				if(Physics.SphereCast(actor.Position, 5f, dir, out hit, dist, mask)) {
+                Collider[] col = Physics.OverlapSphere(actor.Position + dir * dist * .5f, 
+                                                       dist * .5f, mask);
+				if(col.Length > 0) {
+                    RaycastHit hit;
+                    Ray r = new Ray (actor.Position, col[0].transform.position - actor.Position);
+                    col[0].Raycast (r, out hit, dist);
 					float side = Vector3.Dot(hit.normal, actor.Right);
 					Vector3 tangent = Vector3.zero;
 					Vector3 half = Vector3.zero;
@@ -97,8 +101,8 @@ namespace SanityEngine.Movement.SteeringBehaviors
 						tangent = Vector3.Cross(hit.normal, actor.Up);
 						half = actor.Right - tangent;
 					}
-					tangent.Normalize();
-					half.Normalize();
+					// tangent.Normalize();
+					// half.Normalize();
 					totalWeight += weight;
 					float scale = 1f - hit.distance / maxDistance;
 					Debug.DrawLine(hit.point, hit.point + tangent * manager.MaxForce * scale * weight, new Color(0f, 1f, 1f, scale));
