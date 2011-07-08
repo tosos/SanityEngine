@@ -121,7 +121,7 @@ namespace SanityEngine.Movement.SteeringBehaviors
 
         public override string GetDescription()
         {
-        	return "Avoid objects detected by forward facing rays";
+        	return "Avoid objects by firing rays at nearby objects";
         }
     }
 }
